@@ -359,3 +359,21 @@ html, body, #root {
   font-size: 18px;
   line-height: 1.7;
 }
+.tesla-login {
+  width: 100%;
+  margin: 18px 0;
+  padding: 16px;
+  border: none;
+  border-radius: 18px;
+  background: linear-gradient(135deg, #6a00ff, #9d4dff);
+  color: white;
+  font-size: 17px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: .25s;
+}
+
+.tesla-login:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0 20px rgba(157,77,255,.45);
+}
