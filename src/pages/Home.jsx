@@ -10,9 +10,7 @@ export default function Home() {
 
         <button className="bell-button">♡</button>
       </header>
-      <button className="tesla-login" onClick={loginWithTesla}>
-  Tesla로 로그인
-</button>
+      
 
       <section className="greeting">
         <h1>Good Evening, cem</h1>
