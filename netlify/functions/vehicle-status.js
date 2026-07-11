@@ -141,6 +141,21 @@ const vehicleState = live.vehicle_state || {};
             charge.charging_state || "Unknown",
           chargePortOpen:
             charge.charge_port_door_open ?? false,
+            chargeLimit:
+  charge.charge_limit_soc ?? null,
+
+chargerPowerKw:
+  charge.charger_power ?? null,
+
+timeToFullCharge:
+  typeof charge.time_to_full_charge === "number"
+    ? charge.time_to_full_charge
+    : null,
+
+energyAddedKwh:
+  typeof charge.charge_energy_added === "number"
+    ? charge.charge_energy_added
+    : null,
             insideTemp:
   climate.inside_temp ?? null,
 
