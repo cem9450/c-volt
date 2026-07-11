@@ -583,3 +583,41 @@ html, body, #root {
   font-size: 14px;
   line-height: 1.6;
 }
+.tesla-status-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.tesla-live-grid.expanded {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.tesla-live-grid .wide {
+  grid-column: 1 / -1;
+}
+
+.tesla-refresh-button {
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 14px;
+  padding: 10px 14px;
+  background: rgba(255, 255, 255, 0.06);
+  color: #ffffff;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.tesla-refresh-button.compact {
+  flex-shrink: 0;
+}
+
+.tesla-refresh-button:disabled {
+  cursor: wait;
+  opacity: 0.55;
+}
+
+.tesla-status-error {
+  margin-bottom: 14px;
+}

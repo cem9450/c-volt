@@ -1,35 +1,70 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { SiTesla } from "react-icons/si";
+
+function translateChargingState(state) {
+  const labels = {
+    Charging: "충전 중",
+    Complete: "충전 완료",
+    Disconnected: "미연결",
+    Stopped: "충전 중지",
+    Starting: "충전 시작 중",
+    NoPower: "전원 없음",
+    Unknown: "확인 불가",
+  };
+
+  return labels[state] || state || "확인 불가";
+}
+
+function translateVehicleState(state) {
+  const labels = {
+    online: "온라인",
+    asleep: "절전 상태",
+    offline: "오프라인",
+    waking: "차량 깨우는 중",
+  };
+
+  return labels[state] || state || "상태 확인 중";
+}
 
 export default function TeslaStatusCard() {
   const [vehicle, setVehicle] = useState(null);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    fetch("/.netlify/functions/vehicle-status", {
-      credentials: "include",
-    })
-      .then(async (response) => {
-        const data = await response.json();
+  const loadVehicle = useCallback(async () => {
+    setLoading(true);
+    setError("");
 
-        if (!response.ok || !data.ok) {
-          throw new Error(
-            data.error || "차량 정보를 불러오지 못했습니다."
-          );
+    try {
+      const response = await fetch(
+        "/.netlify/functions/vehicle-status",
+        {
+          credentials: "include",
+          cache: "no-store",
         }
+      );
 
-        setVehicle(data.vehicle);
-      })
-      .catch((err) => {
-        setError(err.message);
-      })
-      .finally(() => {
-        setLoading(false);
-      });
+      const data = await response.json();
+
+      if (!response.ok || !data.ok) {
+        throw new Error(
+          data.error || "차량 정보를 불러오지 못했습니다."
+        );
+      }
+
+      setVehicle(data.vehicle);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
   }, []);
 
-  if (loading) {
+  useEffect(() => {
+    loadVehicle();
+  }, [loadVehicle]);
+
+  if (loading && !vehicle) {
     return (
       <section className="tesla-status-card">
         <div className="tesla-status-loading">
@@ -39,10 +74,17 @@ export default function TeslaStatusCard() {
     );
   }
 
-  if (error) {
+  if (error && !vehicle) {
     return (
       <section className="tesla-status-card">
         <div className="tesla-status-error">{error}</div>
+
+        <button
+          className="tesla-refresh-button"
+          onClick={loadVehicle}
+        >
+          다시 불러오기
+        </button>
       </section>
     );
   }
@@ -54,36 +96,86 @@ export default function TeslaStatusCard() {
       <div className="tesla-status-head">
         <div className="tesla-car-name">
           <SiTesla />
+
           <div>
-            <strong>{vehicle.name}</strong>
+            <strong>{vehicle?.name || "My Tesla"}</strong>
+
             <span className={isOnline ? "online" : "sleeping"}>
-              {isOnline ? "Online" : vehicle.state}
+              {translateVehicleState(vehicle?.state)}
             </span>
           </div>
         </div>
+
+        <button
+          className="tesla-refresh-button compact"
+          onClick={loadVehicle}
+          disabled={loading}
+        >
+          {loading ? "갱신 중" : "새로고침"}
+        </button>
       </div>
 
-      {vehicle.batteryLevel !== null ? (
-        <div className="tesla-live-grid">
+      {vehicle?.batteryLevel !== null ? (
+        <div className="tesla-live-grid expanded">
           <div>
-            <span>BATTERY</span>
+            <span>배터리</span>
             <strong>{vehicle.batteryLevel}%</strong>
           </div>
 
           <div>
-            <span>RANGE</span>
-            <strong>{vehicle.rangeKm} km</strong>
+            <span>주행 가능</span>
+            <strong>{vehicle.rangeKm ?? "-"} km</strong>
           </div>
 
           <div>
-            <span>CHARGING</span>
-            <strong>{vehicle.chargingState}</strong>
+            <span>충전 상태</span>
+            <strong>
+              {translateChargingState(vehicle.chargingState)}
+            </strong>
+          </div>
+
+          <div>
+            <span>실내 온도</span>
+            <strong>
+              {vehicle.insideTemp !== null
+                ? `${Math.round(vehicle.insideTemp)}℃`
+                : "-"}
+            </strong>
+          </div>
+
+          <div>
+            <span>실외 온도</span>
+            <strong>
+              {vehicle.outsideTemp !== null
+                ? `${Math.round(vehicle.outsideTemp)}℃`
+                : "-"}
+            </strong>
+          </div>
+
+          <div>
+            <span>문 상태</span>
+            <strong>
+              {vehicle.locked === null
+                ? "확인 불가"
+                : vehicle.locked
+                  ? "잠김"
+                  : "열림"}
+            </strong>
+          </div>
+
+          <div className="wide">
+            <span>누적 주행거리</span>
+            <strong>
+              {vehicle.odometer !== null
+                ? `${vehicle.odometer.toLocaleString()} km`
+                : "-"}
+            </strong>
           </div>
         </div>
       ) : (
         <p className="tesla-sleep-message">
-          차량이 절전 상태입니다. Tesla 앱에서 차량을 열면
-          실시간 정보가 표시됩니다.
+          차량이 절전 상태입니다. Tesla 앱에서 차량을 깨운 뒤
+          새로고침을 눌러주세요.
         </p>
       )}
     </section>

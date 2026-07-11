@@ -118,6 +118,8 @@ export async function handler(event) {
 
     const live = data.response || {};
     const charge = live.charge_state || {};
+    const climate = live.climate_state || {};
+const vehicleState = live.vehicle_state || {};
 
     return {
       statusCode: 200,
@@ -139,6 +141,19 @@ export async function handler(event) {
             charge.charging_state || "Unknown",
           chargePortOpen:
             charge.charge_port_door_open ?? false,
+            insideTemp:
+  climate.inside_temp ?? null,
+
+outsideTemp:
+  climate.outside_temp ?? null,
+
+locked:
+  vehicleState.locked ?? null,
+
+odometer:
+  typeof vehicleState.odometer === "number"
+    ? Math.round(vehicleState.odometer * 1.60934)
+    : null,
         },
       }),
     };
