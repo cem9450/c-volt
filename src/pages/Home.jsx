@@ -1,5 +1,6 @@
 import logo from "../assets/logo.png";
 import { loginWithTesla } from "../services/tesla";
+import TeslaStatusCard from "../components/TeslaStatusCard";
 export default function Home() {
   return (
     <main className="home">
@@ -10,6 +11,7 @@ export default function Home() {
 
         <button className="bell-button">♡</button>
       </header>
+      <TeslaStatusCard />
       
 
       <section className="greeting">
