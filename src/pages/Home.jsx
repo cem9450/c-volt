@@ -1,6 +1,6 @@
 import logo from "../assets/logo.png";
-import { loginWithTesla } from "../services/tesla";
 import TeslaStatusCard from "../components/TeslaStatusCard";
+import UserGreeting from "../components/UserGreeting";
 export default function Home() {
   return (
     <main className="home">
@@ -13,12 +13,8 @@ export default function Home() {
       </header>
       <TeslaStatusCard />
       
-
-      <section className="greeting">
-        <h1>Good Evening, cem</h1>
-        <p>Ready for a better drive?</p>
-      </section>
-
+<UserGreeting />
+      
       <section className="drive-card">
         <div className="drive-top">
           <div>
