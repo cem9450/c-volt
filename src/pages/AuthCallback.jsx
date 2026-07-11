@@ -21,7 +21,7 @@ if (!returnedState || returnedState !== savedState) {
 sessionStorage.removeItem("tesla_oauth_state");
 
 console.log("Tesla Authorization Code received");
-
+console.log("Calling Tesla Function...");
 fetch("/.netlify/functions/tesla-auth", {
   method: "POST",
   headers: {
