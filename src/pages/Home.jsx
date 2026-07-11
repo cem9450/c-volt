@@ -1,3 +1,4 @@
+import VehicleLocationCard from "../components/VehicleLocationCard";
 import logo from "../assets/logo.png";
 import TeslaStatusCard from "../components/TeslaStatusCard";
 import UserGreeting from "../components/UserGreeting";
@@ -18,6 +19,8 @@ export default function Home() {
       </header>
 
       <TeslaStatusCard />
+      
+<VehicleLocationCard />
 
       <UserGreeting />
 

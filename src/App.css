@@ -621,3 +621,53 @@ html, body, #root {
 .tesla-status-error {
   margin-bottom: 14px;
 }
+.vehicle-location-card {
+  display: grid;
+  gap: 14px;
+  padding: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 22px;
+  background: rgba(255, 255, 255, 0.045);
+  box-shadow: 0 18px 45px rgba(0, 0, 0, 0.3);
+}
+
+.vehicle-location-card > div {
+  display: grid;
+  gap: 6px;
+}
+
+.location-label {
+  color: #a1a1aa;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 1px;
+}
+
+.vehicle-location-card strong {
+  color: #ffffff;
+  font-size: 18px;
+}
+
+.location-button {
+  width: 100%;
+  padding: 14px;
+  border: 0;
+  border-radius: 16px;
+  background: linear-gradient(135deg, #6a00ff, #9d4dff);
+  color: #ffffff;
+  font-size: 15px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.location-button:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
+
+.location-message {
+  margin: 0;
+  color: #c4c4cc;
+  font-size: 13px;
+  line-height: 1.5;
+}
