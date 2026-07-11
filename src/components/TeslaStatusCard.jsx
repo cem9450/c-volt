@@ -133,6 +133,47 @@ export default function TeslaStatusCard() {
               {translateChargingState(vehicle.chargingState)}
             </strong>
           </div>
+          {vehicle.chargingState === "Charging" && (
+  <>
+    <div>
+      <span>충전 목표</span>
+      <strong>
+        {vehicle.chargeLimit !== null
+          ? `${vehicle.chargeLimit}%`
+          : "-"}
+      </strong>
+    </div>
+
+    <div>
+      <span>충전 속도</span>
+      <strong>
+        {vehicle.chargerPowerKw !== null
+          ? `${vehicle.chargerPowerKw} kW`
+          : "-"}
+      </strong>
+    </div>
+
+    <div>
+      <span>완료까지</span>
+      <strong>
+        {vehicle.timeToFullCharge !== null
+          ? `${Math.floor(vehicle.timeToFullCharge)}시간 ${Math.round(
+              (vehicle.timeToFullCharge % 1) * 60
+            )}분`
+          : "-"}
+      </strong>
+    </div>
+
+    <div className="wide">
+      <span>이번 충전량</span>
+      <strong>
+        {vehicle.energyAddedKwh !== null
+          ? `${vehicle.energyAddedKwh.toFixed(1)} kWh`
+          : "-"}
+      </strong>
+    </div>
+  </>
+)}
 
           <div>
             <span>실내 온도</span>
