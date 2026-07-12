@@ -1,5 +1,5 @@
-import quicksilver from "../assets/quicksilver.jpg";
-import glacierblue from "../assets/glacierblue.jpg";
+import quicksilver from "../assets/quicksilver.png";
+import glacierblue from "../assets/glacierblue.png";
 
 export default function TeslaCarImage({ vehicle }) {
   const name = (vehicle?.name || "").toLowerCase();
