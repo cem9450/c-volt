@@ -38,7 +38,7 @@ export default function TeslaStatusCard() {
 
     try {
       const response = await fetch(
-        "/.netlify/functions/vehicle-status",
+        "/api/vehicle-status",
         {
           credentials: "include",
           cache: "no-store",

@@ -24,7 +24,7 @@ export default function App() {
       return;
     }
 
-    fetch("/.netlify/functions/auth-status", {
+    fetch("/api/auth-status", {
       credentials: "include",
     })
       .then((response) => response.json())

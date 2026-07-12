@@ -22,7 +22,7 @@ sessionStorage.removeItem("tesla_oauth_state");
 
 console.log("Tesla Authorization Code received");
 console.log("Calling Tesla Function...");
-fetch("/.netlify/functions/tesla-auth", {
+fetch("/api/tesla-auth", {
   method: "POST",
   headers: {
     "Content-Type": "application/json",

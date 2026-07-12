@@ -10,7 +10,7 @@ export default function VehicleLocationCard() {
 
     try {
       const response = await fetch(
-        "/.netlify/functions/vehicle-location",
+        "/api/vehicle-location",
         {
           credentials: "include",
           cache: "no-store",

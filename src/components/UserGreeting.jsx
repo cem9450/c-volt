@@ -14,7 +14,7 @@ export default function UserGreeting() {
   const [vehicleName, setVehicleName] = useState("Tesla");
 
   useEffect(() => {
-    fetch("/.netlify/functions/vehicles", {
+    fetch("fetch("/api/vehicles")", {
       credentials: "include",
     })
       .then((response) => response.json())
