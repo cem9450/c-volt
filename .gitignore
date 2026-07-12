@@ -27,4 +27,4 @@ dist-ssr
 .netlify
 .env
 private-key.pem
-public-key.pem
+public-key.pem.env
