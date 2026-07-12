@@ -18,11 +18,11 @@ export default function Home() {
         <button className="bell-button">♡</button>
       </header>
 
-      <TeslaStatusCard />
-      
-<VehicleLocationCard />
-
       <UserGreeting />
+
+<TeslaStatusCard />
+
+<VehicleLocationCard />
 
       <section className="shortcut-card">
         <button>

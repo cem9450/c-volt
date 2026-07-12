@@ -94,28 +94,29 @@ export default function TeslaStatusCard() {
 
   return (
     <section className="tesla-status-card">
-      <div className="tesla-status-head">
-        <TeslaCarImage vehicle={vehicle} />
-        <div className="tesla-car-name">
-          <SiTesla />
+  <TeslaCarImage vehicle={vehicle} />
 
-          <div>
-            <strong>{vehicle?.name || "My Tesla"}</strong>
+  <div className="tesla-status-head">
+    <div className="tesla-car-name">
+      <SiTesla />
 
-            <span className={isOnline ? "online" : "sleeping"}>
-              {translateVehicleState(vehicle?.state)}
-            </span>
-          </div>
-        </div>
+      <div>
+        <strong>{vehicle?.name || "My Tesla"}</strong>
 
-        <button
-          className="tesla-refresh-button compact"
-          onClick={loadVehicle}
-          disabled={loading}
-        >
-          {loading ? "갱신 중" : "새로고침"}
-        </button>
+        <span className={isOnline ? "online" : "sleeping"}>
+          {translateVehicleState(vehicle?.state)}
+        </span>
       </div>
+    </div>
+
+    <button
+      className="tesla-refresh-button compact"
+      onClick={loadVehicle}
+      disabled={loading}
+    >
+      {loading ? "갱신 중" : "새로고침"}
+    </button>
+  </div>
 
       {vehicle?.batteryLevel !== null ? (
         <div className="tesla-live-grid expanded">
