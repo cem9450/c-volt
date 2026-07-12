@@ -27,10 +27,21 @@ function translateVehicleState(state) {
   return labels[state] || state || "상태 확인 중";
 }
 
+function formatUpdatedTime(seconds) {
+  if (seconds <= 1) return "방금 전";
+  if (seconds < 60) return `${seconds}초 전`;
+
+  const minutes = Math.floor(seconds / 60);
+  return `${minutes}분 전`;
+}
+
 export default function TeslaStatusCard() {
   const [vehicle, setVehicle] = useState(null);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
+  const [lastUpdated, setLastUpdated] = useState(null);
+  const [secondsAgo, setSecondsAgo] = useState(0);
+
   const requestInProgress = useRef(false);
 
   const loadVehicle = useCallback(async (silent = false) => {
@@ -70,6 +81,8 @@ export default function TeslaStatusCard() {
       }
 
       setVehicle(data.vehicle);
+      setLastUpdated(new Date());
+      setSecondsAgo(0);
     } catch (err) {
       setError(
         err instanceof Error
@@ -88,14 +101,30 @@ export default function TeslaStatusCard() {
   useEffect(() => {
     loadVehicle();
 
-    const intervalId = window.setInterval(() => {
+    const vehicleIntervalId = window.setInterval(() => {
       loadVehicle(true);
     }, 30000);
 
     return () => {
-      window.clearInterval(intervalId);
+      window.clearInterval(vehicleIntervalId);
     };
   }, [loadVehicle]);
+
+  useEffect(() => {
+    const clockIntervalId = window.setInterval(() => {
+      if (!lastUpdated) return;
+
+      const elapsedSeconds = Math.floor(
+        (Date.now() - lastUpdated.getTime()) / 1000
+      );
+
+      setSecondsAgo(elapsedSeconds);
+    }, 1000);
+
+    return () => {
+      window.clearInterval(clockIntervalId);
+    };
+  }, [lastUpdated]);
 
   if (loading && !vehicle) {
     return (
@@ -134,6 +163,13 @@ export default function TeslaStatusCard() {
 
           <div>
             <strong>{vehicle?.name || "My Tesla"}</strong>
+
+            <div className="vehicle-live-row">
+              <span className="vehicle-live-dot" />
+              <span className="vehicle-live-text">
+                LIVE · {formatUpdatedTime(secondsAgo)}
+              </span>
+            </div>
 
             <span className={isOnline ? "online" : "sleeping"}>
               {translateVehicleState(vehicle?.state)}
