@@ -95,8 +95,8 @@ export async function handler(event) {
     // 3. 온라인일 때 실제 위치 조회
     const dataResponse = await fetch(
       `${FLEET_API_BASE}/api/1/vehicles/${encodeURIComponent(
-        vehicle.vin
-      )}/vehicle_data`,
+  vehicle.vin
+)}/vehicle_data?endpoints=location_data`,
       {
         headers: authHeaders,
       }
