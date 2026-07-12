@@ -37,13 +37,11 @@ export default function TeslaStatusCard() {
     setError("");
 
     try {
-      const response = await fetch(
-        "/api/vehicle-status",
-        {
-          credentials: "include",
-          cache: "no-store",
-        }
-      );
+      const response = await fetch("/api/vehicle-snapshot", {
+  method: "POST",
+  credentials: "include",
+  cache: "no-store",
+});
 
       const data = await response.json();
 
@@ -208,13 +206,13 @@ export default function TeslaStatusCard() {
           </div>
 
           <div className="wide">
-            <span>누적 주행거리</span>
-            <strong>
-              {vehicle.odometer !== null
-                ? `${vehicle.odometer.toLocaleString()} km`
-                : "-"}
-            </strong>
-          </div>
+  <span>누적 주행거리</span>
+  <strong>
+    {vehicle.odometerKm !== null
+      ? `${vehicle.odometerKm.toLocaleString()} km`
+      : "-"}
+  </strong>
+</div>
         </div>
       ) : (
         <p className="tesla-sleep-message">
