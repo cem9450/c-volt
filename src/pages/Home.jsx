@@ -1,3 +1,4 @@
+import DrivingScoreCard from "../components/DrivingScoreCard";
 import VehicleLocationCard from "../components/VehicleLocationCard";
 import TodayDrivingCard from "../components/TodayDrivingCard";
 import TodayRouteMap from "../components/TodayRouteMap";
@@ -23,6 +24,8 @@ export default function Home() {
       <UserGreeting />
 
       <TodayDrivingCard />
+
+      <DrivingScoreCard />
 
       <TeslaStatusCard />
 
