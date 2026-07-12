@@ -1,8 +1,9 @@
-import TodayDrivingCard from "../components/TodayDrivingCard";
 import VehicleLocationCard from "../components/VehicleLocationCard";
-import logo from "../assets/logo.png";
+import TodayDrivingCard from "../components/TodayDrivingCard";
+import TodayRouteMap from "../components/TodayRouteMap";
 import TeslaStatusCard from "../components/TeslaStatusCard";
 import UserGreeting from "../components/UserGreeting";
+import logo from "../assets/logo.png";
 
 export default function Home() {
   return (
@@ -21,9 +22,13 @@ export default function Home() {
 
       <UserGreeting />
 
-<TodayDrivingCard />
-<TeslaStatusCard />
-<VehicleLocationCard />
+      <TodayDrivingCard />
+
+      <TeslaStatusCard />
+
+      <TodayRouteMap />
+
+      <VehicleLocationCard />
 
       <section className="shortcut-card">
         <button>
@@ -49,9 +54,10 @@ export default function Home() {
 
       <section className="ai-commentary">
         <h2>⚡ 오늘의 C-Volt</h2>
+
         <p>
-          실제 주행 기록 수집을 준비하고 있습니다.
-          주행을 마치면 오늘의 거리와 전비를 분석해드릴게요.
+          오늘 이동 경로와 주행 데이터를 수집하고 있습니다.
+          운행을 마치면 거리와 운전 패턴을 분석해드릴게요.
         </p>
       </section>
     </main>
