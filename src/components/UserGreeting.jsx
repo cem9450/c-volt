@@ -14,21 +14,21 @@ export default function UserGreeting() {
   const [vehicleName, setVehicleName] = useState("Tesla");
 
   useEffect(() => {
-    fetch("/api/vehicles", {
-  credentials: "include",
-})
-      .then((response) => response.json())
-      .then((data) => {
-        const name = data.vehicles?.[0]?.name;
+  fetch("/api/vehicles", {
+    credentials: "include",
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      const name = data.vehicles?.[0]?.name;
 
-        if (data.ok && name) {
-          setVehicleName(name);
-        }
-      })
-      .catch((error) => {
-        console.error("차량 이름 불러오기 실패:", error);
-      });
-  }, []);
+      if (data.ok && name) {
+        setVehicleName(name);
+      }
+    })
+    .catch((error) => {
+      console.error(error);
+    });
+}, []);
 
   return (
     <section className="greeting">
