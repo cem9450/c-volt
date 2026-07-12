@@ -88,6 +88,25 @@ async function getOpenDrivingSession(vehicleId) {
   return rows?.[0] || null;
 }
 
+async function getSessionStartSnapshot(
+  vehicleId,
+  startedAt
+) {
+  const query = new URLSearchParams({
+    vehicle_id: `eq.${vehicleId}`,
+    created_at: `gte.${startedAt}`,
+    select: "*",
+    order: "created_at.asc",
+    limit: "1",
+  });
+
+  const rows = await supabaseRequest(
+    `vehicle_snapshots?${query.toString()}`
+  );
+
+  return rows?.[0] || null;
+}
+
 async function insertSnapshot(vehicle) {
   const payload = {
     vehicle_id: vehicle.id,
@@ -143,11 +162,16 @@ async function startDrivingSession(vehicle) {
 
 async function finishDrivingSession(
   session,
-  latestSnapshot,
   vehicle
 ) {
   const startedAt = new Date(session.started_at);
   const endedAt = new Date();
+
+  const startSnapshot =
+    await getSessionStartSnapshot(
+      vehicle.id,
+      session.started_at
+    );
 
   const durationSec = Math.max(
     Math.round(
@@ -157,7 +181,7 @@ async function finishDrivingSession(
   );
 
   const startOdometer =
-    latestSnapshot?.odometer_km ?? null;
+    startSnapshot?.odometer_km ?? null;
 
   const endOdometer =
     vehicle.odometerKm ?? null;
@@ -174,7 +198,7 @@ async function finishDrivingSession(
       : null;
 
   const startBattery =
-    latestSnapshot?.battery_level ?? null;
+    startSnapshot?.battery_level ?? null;
 
   const endBattery =
     vehicle.batteryLevel ?? null;
@@ -182,14 +206,19 @@ async function finishDrivingSession(
   const batteryUsed =
     typeof startBattery === "number" &&
     typeof endBattery === "number"
-      ? Math.max(startBattery - endBattery, 0)
+      ? Math.max(
+          startBattery - endBattery,
+          0
+        )
       : null;
 
   const avgSpeedKmh =
     typeof distanceKm === "number" &&
     durationSec > 0
       ? Math.round(
-          (distanceKm / (durationSec / 3600)) * 10
+          (distanceKm /
+            (durationSec / 3600)) *
+            10
         ) / 10
       : null;
 
@@ -233,7 +262,8 @@ export default async function handler(req, res) {
   res.setHeader("Cache-Control", "no-store");
 
   try {
-    const vehicle = await getCurrentVehicleData(req);
+    const vehicle =
+      await getCurrentVehicleData(req);
 
     if (!vehicle.id) {
       return res.status(400).json({
@@ -257,22 +287,33 @@ export default async function handler(req, res) {
     const isDriving =
       vehicle.isDriving === true;
 
-    if (!wasDriving && isDriving && !openSession) {
-      session = await startDrivingSession(vehicle);
+    if (
+      !wasDriving &&
+      isDriving &&
+      !openSession
+    ) {
+      session =
+        await startDrivingSession(vehicle);
+
       event = "driving_started";
     }
 
-    if (wasDriving && !isDriving && openSession) {
-      session = await finishDrivingSession(
-        openSession,
-        latestSnapshot,
-        vehicle
-      );
+    if (
+      wasDriving &&
+      !isDriving &&
+      openSession
+    ) {
+      session =
+        await finishDrivingSession(
+          openSession,
+          vehicle
+        );
 
       event = "driving_ended";
     }
 
-    const snapshot = await insertSnapshot(vehicle);
+    const snapshot =
+      await insertSnapshot(vehicle);
 
     return res.status(200).json({
       ok: true,
@@ -282,7 +323,10 @@ export default async function handler(req, res) {
       session,
     });
   } catch (error) {
-    console.error("vehicle-snapshot error:", error);
+    console.error(
+      "vehicle-snapshot error:",
+      error
+    );
 
     return res
       .status(error.statusCode || 500)
