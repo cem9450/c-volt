@@ -10,10 +10,20 @@ export default function TeslaCarImage({ vehicle }) {
       : quicksilver;
 
   return (
-    <img
-      src={image}
-      className="tesla-car-image"
-      alt="Tesla"
-    />
+    <div
+      className={
+        vehicle?.isDriving
+          ? "tesla-car-wrapper driving"
+          : "tesla-car-wrapper"
+      }
+    >
+      <div className="road-lines" />
+
+      <img
+        src={image}
+        className="tesla-car-image"
+        alt="Tesla"
+      />
+    </div>
   );
 }

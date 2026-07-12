@@ -21,8 +21,8 @@ export default function Home() {
 
       <UserGreeting />
 
-<TeslaStatusCard />
 <TodayDrivingCard />
+<TeslaStatusCard />
 <VehicleLocationCard />
 
       <section className="shortcut-card">
