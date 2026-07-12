@@ -14,9 +14,9 @@ export default function UserGreeting() {
   const [vehicleName, setVehicleName] = useState("Tesla");
 
   useEffect(() => {
-    fetch("fetch("/api/vehicles")", {
-      credentials: "include",
-    })
+    fetch("/api/vehicles", {
+  credentials: "include",
+})
       .then((response) => response.json())
       .then((data) => {
         const name = data.vehicles?.[0]?.name;
