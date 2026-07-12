@@ -17,7 +17,8 @@ export function getTeslaLoginUrl() {
     redirect_uri: redirectUri,
     scope:
       "openid offline_access vehicle_device_data vehicle_location vehicle_cmds vehicle_charging_cmds",
-    state,
+    
+      state,
     nonce,
     prompt_missing_scopes: "true",
   });
