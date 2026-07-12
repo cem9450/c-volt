@@ -1,4 +1,4 @@
-import { getCurrentVehicleData } from "./_vehicle-data";
+import { getCurrentVehicleData } from "./_vehicle-data.js";
 
 function supabaseHeaders() {
   const key = process.env.SUPABASE_SERVICE_ROLE_KEY;

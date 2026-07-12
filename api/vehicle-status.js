@@ -1,4 +1,4 @@
-import { getCurrentVehicleData } from "./_vehicle-data";
+import { getCurrentVehicleData } from "./_vehicle-data.js";
 
 export default async function handler(req, res) {
   try {
