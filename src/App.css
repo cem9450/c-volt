@@ -671,3 +671,24 @@ html, body, #root {
   font-size: 13px;
   line-height: 1.5;
 }
+.tesla-car-image{
+
+width:100%;
+
+margin:6px 0 18px;
+
+border-radius:18px;
+
+object-fit:contain;
+
+filter:drop-shadow(0 18px 35px rgba(0,0,0,.35));
+
+transition:.3s;
+
+}
+
+.tesla-car-image:hover{
+
+transform:scale(1.02);
+
+}

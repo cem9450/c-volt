@@ -1,3 +1,4 @@
+import TeslaCarImage from "./TeslaCarImage";
 import { useCallback, useEffect, useState } from "react";
 import { SiTesla } from "react-icons/si";
 
@@ -94,6 +95,7 @@ export default function TeslaStatusCard() {
   return (
     <section className="tesla-status-card">
       <div className="tesla-status-head">
+        <TeslaCarImage vehicle={vehicle} />
         <div className="tesla-car-name">
           <SiTesla />
 
