@@ -1,3 +1,4 @@
+import TodayDrivingCard from "../components/TodayDrivingCard";
 import VehicleLocationCard from "../components/VehicleLocationCard";
 import logo from "../assets/logo.png";
 import TeslaStatusCard from "../components/TeslaStatusCard";
@@ -21,7 +22,7 @@ export default function Home() {
       <UserGreeting />
 
 <TeslaStatusCard />
-
+<TodayDrivingCard />
 <VehicleLocationCard />
 
       <section className="shortcut-card">
