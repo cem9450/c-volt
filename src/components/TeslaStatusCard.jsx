@@ -1,5 +1,5 @@
 import TeslaCarImage from "./TeslaCarImage";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { SiTesla } from "react-icons/si";
 
 function translateChargingState(state) {
@@ -31,19 +31,37 @@ export default function TeslaStatusCard() {
   const [vehicle, setVehicle] = useState(null);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
+  const requestInProgress = useRef(false);
 
-  const loadVehicle = useCallback(async () => {
-    setLoading(true);
+  const loadVehicle = useCallback(async (silent = false) => {
+    if (requestInProgress.current) return;
+
+    requestInProgress.current = true;
+
+    if (!silent) {
+      setLoading(true);
+    }
+
     setError("");
 
     try {
       const response = await fetch("/api/vehicle-snapshot", {
-  method: "POST",
-  credentials: "include",
-  cache: "no-store",
-});
+        method: "POST",
+        credentials: "include",
+        cache: "no-store",
+      });
 
-      const data = await response.json();
+      const text = await response.text();
+
+      let data;
+
+      try {
+        data = JSON.parse(text);
+      } catch {
+        throw new Error(
+          "차량 서버가 올바르지 않은 응답을 보냈습니다."
+        );
+      }
 
       if (!response.ok || !data.ok) {
         throw new Error(
@@ -53,14 +71,30 @@ export default function TeslaStatusCard() {
 
       setVehicle(data.vehicle);
     } catch (err) {
-      setError(err.message);
+      setError(
+        err instanceof Error
+          ? err.message
+          : "차량 정보를 불러오지 못했습니다."
+      );
     } finally {
-      setLoading(false);
+      requestInProgress.current = false;
+
+      if (!silent) {
+        setLoading(false);
+      }
     }
   }, []);
 
   useEffect(() => {
     loadVehicle();
+
+    const intervalId = window.setInterval(() => {
+      loadVehicle(true);
+    }, 30000);
+
+    return () => {
+      window.clearInterval(intervalId);
+    };
   }, [loadVehicle]);
 
   if (loading && !vehicle) {
@@ -80,7 +114,7 @@ export default function TeslaStatusCard() {
 
         <button
           className="tesla-refresh-button"
-          onClick={loadVehicle}
+          onClick={() => loadVehicle()}
         >
           다시 불러오기
         </button>
@@ -92,29 +126,29 @@ export default function TeslaStatusCard() {
 
   return (
     <section className="tesla-status-card">
-  <TeslaCarImage vehicle={vehicle} />
+      <TeslaCarImage vehicle={vehicle} />
 
-  <div className="tesla-status-head">
-    <div className="tesla-car-name">
-      <SiTesla />
+      <div className="tesla-status-head">
+        <div className="tesla-car-name">
+          <SiTesla />
 
-      <div>
-        <strong>{vehicle?.name || "My Tesla"}</strong>
+          <div>
+            <strong>{vehicle?.name || "My Tesla"}</strong>
 
-        <span className={isOnline ? "online" : "sleeping"}>
-          {translateVehicleState(vehicle?.state)}
-        </span>
+            <span className={isOnline ? "online" : "sleeping"}>
+              {translateVehicleState(vehicle?.state)}
+            </span>
+          </div>
+        </div>
+
+        <button
+          className="tesla-refresh-button compact"
+          onClick={() => loadVehicle()}
+          disabled={loading}
+        >
+          {loading ? "갱신 중" : "새로고침"}
+        </button>
       </div>
-    </div>
-
-    <button
-      className="tesla-refresh-button compact"
-      onClick={loadVehicle}
-      disabled={loading}
-    >
-      {loading ? "갱신 중" : "새로고침"}
-    </button>
-  </div>
 
       {vehicle?.batteryLevel !== null ? (
         <div className="tesla-live-grid expanded">
@@ -134,47 +168,50 @@ export default function TeslaStatusCard() {
               {translateChargingState(vehicle.chargingState)}
             </strong>
           </div>
+
           {vehicle.chargingState === "Charging" && (
-  <>
-    <div>
-      <span>충전 목표</span>
-      <strong>
-        {vehicle.chargeLimit !== null
-          ? `${vehicle.chargeLimit}%`
-          : "-"}
-      </strong>
-    </div>
+            <>
+              <div>
+                <span>충전 목표</span>
+                <strong>
+                  {vehicle.chargeLimit !== null
+                    ? `${vehicle.chargeLimit}%`
+                    : "-"}
+                </strong>
+              </div>
 
-    <div>
-      <span>충전 속도</span>
-      <strong>
-        {vehicle.chargerPowerKw !== null
-          ? `${vehicle.chargerPowerKw} kW`
-          : "-"}
-      </strong>
-    </div>
+              <div>
+                <span>충전 속도</span>
+                <strong>
+                  {vehicle.chargerPowerKw !== null
+                    ? `${vehicle.chargerPowerKw} kW`
+                    : "-"}
+                </strong>
+              </div>
 
-    <div>
-      <span>완료까지</span>
-      <strong>
-        {vehicle.timeToFullCharge !== null
-          ? `${Math.floor(vehicle.timeToFullCharge)}시간 ${Math.round(
-              (vehicle.timeToFullCharge % 1) * 60
-            )}분`
-          : "-"}
-      </strong>
-    </div>
+              <div>
+                <span>완료까지</span>
+                <strong>
+                  {vehicle.timeToFullCharge !== null
+                    ? `${Math.floor(
+                        vehicle.timeToFullCharge
+                      )}시간 ${Math.round(
+                        (vehicle.timeToFullCharge % 1) * 60
+                      )}분`
+                    : "-"}
+                </strong>
+              </div>
 
-    <div className="wide">
-      <span>이번 충전량</span>
-      <strong>
-        {vehicle.energyAddedKwh !== null
-          ? `${vehicle.energyAddedKwh.toFixed(1)} kWh`
-          : "-"}
-      </strong>
-    </div>
-  </>
-)}
+              <div className="wide">
+                <span>이번 충전량</span>
+                <strong>
+                  {vehicle.energyAddedKwh !== null
+                    ? `${vehicle.energyAddedKwh.toFixed(1)} kWh`
+                    : "-"}
+                </strong>
+              </div>
+            </>
+          )}
 
           <div>
             <span>실내 온도</span>
@@ -206,13 +243,13 @@ export default function TeslaStatusCard() {
           </div>
 
           <div className="wide">
-  <span>누적 주행거리</span>
-  <strong>
-    {vehicle.odometerKm !== null
-      ? `${vehicle.odometerKm.toLocaleString()} km`
-      : "-"}
-  </strong>
-</div>
+            <span>누적 주행거리</span>
+            <strong>
+              {vehicle.odometerKm !== null
+                ? `${vehicle.odometerKm.toLocaleString()} km`
+                : "-"}
+            </strong>
+          </div>
         </div>
       ) : (
         <p className="tesla-sleep-message">
