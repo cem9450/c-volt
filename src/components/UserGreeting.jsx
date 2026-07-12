@@ -33,9 +33,9 @@ export default function UserGreeting() {
   return (
     <section className="greeting">
       <h1>{getGreeting()}</h1>
-      <p>
-        Welcome back, <strong>{vehicleName}</strong>
-      </p>
+     <p>
+  Welcome back to <strong>{vehicleName}</strong>
+</p>
     </section>
   );
 }
