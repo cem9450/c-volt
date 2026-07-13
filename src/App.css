@@ -2251,3 +2251,287 @@ body {
     font-size: 7px;
   }
 }
+/* ==================================
+   C-VOLT UI 2.0 - DRIVE CARD
+================================== */
+
+.reference-drive-dashboard {
+  display: grid;
+  min-height: 210px;
+  grid-template-columns:
+    minmax(0, 1fr)
+    minmax(118px, 1.08fr)
+    minmax(0, 1fr);
+  align-items: center;
+  gap: 10px;
+  padding: 11px 3px 5px;
+}
+
+.reference-drive-metric {
+  min-width: 0;
+  text-align: left;
+}
+
+.reference-drive-metric.right {
+  text-align: right;
+}
+
+.reference-drive-metric > span,
+.reference-score-area > span {
+  display: block;
+  color: rgba(255, 255, 255, 0.46);
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.reference-drive-metric > strong {
+  display: flex;
+  margin-top: 14px;
+  align-items: baseline;
+  gap: 4px;
+  color: #ffffff;
+  font-size: 35px;
+  line-height: 1;
+  letter-spacing: -1.2px;
+}
+
+.reference-drive-metric.right > strong {
+  justify-content: flex-end;
+}
+
+.reference-drive-metric small {
+  color: rgba(255, 255, 255, 0.58);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0;
+}
+
+.reference-drive-metric p {
+  overflow: hidden;
+  margin: 13px 0 0;
+  color: #ad54ff;
+  font-size: 10px;
+  font-weight: 800;
+  line-height: 1.4;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.reference-score-area {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  text-align: center;
+}
+
+.reference-score-gauge {
+  --score-angle: 0deg;
+
+  position: relative;
+  display: flex;
+  width: 112px;
+  height: 112px;
+  margin-top: 10px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background:
+    conic-gradient(
+      from 225deg,
+      #9b35ff 0deg,
+      #c36eff var(--score-angle),
+      rgba(255, 255, 255, 0.09)
+        var(--score-angle),
+      rgba(255, 255, 255, 0.09)
+        270deg,
+      transparent 270deg,
+      transparent 360deg
+    );
+  filter:
+    drop-shadow(
+      0 0 14px rgba(164, 60, 255, 0.2)
+    );
+  transform: rotate(0deg);
+}
+
+.reference-score-gauge::before {
+  content: "";
+  position: absolute;
+  inset: 8px;
+  border-radius: 50%;
+  background:
+    radial-gradient(
+      circle at 50% 36%,
+      rgba(109, 36, 177, 0.23),
+      transparent 55%
+    ),
+    #0b0b10;
+}
+
+.reference-score-gauge::after {
+  content: "";
+  position: absolute;
+  right: 5px;
+  bottom: 3px;
+  left: 5px;
+  height: 31px;
+  background: #0b0b10;
+}
+
+.reference-score-gauge-inner {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  margin-top: -2px;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.reference-score-gauge-inner strong {
+  color: #ffffff;
+  font-size: 34px;
+  line-height: 1;
+  letter-spacing: -1px;
+}
+
+.reference-score-gauge-inner small {
+  margin-top: 3px;
+  color: rgba(255, 255, 255, 0.68);
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.reference-score-message {
+  margin: -5px 0 0;
+  color: #b858ff;
+  font-size: 11px;
+  font-weight: 900;
+}
+
+.reference-score-message.live {
+  color: #50ff9e;
+  animation:
+    referenceDriveLivePulse
+    1.2s
+    ease-in-out
+    infinite;
+}
+
+.reference-drive-mobile-summary {
+  display: none;
+}
+
+.reference-drive-loading {
+  display: flex;
+  min-height: 190px;
+  padding: 15px;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 11px;
+  text-align: center;
+  color: rgba(255, 255, 255, 0.52);
+  font-size: 11px;
+}
+
+.reference-drive-loading button {
+  min-height: 34px;
+  padding: 0 14px;
+  border: 0;
+  border-radius: 999px;
+  background:
+    linear-gradient(
+      135deg,
+      #8e32f5,
+      #b654ff
+    );
+  color: #ffffff;
+  font-size: 11px;
+  font-weight: 800;
+}
+
+@keyframes referenceDriveLivePulse {
+  0%,
+  100% {
+    opacity: 0.45;
+  }
+
+  50% {
+    opacity: 1;
+  }
+}
+
+@media (max-width: 390px) {
+  .reference-drive-dashboard {
+    grid-template-columns:
+      minmax(0, 0.9fr)
+      minmax(105px, 1fr)
+      minmax(0, 0.9fr);
+    gap: 5px;
+  }
+
+  .reference-drive-metric > strong {
+    font-size: 29px;
+  }
+
+  .reference-score-gauge {
+    width: 102px;
+    height: 102px;
+  }
+
+  .reference-score-gauge-inner strong {
+    font-size: 31px;
+  }
+}
+
+@media (max-width: 350px) {
+  .reference-drive-dashboard {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .reference-score-area {
+    grid-column: 1 / -1;
+    grid-row: 1;
+    margin-bottom: 5px;
+  }
+
+  .reference-drive-metric {
+    grid-row: 2;
+  }
+
+  .reference-drive-mobile-summary {
+    display: grid;
+    grid-column: 1 / -1;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+    margin-top: 8px;
+  }
+
+  .reference-drive-mobile-summary > div {
+    padding: 10px 6px;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.025);
+    text-align: center;
+  }
+
+  .reference-drive-mobile-summary span {
+    display: block;
+    margin-bottom: 5px;
+    color: rgba(255, 255, 255, 0.43);
+    font-size: 8px;
+  }
+
+  .reference-drive-mobile-summary strong {
+    color: #ffffff;
+    font-size: 11px;
+  }
+
+  .reference-drive-mobile-summary small {
+    margin-left: 3px;
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 8px;
+  }
+}
