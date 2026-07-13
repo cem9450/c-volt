@@ -1,8 +1,18 @@
 import { FiBell, FiChevronRight } from "react-icons/fi";
 
 import TodayDrivingCard from "../components/TodayDrivingCard";
-import TodayRouteMap from "../components/TodayRouteMap";
-import VehicleLocationCard from "../components/VehicleLocationCard";
+import TeslaStatusCard from "../components/TeslaStatusCard";
+import ParkingMiniMap from "../components/ParkingMiniMap";
+
+function getGreeting() {
+  const hour = new Date().getHours();
+
+  if (hour < 12) return "Good Morning";
+  if (hour < 18) return "Good Afternoon";
+  if (hour < 22) return "Good Evening";
+
+  return "Good Night";
+}
 
 export default function Home() {
   return (
@@ -15,7 +25,7 @@ export default function Home() {
 
           <div>
             <span className="dashboard-greeting">
-              Good Morning
+              {getGreeting()}
             </span>
 
             <h1>
@@ -56,55 +66,29 @@ export default function Home() {
         <TodayDrivingCard />
       </section>
 
-      <section className="dashboard-section dashboard-location">
+      <section className="dashboard-section dashboard-vehicle">
         <div className="dashboard-section-heading compact">
-          <div>
-            <span className="dashboard-eyebrow">
-              PARKED LOCATION
-            </span>
-
-            <h2>현재 주차 위치</h2>
-          </div>
+          <h2>차량 상태</h2>
 
           <span className="dashboard-update-label">
-            실시간
+            REAL-TIME
           </span>
         </div>
 
-        <VehicleLocationCard />
+        <TeslaStatusCard />
       </section>
 
-      <section className="dashboard-section dashboard-route">
+      <section className="dashboard-section dashboard-parking">
         <div className="dashboard-section-heading compact">
-          <div>
-            <span className="dashboard-eyebrow">
-              TODAY&apos;S ROUTE
-            </span>
-
-            <h2>오늘 이동 경로</h2>
-          </div>
-
-          <button
-            type="button"
-            className="dashboard-text-button"
-          >
-            기록 보기
-            <FiChevronRight />
-          </button>
+          <h2>현재 주차 위치</h2>
         </div>
 
-        <TodayRouteMap />
+        <ParkingMiniMap />
       </section>
 
       <section className="dashboard-section dashboard-ai">
         <div className="dashboard-section-heading compact">
-          <div>
-            <span className="dashboard-eyebrow">
-              AI BRIEFING
-            </span>
-
-            <h2>오늘의 브리핑</h2>
-          </div>
+          <h2>AI 브리핑</h2>
 
           <button
             type="button"
@@ -120,7 +104,8 @@ export default function Home() {
 
           <p>
             오늘의 주행 데이터를 분석하고 있습니다.
-            운행이 끝나면 점수와 개선 포인트를 알려드릴게요.
+            운행이 끝나면 점수와 개선 포인트를
+            알려드릴게요.
           </p>
         </div>
       </section>

@@ -1,14 +1,17 @@
-import TeslaCarImage from "./TeslaCarImage";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { SiTesla } from "react-icons/si";
+import { FiLock, FiRefreshCw, FiThermometer } from "react-icons/fi";
+import { HiOutlineBolt } from "react-icons/hi2";
+
+import quicksilver from "../assets/quicksilver.png";
+import glacierblue from "../assets/glacierblue.png";
 
 function translateChargingState(state) {
   const labels = {
     Charging: "충전 중",
     Complete: "충전 완료",
-    Disconnected: "미연결",
+    Disconnected: "충전 안 함",
     Stopped: "충전 중지",
-    Starting: "충전 시작 중",
+    Starting: "충전 준비 중",
     NoPower: "전원 없음",
     Unknown: "확인 불가",
   };
@@ -16,29 +19,17 @@ function translateChargingState(state) {
   return labels[state] || state || "확인 불가";
 }
 
-function translateVehicleState(state) {
-  const labels = {
-    online: "온라인",
-    asleep: "절전 상태",
-    offline: "오프라인",
-    waking: "차량 깨우는 중",
-  };
-
-  return labels[state] || state || "상태 확인 중";
-}
-
 function formatUpdatedTime(seconds) {
   if (seconds <= 1) return "방금 전";
   if (seconds < 60) return `${seconds}초 전`;
 
-  const minutes = Math.floor(seconds / 60);
-  return `${minutes}분 전`;
+  return `${Math.floor(seconds / 60)}분 전`;
 }
 
 export default function TeslaStatusCard() {
   const [vehicle, setVehicle] = useState(null);
-  const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
   const [lastUpdated, setLastUpdated] = useState(null);
   const [secondsAgo, setSecondsAgo] = useState(0);
 
@@ -52,8 +43,6 @@ export default function TeslaStatusCard() {
     if (!silent) {
       setLoading(true);
     }
-
-    setError("");
 
     try {
       const response = await fetch("/api/vehicle-snapshot", {
@@ -69,9 +58,7 @@ export default function TeslaStatusCard() {
       try {
         data = JSON.parse(text);
       } catch {
-        throw new Error(
-          "차량 서버가 올바르지 않은 응답을 보냈습니다."
-        );
+        throw new Error("차량 서버 응답을 확인하지 못했습니다.");
       }
 
       if (!response.ok || !data.ok) {
@@ -81,8 +68,15 @@ export default function TeslaStatusCard() {
       }
 
       setVehicle(data.vehicle);
+      setError("");
       setLastUpdated(new Date());
       setSecondsAgo(0);
+
+      window.dispatchEvent(
+        new CustomEvent("cvolt:vehicle-updated", {
+          detail: data.vehicle,
+        })
+      );
     } catch (err) {
       setError(
         err instanceof Error
@@ -101,198 +95,162 @@ export default function TeslaStatusCard() {
   useEffect(() => {
     loadVehicle();
 
-    const vehicleIntervalId = window.setInterval(() => {
+    const dataTimer = window.setInterval(() => {
       loadVehicle(true);
     }, 30000);
 
     return () => {
-      window.clearInterval(vehicleIntervalId);
+      window.clearInterval(dataTimer);
     };
   }, [loadVehicle]);
 
   useEffect(() => {
-    const clockIntervalId = window.setInterval(() => {
+    const clockTimer = window.setInterval(() => {
       if (!lastUpdated) return;
 
-      const elapsedSeconds = Math.floor(
-        (Date.now() - lastUpdated.getTime()) / 1000
+      setSecondsAgo(
+        Math.floor(
+          (Date.now() - lastUpdated.getTime()) / 1000
+        )
       );
-
-      setSecondsAgo(elapsedSeconds);
     }, 1000);
 
     return () => {
-      window.clearInterval(clockIntervalId);
+      window.clearInterval(clockTimer);
     };
   }, [lastUpdated]);
 
   if (loading && !vehicle) {
     return (
-      <section className="tesla-status-card">
-        <div className="tesla-status-loading">
-          실제 차량 정보 불러오는 중...
-        </div>
-      </section>
+      <div className="v2-vehicle-loading">
+        실제 차량 정보를 불러오는 중...
+      </div>
     );
   }
 
   if (error && !vehicle) {
     return (
-      <section className="tesla-status-card">
-        <div className="tesla-status-error">{error}</div>
+      <div className="v2-vehicle-error">
+        <span>{error}</span>
 
-        <button
-          className="tesla-refresh-button"
-          onClick={() => loadVehicle()}
-        >
+        <button onClick={() => loadVehicle()}>
           다시 불러오기
         </button>
-      </section>
+      </div>
     );
   }
 
-  const isOnline = vehicle?.state === "online";
+  const vehicleName = (
+    vehicle?.name || ""
+  ).toLowerCase();
+
+  const vehicleImage =
+    vehicleName.includes("대기리차") ||
+    vehicleName.includes("ceh")
+      ? glacierblue
+      : quicksilver;
+
+  const isDriving = vehicle?.isDriving === true;
 
   return (
-    <section className="tesla-status-card">
-      <TeslaCarImage vehicle={vehicle} />
+    <div className="v2-vehicle-content">
+      <div
+        className={
+          isDriving
+            ? "v2-vehicle-visual driving"
+            : "v2-vehicle-visual"
+        }
+      >
+        <div className="v2-road-line" />
 
-      <div className="tesla-status-head">
-        <div className="tesla-car-name">
-          <SiTesla />
+        <img
+          src={vehicleImage}
+          alt="Tesla"
+          className="v2-vehicle-image"
+        />
+      </div>
 
-          <div>
-            <strong>{vehicle?.name || "My Tesla"}</strong>
+      <div className="v2-vehicle-main-row">
+        <div>
+          <span className="v2-vehicle-name">
+            {vehicle?.name || "My Tesla"}
+          </span>
 
-            <div className="vehicle-live-row">
-              <span className="vehicle-live-dot" />
-              <span className="vehicle-live-text">
-                LIVE · {formatUpdatedTime(secondsAgo)}
-              </span>
-            </div>
+          <div className="v2-live-status">
+            <span className="v2-live-dot" />
 
-            <span className={isOnline ? "online" : "sleeping"}>
-              {translateVehicleState(vehicle?.state)}
-            </span>
+            LIVE · {formatUpdatedTime(secondsAgo)}
           </div>
         </div>
 
         <button
-          className="tesla-refresh-button compact"
+          className="v2-refresh-button"
           onClick={() => loadVehicle()}
           disabled={loading}
+          aria-label="차량 정보 새로고침"
         >
-          {loading ? "갱신 중" : "새로고침"}
+          <FiRefreshCw className={loading ? "spinning" : ""} />
         </button>
       </div>
 
-      {vehicle?.batteryLevel !== null ? (
-        <div className="tesla-live-grid expanded">
-          <div>
-            <span>배터리</span>
-            <strong>{vehicle.batteryLevel}%</strong>
-          </div>
+      <div className="v2-battery-row">
+        <div>
+          <span>배터리</span>
 
-          <div>
-            <span>주행 가능</span>
-            <strong>{vehicle.rangeKm ?? "-"} km</strong>
-          </div>
-
-          <div>
-            <span>충전 상태</span>
-            <strong>
-              {translateChargingState(vehicle.chargingState)}
-            </strong>
-          </div>
-
-          {vehicle.chargingState === "Charging" && (
-            <>
-              <div>
-                <span>충전 목표</span>
-                <strong>
-                  {vehicle.chargeLimit !== null
-                    ? `${vehicle.chargeLimit}%`
-                    : "-"}
-                </strong>
-              </div>
-
-              <div>
-                <span>충전 속도</span>
-                <strong>
-                  {vehicle.chargerPowerKw !== null
-                    ? `${vehicle.chargerPowerKw} kW`
-                    : "-"}
-                </strong>
-              </div>
-
-              <div>
-                <span>완료까지</span>
-                <strong>
-                  {vehicle.timeToFullCharge !== null
-                    ? `${Math.floor(
-                        vehicle.timeToFullCharge
-                      )}시간 ${Math.round(
-                        (vehicle.timeToFullCharge % 1) * 60
-                      )}분`
-                    : "-"}
-                </strong>
-              </div>
-
-              <div className="wide">
-                <span>이번 충전량</span>
-                <strong>
-                  {vehicle.energyAddedKwh !== null
-                    ? `${vehicle.energyAddedKwh.toFixed(1)} kWh`
-                    : "-"}
-                </strong>
-              </div>
-            </>
-          )}
-
-          <div>
-            <span>실내 온도</span>
-            <strong>
-              {vehicle.insideTemp !== null
-                ? `${Math.round(vehicle.insideTemp)}℃`
-                : "-"}
-            </strong>
-          </div>
-
-          <div>
-            <span>실외 온도</span>
-            <strong>
-              {vehicle.outsideTemp !== null
-                ? `${Math.round(vehicle.outsideTemp)}℃`
-                : "-"}
-            </strong>
-          </div>
-
-          <div>
-            <span>문 상태</span>
-            <strong>
-              {vehicle.locked === null
-                ? "확인 불가"
-                : vehicle.locked
-                  ? "잠김"
-                  : "열림"}
-            </strong>
-          </div>
-
-          <div className="wide">
-            <span>누적 주행거리</span>
-            <strong>
-              {vehicle.odometerKm !== null
-                ? `${vehicle.odometerKm.toLocaleString()} km`
-                : "-"}
-            </strong>
-          </div>
+          <strong>
+            {vehicle?.batteryLevel ?? "-"}
+            <small>%</small>
+          </strong>
         </div>
-      ) : (
-        <p className="tesla-sleep-message">
-          차량이 절전 상태입니다. Tesla 앱에서 차량을 깨운 뒤
-          새로고침을 눌러주세요.
-        </p>
-      )}
-    </section>
+
+        <div className="v2-battery-bar">
+          <span
+            style={{
+              width: `${vehicle?.batteryLevel ?? 0}%`,
+            }}
+          />
+        </div>
+
+        <div className="v2-range">
+          예상 주행 가능 거리
+          <strong>{vehicle?.rangeKm ?? "-"}km</strong>
+        </div>
+      </div>
+
+      <div className="v2-vehicle-status-grid">
+        <div>
+          <FiLock />
+
+          <span>
+            {vehicle?.locked === null
+              ? "확인 불가"
+              : vehicle?.locked
+                ? "잠김"
+                : "열림"}
+          </span>
+        </div>
+
+        <div>
+          <FiThermometer />
+
+          <span>
+            실내{" "}
+            {vehicle?.insideTemp !== null
+              ? `${Math.round(vehicle.insideTemp)}℃`
+              : "-"}
+          </span>
+        </div>
+
+        <div>
+          <HiOutlineBolt />
+
+          <span>
+            {translateChargingState(
+              vehicle?.chargingState
+            )}
+          </span>
+        </div>
+      </div>
+    </div>
   );
 }

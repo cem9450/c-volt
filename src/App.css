@@ -1662,3 +1662,354 @@ color:#aaa;
     font-size: 36px;
   }
 }
+/* =========================
+   C-VOLT REFERENCE VEHICLE
+========================= */
+
+.dashboard-vehicle .v2-vehicle-content {
+  width: 100%;
+}
+
+.v2-vehicle-visual {
+  position: relative;
+  height: 205px;
+  overflow: hidden;
+  margin: -10px -8px 0;
+}
+
+.v2-vehicle-image {
+  position: relative;
+  z-index: 2;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.v2-road-line {
+  display: none;
+}
+
+.v2-vehicle-visual.driving .v2-vehicle-image {
+  animation: v2CarFloat 0.85s ease-in-out infinite;
+}
+
+.v2-vehicle-visual.driving .v2-road-line {
+  position: absolute;
+  z-index: 1;
+  right: -50%;
+  bottom: 33px;
+  display: block;
+  width: 200%;
+  height: 3px;
+  opacity: 0.32;
+  background:
+    repeating-linear-gradient(
+      90deg,
+      #fff 0 40px,
+      transparent 40px 75px
+    );
+  animation: v2RoadMove 0.7s linear infinite;
+}
+
+.v2-vehicle-main-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: -2px;
+}
+
+.v2-vehicle-name {
+  display: block;
+  font-size: 21px;
+  font-weight: 800;
+  color: #fff;
+}
+
+.v2-live-status {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 5px;
+  color: #47ff99;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.8px;
+}
+
+.v2-live-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #47ff99;
+  box-shadow: 0 0 12px rgba(71, 255, 153, 0.9);
+  animation: v2LivePulse 1.2s ease-in-out infinite;
+}
+
+.v2-refresh-button {
+  display: flex;
+  width: 38px;
+  height: 38px;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.045);
+  color: rgba(255, 255, 255, 0.75);
+  font-size: 16px;
+}
+
+.v2-battery-row {
+  margin-top: 17px;
+}
+
+.v2-battery-row > div:first-child {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+}
+
+.v2-battery-row span {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.48);
+}
+
+.v2-battery-row strong {
+  font-size: 27px;
+  color: #fff;
+}
+
+.v2-battery-row small {
+  margin-left: 2px;
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.v2-battery-bar {
+  height: 7px;
+  margin-top: 10px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.07);
+}
+
+.v2-battery-bar span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background:
+    linear-gradient(
+      90deg,
+      #8a28ff,
+      #c573ff
+    );
+  box-shadow: 0 0 17px rgba(173, 72, 255, 0.42);
+}
+
+.v2-range {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 10px;
+  color: rgba(255, 255, 255, 0.48);
+  font-size: 11px;
+}
+
+.v2-range strong {
+  font-size: 13px;
+  color: #fff;
+}
+
+.v2-vehicle-status-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-top: 17px;
+}
+
+.v2-vehicle-status-grid > div {
+  display: flex;
+  min-width: 0;
+  min-height: 70px;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.035);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.025);
+  color: rgba(255, 255, 255, 0.72);
+}
+
+.v2-vehicle-status-grid svg {
+  font-size: 21px;
+}
+
+.v2-vehicle-status-grid span {
+  overflow: hidden;
+  width: 100%;
+  padding: 0 4px;
+  text-align: center;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 10px;
+}
+
+.v2-vehicle-loading,
+.v2-vehicle-error,
+.v2-parking-empty {
+  display: flex;
+  min-height: 140px;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 12px;
+  color: rgba(255, 255, 255, 0.56);
+  font-size: 12px;
+}
+
+.v2-vehicle-error button {
+  min-height: 36px;
+  padding: 0 15px;
+  border: 0;
+  border-radius: 999px;
+  background: #963cff;
+  color: #fff;
+}
+
+/* Parking */
+
+.v2-parking-content {
+  width: 100%;
+}
+
+.v2-parking-info {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 13px;
+}
+
+.v2-parking-place {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.v2-parking-place svg {
+  flex-shrink: 0;
+  color: #b85bff;
+  font-size: 24px;
+}
+
+.v2-parking-place span {
+  display: block;
+  color: rgba(255, 255, 255, 0.45);
+  font-size: 9px;
+}
+
+.v2-parking-place strong {
+  display: block;
+  margin-top: 3px;
+  color: #fff;
+  font-size: 12px;
+}
+
+.v2-map-link {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: 3px;
+  border: 0;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.65);
+  font-size: 10px;
+}
+
+.v2-mini-map-wrapper {
+  height: 165px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 18px;
+}
+
+.v2-mini-map {
+  width: 100%;
+  height: 100%;
+}
+
+.v2-parking-memo {
+  margin-top: 12px;
+}
+
+.v2-parking-memo span {
+  display: block;
+  margin-bottom: 7px;
+  color: rgba(255, 255, 255, 0.45);
+  font-size: 10px;
+}
+
+.v2-parking-memo input {
+  box-sizing: border-box;
+  width: 100%;
+  height: 43px;
+  padding: 0 13px;
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: 13px;
+  outline: none;
+  background: rgba(255, 255, 255, 0.035);
+  color: #fff;
+  font: inherit;
+  font-size: 12px;
+}
+
+.v2-parking-memo input:focus {
+  border-color: rgba(170, 66, 255, 0.55);
+  box-shadow: 0 0 18px rgba(158, 58, 255, 0.09);
+}
+
+.spinning {
+  animation: v2Spin 0.8s linear infinite;
+}
+
+@keyframes v2CarFloat {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-4px);
+  }
+}
+
+@keyframes v2RoadMove {
+  from {
+    transform: translateX(0);
+  }
+
+  to {
+    transform: translateX(-75px);
+  }
+}
+
+@keyframes v2LivePulse {
+  0%,
+  100% {
+    opacity: 0.35;
+    transform: scale(0.8);
+  }
+
+  50% {
+    opacity: 1;
+    transform: scale(1.15);
+  }
+}
+
+@keyframes v2Spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
