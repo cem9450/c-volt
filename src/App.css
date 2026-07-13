@@ -1321,3 +1321,344 @@ text-align:center;
 color:#aaa;
 
 }
+/* =========================
+   C-VOLT HOME V2
+========================= */
+
+.home-v2 {
+  width: 100%;
+  max-width: 430px;
+  margin: 0 auto;
+  padding:
+    max(26px, env(safe-area-inset-top))
+    16px
+    125px;
+  background:
+    radial-gradient(
+      circle at 50% -10%,
+      rgba(108, 24, 185, 0.14),
+      transparent 32%
+    ),
+    #050506;
+}
+
+.dashboard-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.dashboard-profile {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  min-width: 0;
+}
+
+.dashboard-avatar {
+  display: flex;
+  width: 54px;
+  height: 54px;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 50%;
+  background:
+    radial-gradient(
+      circle at top left,
+      rgba(171, 80, 255, 0.34),
+      transparent 55%
+    ),
+    #16131b;
+  font-size: 25px;
+}
+
+.dashboard-greeting {
+  display: block;
+  margin-bottom: 4px;
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.52);
+}
+
+.dashboard-profile h1 {
+  margin: 0;
+  font-size: clamp(21px, 6vw, 27px);
+  line-height: 1.12;
+  letter-spacing: -0.7px;
+  color: #fff;
+}
+
+.dashboard-profile h1 strong {
+  color: #a64cff;
+}
+
+.dashboard-bell {
+  position: relative;
+  display: flex;
+  width: 43px;
+  height: 43px;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(255, 255, 255, 0.13);
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.035);
+  color: #fff;
+  font-size: 21px;
+}
+
+.dashboard-bell span {
+  position: absolute;
+  top: 7px;
+  right: 7px;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #a84cff;
+  box-shadow: 0 0 12px rgba(168, 76, 255, 0.9);
+}
+
+.dashboard-section {
+  margin-bottom: 16px;
+  padding: 20px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.105);
+  border-radius: 25px;
+  background:
+    radial-gradient(
+      circle at 85% 5%,
+      rgba(118, 41, 188, 0.13),
+      transparent 43%
+    ),
+    linear-gradient(
+      145deg,
+      rgba(24, 24, 29, 0.98),
+      rgba(10, 10, 13, 0.98)
+    );
+  box-shadow:
+    0 20px 50px rgba(0, 0, 0, 0.38),
+    inset 0 1px 0 rgba(255, 255, 255, 0.035);
+}
+
+.dashboard-drive {
+  background:
+    radial-gradient(
+      circle at 20% 0%,
+      rgba(116, 45, 191, 0.29),
+      transparent 48%
+    ),
+    radial-gradient(
+      circle at 100% 80%,
+      rgba(87, 24, 153, 0.15),
+      transparent 40%
+    ),
+    #0c0b10;
+}
+
+.dashboard-section-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+  margin-bottom: 15px;
+}
+
+.dashboard-section-heading.compact {
+  align-items: center;
+}
+
+.dashboard-section-heading h2 {
+  margin: 3px 0 0;
+  font-size: 20px;
+  letter-spacing: -0.35px;
+  color: #fff;
+}
+
+.dashboard-eyebrow {
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 1.8px;
+  color: rgba(255, 255, 255, 0.42);
+}
+
+.dashboard-detail-button,
+.dashboard-text-button {
+  display: inline-flex;
+  min-height: 36px;
+  padding: 0 13px;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.045);
+  color: rgba(255, 255, 255, 0.82);
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.dashboard-text-button {
+  min-height: auto;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.62);
+}
+
+.dashboard-update-label {
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.42);
+}
+
+.dashboard-expanded-score {
+  margin-top: 14px;
+}
+
+/* 기존 컴포넌트의 바깥 카드 제거 */
+.dashboard-drive .today-driving-card,
+.dashboard-expanded-score .driving-score-card,
+.dashboard-vehicle .tesla-status-card,
+.dashboard-parking .smart-parking-card {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+/* 오늘의 드라이브 */
+.dashboard-drive .today-driving-header {
+  display: none;
+}
+
+.dashboard-drive .today-driving-main {
+  margin: 0 0 12px;
+  padding: 18px;
+  border: 1px solid rgba(167, 70, 255, 0.11);
+  border-radius: 19px;
+  background:
+    linear-gradient(
+      135deg,
+      rgba(107, 32, 173, 0.23),
+      rgba(255, 255, 255, 0.025)
+    );
+}
+
+.dashboard-drive .today-driving-main > strong {
+  font-size: 42px;
+}
+
+.dashboard-drive .today-driving-grid {
+  gap: 8px;
+}
+
+.dashboard-drive .today-driving-stat {
+  padding: 14px 7px;
+  border: 1px solid rgba(255, 255, 255, 0.035);
+  background: rgba(255, 255, 255, 0.028);
+}
+
+/* 차량 카드 */
+.dashboard-vehicle .tesla-car-wrapper {
+  margin: -8px -4px 6px;
+}
+
+.dashboard-vehicle .tesla-car-image {
+  width: 100%;
+  max-height: 210px;
+  object-fit: contain;
+}
+
+.dashboard-vehicle .tesla-status-head {
+  margin-top: 5px;
+}
+
+.dashboard-vehicle .tesla-live-grid {
+  gap: 8px;
+  margin-top: 15px;
+}
+
+.dashboard-vehicle .tesla-live-grid > div {
+  min-height: 75px;
+  padding: 12px 8px;
+  border: 1px solid rgba(255, 255, 255, 0.035);
+  border-radius: 17px;
+  background: rgba(255, 255, 255, 0.025);
+}
+
+/* Smart Parking */
+.dashboard-parking .smart-parking-header {
+  margin-bottom: 13px;
+}
+
+.dashboard-parking .smart-parking-map-wrapper {
+  height: 165px;
+}
+
+/* AI 브리핑 */
+.dashboard-ai-content {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 14px 3px 3px;
+}
+
+.dashboard-ai-icon {
+  display: flex;
+  width: 44px;
+  height: 44px;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  border-radius: 14px;
+  background:
+    linear-gradient(
+      145deg,
+      rgba(177, 85, 255, 0.95),
+      rgba(81, 36, 178, 0.8)
+    );
+  box-shadow: 0 0 25px rgba(151, 65, 255, 0.24);
+  color: #fff;
+  font-size: 19px;
+}
+
+.dashboard-ai-content p {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.75;
+  color: rgba(255, 255, 255, 0.73);
+}
+
+/* 기존 홈 요소 숨기기 */
+.home-v2 .home-header,
+.home-v2 > .shortcut-card,
+.home-v2 > .ai-commentary,
+.home-v2 > .today-route-card,
+.home-v2 > .vehicle-location-card {
+  display: none;
+}
+
+@media (max-width: 380px) {
+  .home-v2 {
+    padding-right: 12px;
+    padding-left: 12px;
+  }
+
+  .dashboard-section {
+    padding: 17px;
+    border-radius: 22px;
+  }
+
+  .dashboard-profile h1 {
+    font-size: 21px;
+  }
+
+  .dashboard-drive .today-driving-main > strong {
+    font-size: 36px;
+  }
+}
