@@ -16,10 +16,7 @@ export default function Home() {
       <section className="dashboard-section dashboard-drive">
         <div className="dashboard-section-heading">
           <div>
-            <span className="dashboard-eyebrow">
-              TODAY&apos;S DRIVE
-            </span>
-
+            
             <h2 className="dashboard-card-title">
               오늘의 드라이브
               <FiInfo className="dashboard-info-icon" />

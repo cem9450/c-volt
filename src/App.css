@@ -2929,3 +2929,53 @@ body {
   transform: scale(1.05);
   object-fit: cover;
 }
+/* 상단 인사 왼쪽 정렬 */
+.cv-profile-copy {
+  text-align: left;
+}
+
+.cv-profile-copy > span {
+  text-align: left;
+}
+
+/* Welcome to 차량명 크기 줄이기 */
+.cv-profile-copy h1 {
+  max-width: 260px;
+  font-size: 22px;
+  line-height: 1.12;
+  letter-spacing: -0.6px;
+  text-align: left;
+}
+
+/* TODAY'S DRIVE 영문 삭제 */
+.dashboard-eyebrow {
+  display: none !important;
+}
+
+/* 오늘의 드라이브 제목 위 여백 정리 */
+.dashboard-section-heading {
+  align-items: center;
+}
+
+/* 차량 상태 배터리 영역 왼쪽 정렬 */
+.vehicle-reference-battery {
+  text-align: left;
+}
+
+.vehicle-reference-battery > span,
+.vehicle-reference-battery > strong,
+.vehicle-reference-battery p {
+  text-align: left;
+}
+
+/* 퍼센트 숫자 왼쪽 고정 */
+.vehicle-reference-battery > strong {
+  display: block;
+  width: 100%;
+}
+
+/* 배터리 바도 왼쪽 정렬 */
+.vehicle-reference-bar {
+  margin-left: 0;
+  margin-right: auto;
+}
