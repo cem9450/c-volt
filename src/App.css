@@ -2860,3 +2860,72 @@ body {
     font-size: 8px;
   }
 }
+/* 프로필 사진 크기 축소 */
+.cv-profile-image {
+  width: 46px;
+  height: 46px;
+}
+
+.cv-profile {
+  gap: 11px;
+}
+
+/* 모든 카드 제목 크기 통일 */
+.dashboard-card-title,
+.vehicle-reference-title-row h2,
+.reference-card-title-row h2 {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0;
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.35px;
+  color: #ffffff;
+}
+
+/* 오늘의 드라이브 i 아이콘 */
+.dashboard-info-icon {
+  color: rgba(255, 255, 255, 0.48);
+  font-size: 14px;
+  stroke-width: 1.8;
+}
+
+/* 오늘의 드라이브 영문 제목도 살짝 작게 */
+.dashboard-eyebrow {
+  font-size: 8px;
+  letter-spacing: 1.7px;
+}
+
+/* 차량 이미지 축소 */
+.vehicle-reference-visual {
+  height: 155px;
+  margin-right: -8px;
+}
+
+.vehicle-reference-visual img {
+  width: 195px;
+  max-width: 145%;
+}
+
+/* 차량 카드 높이도 이미지에 맞게 축소 */
+.vehicle-reference-main {
+  min-height: 163px;
+}
+
+/* 차량 상태 제목과 업데이트 정렬 */
+.vehicle-reference-title-row {
+  margin-bottom: 2px;
+}
+
+/* 예전에 남은 REAL-TIME 강제 숨김 */
+.dashboard-update-label {
+  display: none !important;
+}
+
+/* 프로필 이미지 속 차량이 너무 확대되지 않게 */
+.cv-profile-image img {
+  transform: scale(1.05);
+  object-fit: cover;
+}

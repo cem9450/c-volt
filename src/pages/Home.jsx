@@ -1,16 +1,17 @@
-import { FiChevronRight } from "react-icons/fi";
+import {
+  FiChevronRight,
+  FiInfo,
+} from "react-icons/fi";
 
+import TopBar from "../components/TopBar";
 import TodayDrivingCard from "../components/TodayDrivingCard";
 import TeslaStatusCard from "../components/TeslaStatusCard";
 import ParkingMiniMap from "../components/ParkingMiniMap";
-import TopBar from "../components/TopBar";
-
 
 export default function Home() {
   return (
     <main className="home home-v2">
-<TopBar />
-      
+      <TopBar />
 
       <section className="dashboard-section dashboard-drive">
         <div className="dashboard-section-heading">
@@ -19,7 +20,10 @@ export default function Home() {
               TODAY&apos;S DRIVE
             </span>
 
-            <h2>오늘의 드라이브</h2>
+            <h2 className="dashboard-card-title">
+              오늘의 드라이브
+              <FiInfo className="dashboard-info-icon" />
+            </h2>
           </div>
 
           <button
@@ -35,28 +39,18 @@ export default function Home() {
       </section>
 
       <section className="dashboard-section dashboard-vehicle">
-        <div className="dashboard-section-heading compact">
-          <h2>차량 상태</h2>
-
-          <span className="dashboard-update-label">
-            REAL-TIME
-          </span>
-        </div>
-
         <TeslaStatusCard />
       </section>
 
       <section className="dashboard-section dashboard-parking">
-        <div className="dashboard-section-heading compact">
-          <h2>현재 주차 위치</h2>
-        </div>
-
         <ParkingMiniMap />
       </section>
 
       <section className="dashboard-section dashboard-ai">
         <div className="dashboard-section-heading compact">
-          <h2>AI 브리핑</h2>
+          <h2 className="dashboard-card-title">
+            AI 브리핑
+          </h2>
 
           <button
             type="button"
