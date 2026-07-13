@@ -1,48 +1,16 @@
-import { FiBell, FiChevronRight } from "react-icons/fi";
+import { FiChevronRight } from "react-icons/fi";
 
 import TodayDrivingCard from "../components/TodayDrivingCard";
 import TeslaStatusCard from "../components/TeslaStatusCard";
 import ParkingMiniMap from "../components/ParkingMiniMap";
+import TopBar from "../components/TopBar";
 
-function getGreeting() {
-  const hour = new Date().getHours();
-
-  if (hour < 12) return "Good Morning";
-  if (hour < 18) return "Good Afternoon";
-  if (hour < 22) return "Good Evening";
-
-  return "Good Night";
-}
 
 export default function Home() {
   return (
     <main className="home home-v2">
-      <header className="dashboard-header">
-        <div className="dashboard-profile">
-          <div className="dashboard-avatar">
-            <span>⚡</span>
-          </div>
-
-          <div>
-            <span className="dashboard-greeting">
-              {getGreeting()}
-            </span>
-
-            <h1>
-              Welcome back <strong>cem</strong>
-            </h1>
-          </div>
-        </div>
-
-        <button
-          type="button"
-          className="dashboard-bell"
-          aria-label="알림"
-        >
-          <FiBell />
-          <span />
-        </button>
-      </header>
+<TopBar />
+      
 
       <section className="dashboard-section dashboard-drive">
         <div className="dashboard-section-heading">
