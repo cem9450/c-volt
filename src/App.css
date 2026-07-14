@@ -2979,3 +2979,258 @@ body {
   margin-left: 0;
   margin-right: auto;
 }
+/* ==================================
+   C-VOLT UI 2.0 - PARKING CARD
+================================== */
+
+.dashboard-parking {
+  padding: 18px;
+}
+
+.dashboard-parking
+.dashboard-section-heading {
+  display: none;
+}
+
+.parking-reference-card {
+  width: 100%;
+}
+
+.parking-reference-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 15px;
+}
+
+.parking-reference-header h2 {
+  margin: 0;
+  color: #ffffff;
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.35px;
+}
+
+.parking-reference-header button {
+  display: inline-flex;
+  padding: 0;
+  align-items: center;
+  gap: 3px;
+  border: 0;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.76);
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.parking-reference-header button svg {
+  font-size: 16px;
+}
+
+.parking-reference-body {
+  display: grid;
+  grid-template-columns:
+    minmax(0, 0.92fr)
+    minmax(145px, 1.08fr);
+  align-items: center;
+  gap: 13px;
+}
+
+.parking-reference-info {
+  min-width: 0;
+}
+
+.parking-reference-location {
+  display: flex;
+  align-items: flex-start;
+  gap: 9px;
+}
+
+.parking-reference-location > svg {
+  flex-shrink: 0;
+  margin-top: 1px;
+  color: #b96cff;
+  font-size: 23px;
+  stroke-width: 1.8;
+}
+
+.parking-reference-location strong {
+  display: block;
+  color: #ffffff;
+  font-size: 12px;
+  line-height: 1.35;
+}
+
+.parking-reference-location span {
+  display: block;
+  margin-top: 5px;
+  color: rgba(255, 255, 255, 0.47);
+  font-size: 9px;
+  line-height: 1.55;
+}
+
+.parking-reference-time {
+  display: inline-flex;
+  max-width: 100%;
+  min-height: 34px;
+  margin-top: 20px;
+  padding: 0 11px;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.11);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.018);
+  color: rgba(255, 255, 255, 0.74);
+  font-size: 9px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.parking-reference-time svg {
+  flex-shrink: 0;
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 14px;
+}
+
+.parking-reference-map-wrap {
+  position: relative;
+  height: 122px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: 17px;
+  background:
+    linear-gradient(
+      145deg,
+      #1a1b24,
+      #111218
+    );
+}
+
+.parking-reference-map {
+  width: 100%;
+  height: 100%;
+  filter:
+    grayscale(0.25)
+    saturate(0.55)
+    brightness(0.62)
+    contrast(1.15);
+}
+
+.parking-reference-map .leaflet-tile-pane {
+  opacity: 0.86;
+}
+
+.parking-reference-map
+.leaflet-control-container {
+  display: none;
+}
+
+.parking-reference-pin-glow {
+  position: absolute;
+  z-index: 500;
+  top: 50%;
+  left: 50%;
+  width: 58px;
+  height: 58px;
+  pointer-events: none;
+  border-radius: 50%;
+  background:
+    radial-gradient(
+      circle,
+      rgba(162, 66, 255, 0.3),
+      rgba(162, 66, 255, 0.08) 48%,
+      transparent 70%
+    );
+  transform: translate(-50%, -50%);
+  animation:
+    parkingPinPulse
+    1.8s
+    ease-in-out
+    infinite;
+}
+
+.parking-reference-note {
+  margin-top: 13px;
+}
+
+.parking-reference-note > span {
+  display: block;
+  margin-bottom: 7px;
+  color: rgba(255, 255, 255, 0.43);
+  font-size: 9px;
+  font-weight: 600;
+}
+
+.parking-reference-note input {
+  box-sizing: border-box;
+  width: 100%;
+  height: 40px;
+  padding: 0 12px;
+  border: 1px solid rgba(255, 255, 255, 0.085);
+  border-radius: 12px;
+  outline: none;
+  background:
+    rgba(255, 255, 255, 0.022);
+  color: #ffffff;
+  font-family: inherit;
+  font-size: 11px;
+}
+
+.parking-reference-note input::placeholder {
+  color: rgba(255, 255, 255, 0.3);
+}
+
+.parking-reference-note input:focus {
+  border-color:
+    rgba(170, 76, 255, 0.48);
+  box-shadow:
+    0 0 16px
+    rgba(147, 54, 255, 0.08);
+}
+
+.parking-reference-empty {
+  display: flex;
+  min-height: 135px;
+  align-items: center;
+  justify-content: center;
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 11px;
+}
+
+@keyframes parkingPinPulse {
+  0%,
+  100% {
+    opacity: 0.45;
+    transform:
+      translate(-50%, -50%)
+      scale(0.88);
+  }
+
+  50% {
+    opacity: 1;
+    transform:
+      translate(-50%, -50%)
+      scale(1.12);
+  }
+}
+
+@media (max-width: 370px) {
+  .parking-reference-body {
+    grid-template-columns:
+      minmax(0, 0.88fr)
+      minmax(135px, 1.12fr);
+    gap: 9px;
+  }
+
+  .parking-reference-map-wrap {
+    height: 112px;
+  }
+
+  .parking-reference-time {
+    padding-right: 8px;
+    padding-left: 8px;
+    font-size: 8px;
+  }
+}

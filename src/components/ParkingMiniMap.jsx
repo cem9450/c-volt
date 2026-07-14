@@ -5,8 +5,18 @@ import {
   useMap,
 } from "react-leaflet";
 
-import { useCallback, useEffect, useState } from "react";
-import { FiChevronRight, FiMapPin } from "react-icons/fi";
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
+
+import {
+  FiChevronRight,
+  FiClock,
+  FiMapPin,
+} from "react-icons/fi";
 
 import "leaflet/dist/leaflet.css";
 
@@ -27,10 +37,39 @@ function MoveMap({ latitude, longitude }) {
   return null;
 }
 
+function getElapsedText(startedAt) {
+  if (!startedAt) {
+    return "주차 시간 확인 중";
+  }
+
+  const elapsedMs =
+    Date.now() - new Date(startedAt).getTime();
+
+  const elapsedMinutes = Math.max(
+    Math.floor(elapsedMs / 60000),
+    0
+  );
+
+  if (elapsedMinutes < 1) {
+    return "방금 주차";
+  }
+
+  if (elapsedMinutes < 60) {
+    return `주차 ${elapsedMinutes}분 경과`;
+  }
+
+  const hours = Math.floor(elapsedMinutes / 60);
+  const minutes = elapsedMinutes % 60;
+
+  return `주차 ${hours}시간 ${minutes}분 경과`;
+}
+
 export default function ParkingMiniMap() {
   const [location, setLocation] = useState(null);
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(true);
+  const [parkedAt, setParkedAt] = useState(null);
+  const [, setClockTick] = useState(0);
 
   const loadLocation = useCallback(async () => {
     try {
@@ -42,16 +81,56 @@ export default function ParkingMiniMap() {
         }
       );
 
-      const data = await response.json();
+      const text = await response.text();
 
-      if (!response.ok || !data.ok) {
+      let data;
+
+      try {
+        data = JSON.parse(text);
+      } catch {
         throw new Error(
-          data.error || "차량 위치를 불러오지 못했습니다."
+          "차량 위치 서버 응답을 확인하지 못했습니다."
         );
       }
 
-      setLocation(data.location || null);
-      setMessage(data.message || "");
+      if (!response.ok || !data.ok) {
+        throw new Error(
+          data.error ||
+            "차량 위치를 불러오지 못했습니다."
+        );
+      }
+
+      if (data.location) {
+        setLocation(data.location);
+        setMessage("");
+
+        setParkedAt((previous) => {
+          if (previous) return previous;
+
+          const saved = localStorage.getItem(
+            "cvolt_parked_at"
+          );
+
+          if (saved) {
+            return saved;
+          }
+
+          const now = new Date().toISOString();
+
+          localStorage.setItem(
+            "cvolt_parked_at",
+            now
+          );
+
+          return now;
+        });
+      } else {
+        setLocation(null);
+        setMessage(
+          data.message ||
+            "현재 위치 정보가 없습니다."
+        );
+      }
     } catch (err) {
       setMessage(
         err instanceof Error
@@ -66,28 +145,43 @@ export default function ParkingMiniMap() {
   useEffect(() => {
     loadLocation();
 
-    const timer = window.setInterval(() => {
-      loadLocation();
-    }, 30000);
+    const locationTimer = window.setInterval(
+      loadLocation,
+      30000
+    );
+
+    const clockTimer = window.setInterval(() => {
+      setClockTick((value) => value + 1);
+    }, 60000);
 
     return () => {
-      window.clearInterval(timer);
+      window.clearInterval(locationTimer);
+      window.clearInterval(clockTimer);
     };
   }, [loadLocation]);
+
+  const elapsedText = useMemo(
+    () => getElapsedText(parkedAt),
+    [parkedAt]
+  );
 
   function openGoogleMap() {
     if (!location) return;
 
-    const url =
+    const mapUrl =
       "https://www.google.com/maps/search/?api=1&query=" +
       `${location.latitude},${location.longitude}`;
 
-    window.open(url, "_blank", "noopener,noreferrer");
+    window.open(
+      mapUrl,
+      "_blank",
+      "noopener,noreferrer"
+    );
   }
 
   if (loading) {
     return (
-      <div className="v2-parking-empty">
+      <div className="parking-reference-empty">
         현재 주차 위치 확인 중...
       </div>
     );
@@ -95,27 +189,19 @@ export default function ParkingMiniMap() {
 
   if (!location) {
     return (
-      <div className="v2-parking-empty">
+      <div className="parking-reference-empty">
         {message || "현재 위치 정보가 없습니다."}
       </div>
     );
   }
 
   return (
-    <div className="v2-parking-content">
-      <div className="v2-parking-info">
-        <div className="v2-parking-place">
-          <FiMapPin />
-
-          <div>
-            <span>현재 차량 위치</span>
-            <strong>지도에서 바로 확인하세요</strong>
-          </div>
-        </div>
+    <div className="parking-reference-card">
+      <div className="parking-reference-header">
+        <h2>현재 주차 위치</h2>
 
         <button
           type="button"
-          className="v2-map-link"
           onClick={openGoogleMap}
         >
           지도에서 보기
@@ -123,45 +209,70 @@ export default function ParkingMiniMap() {
         </button>
       </div>
 
-      <div className="v2-mini-map-wrapper">
-        <MapContainer
-          center={[
-            location.latitude,
-            location.longitude,
-          ]}
-          zoom={16}
-          scrollWheelZoom={false}
-          zoomControl={false}
-          dragging={false}
-          doubleClickZoom={false}
-          className="v2-mini-map"
-        >
-          <TileLayer
-            attribution="&copy; OpenStreetMap"
-            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-          />
+      <div className="parking-reference-body">
+        <div className="parking-reference-info">
+          <div className="parking-reference-location">
+            <FiMapPin />
 
-          <MoveMap
-            latitude={location.latitude}
-            longitude={location.longitude}
-          />
+            <div>
+              <strong>현재 차량 위치</strong>
 
-          <CircleMarker
+              <span>
+                지도에서 정확한 위치를
+                확인하세요
+              </span>
+            </div>
+          </div>
+
+          <div className="parking-reference-time">
+            <FiClock />
+            <span>{elapsedText}</span>
+          </div>
+        </div>
+
+        <div className="parking-reference-map-wrap">
+          <MapContainer
             center={[
               location.latitude,
               location.longitude,
             ]}
-            radius={10}
-            pathOptions={{
-              color: "#bd65ff",
-              fillColor: "#9d3cff",
-              fillOpacity: 1,
-            }}
-          />
-        </MapContainer>
+            zoom={16}
+            zoomControl={false}
+            scrollWheelZoom={false}
+            dragging={false}
+            doubleClickZoom={false}
+            attributionControl={false}
+            className="parking-reference-map"
+          >
+            <TileLayer
+              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+            />
+
+            <MoveMap
+              latitude={location.latitude}
+              longitude={location.longitude}
+            />
+
+            <CircleMarker
+              center={[
+                location.latitude,
+                location.longitude,
+              ]}
+              radius={10}
+              pathOptions={{
+                color: "#d17cff",
+                fillColor: "#9d42ff",
+                fillOpacity: 1,
+                weight: 3,
+              }}
+            />
+          </MapContainer>
+
+          <div className="parking-reference-pin-glow" />
+        </div>
       </div>
 
-      <div className="v2-parking-memo">
+      <div className="parking-reference-note">
         <span>주차 메모</span>
 
         <input
