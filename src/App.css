@@ -2110,18 +2110,45 @@ body {
   color: #aa50ff;
 }
 
-.cv-notification-button {
-  position: relative;
-  display: flex;
-  width: 44px;
-  height: 44px;
-  flex-shrink: 0;
-  align-items: center;
-  justify-content: center;
-  border: 0;
-  background: transparent;
-  color: #ffffff;
-  font-size: 27px;
+.cv-unread-dot {
+  position: absolute;
+
+  top: 7px;
+  right: 7px;
+
+  width: 9px;
+  height: 9px;
+
+  border-radius: 50%;
+
+  background: #a13fff;
+
+  border: 2px solid #0b0b10;
+
+  box-shadow:
+    0 0 10px rgba(161, 63, 255, 0.7),
+    0 0 18px rgba(161, 63, 255, 0.4);
+
+  animation: pulseNotification 2s infinite;
+}
+
+@keyframes pulseNotification {
+
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+
+  50% {
+    transform: scale(1.25);
+    opacity: .75;
+  }
+
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+
 }
 
 .cv-notification-button i {

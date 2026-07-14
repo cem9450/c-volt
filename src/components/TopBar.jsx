@@ -313,16 +313,8 @@ export default function TopBar() {
           <FiBell />
 
           {unreadCount > 0 && (
-            <>
-              <i />
-
-              <b>
-                {unreadCount > 9
-                  ? "9+"
-                  : unreadCount}
-              </b>
-            </>
-          )}
+  <i className="cv-unread-dot" />
+)}
         </button>
       </header>
 

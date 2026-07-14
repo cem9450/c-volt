@@ -1,5 +1,14 @@
 export const APP_UPDATES = [
     {
+  id: "version-0-1-4",
+  version: "0.1.4",
+  type: "update",
+  title: "C-Volt ver 0.1.4",
+  message:
+    "알림 아이콘의 숫자 배지를 제거하고, 미확인 알림은 보라색 점으로 표시하도록 개선했습니다.",
+  releasedAt: "2026-07-14T22:40:00+09:00",
+},
+    {
   id: "version-0-1-3",
   version: "0.1.3",
   type: "update",
