@@ -10,11 +10,14 @@ function getCookie(cookieHeader, name) {
 
   if (!target) return null;
 
-  return decodeURIComponent(target.slice(name.length + 1));
+  return decodeURIComponent(
+    target.slice(name.length + 1)
+  );
 }
 
 function getSupabaseHeaders() {
-  const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  const key =
+    process.env.SUPABASE_SERVICE_ROLE_KEY;
 
   return {
     apikey: key,
@@ -25,12 +28,14 @@ function getSupabaseHeaders() {
 
 async function supabaseRequest(path) {
   const baseUrl = process.env.SUPABASE_URL;
-  const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  const key =
+    process.env.SUPABASE_SERVICE_ROLE_KEY;
 
   if (!baseUrl || !key) {
     const error = new Error(
       "Supabase 서버 환경 변수가 설정되지 않았습니다."
     );
+
     error.statusCode = 500;
     throw error;
   }
@@ -70,12 +75,15 @@ async function supabaseRequest(path) {
 }
 
 function getKoreaDayRange() {
-  const parts = new Intl.DateTimeFormat("en-CA", {
-    timeZone: "Asia/Seoul",
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-  }).formatToParts(new Date());
+  const parts = new Intl.DateTimeFormat(
+    "en-CA",
+    {
+      timeZone: "Asia/Seoul",
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+    }
+  ).formatToParts(new Date());
 
   const year = parts.find(
     (part) => part.type === "year"
@@ -116,7 +124,11 @@ async function getLatestVehicleId() {
   return rows?.[0]?.vehicle_id || null;
 }
 
-async function getTodaySessions(vehicleId, start, end) {
+async function getTodaySessions(
+  vehicleId,
+  start,
+  end
+) {
   const query = new URLSearchParams({
     vehicle_id: `eq.${vehicleId}`,
     started_at: `gte.${start}`,
@@ -135,7 +147,10 @@ async function getTodaySessions(vehicleId, start, end) {
 }
 
 function clamp(value, min, max) {
-  return Math.min(Math.max(value, min), max);
+  return Math.min(
+    Math.max(value, min),
+    max
+  );
 }
 
 function calculateScore({
@@ -145,51 +160,204 @@ function calculateScore({
   avgSpeedKmh,
   tripCount,
 }) {
-  let score = 80;
+  let score = 75;
+  let dataQuality = "good";
+
+  const factors = [];
+
+  const hasDistance =
+    Number.isFinite(totalDistanceKm) &&
+    totalDistanceKm > 0;
+
+  const hasBatteryData =
+    Number.isFinite(totalBatteryUsed) &&
+    totalBatteryUsed > 0;
+
+  if (!hasDistance) {
+    return {
+      score: 0,
+      dataQuality: "insufficient",
+      factors: [],
+    };
+  }
+
+  /*
+   * 주행거리 점수
+   */
 
   if (totalDistanceKm >= 5) {
-    score += 4;
+    score += 3;
+
+    factors.push({
+      type: "bonus",
+      label: "충분한 주행거리",
+      value: 3,
+    });
   }
 
   if (totalDistanceKm >= 20) {
-    score += 3;
-  }
-
-  if (avgSpeedKmh >= 15 && avgSpeedKmh <= 70) {
-    score += 5;
-  }
-
-  if (tripCount <= 4) {
     score += 2;
+
+    factors.push({
+      type: "bonus",
+      label: "장거리 주행 완료",
+      value: 2,
+    });
   }
+
+  /*
+   * 평균속도 점수
+   */
 
   if (
-    totalBatteryUsed > 0 &&
-    totalDistanceKm > 0
+    avgSpeedKmh >= 15 &&
+    avgSpeedKmh <= 70
   ) {
-    const kmPerBatteryPercent =
+    score += 5;
+
+    factors.push({
+      type: "bonus",
+      label: "안정적인 평균속도",
+      value: 5,
+    });
+  } else if (avgSpeedKmh < 8) {
+    score -= 5;
+
+    factors.push({
+      type: "penalty",
+      label: "저속 정체 주행",
+      value: -5,
+    });
+  }
+
+  /*
+   * 배터리 효율 점수
+   * 주행거리 ÷ 배터리 사용 퍼센트
+   */
+
+  let batteryEfficiency = 0;
+
+  if (hasBatteryData) {
+    batteryEfficiency =
       totalDistanceKm / totalBatteryUsed;
 
-    if (kmPerBatteryPercent >= 4) {
-      score += 6;
-    } else if (kmPerBatteryPercent >= 3) {
-      score += 3;
-    } else if (kmPerBatteryPercent < 2) {
-      score -= 5;
+    if (batteryEfficiency >= 5) {
+      score += 12;
+
+      factors.push({
+        type: "bonus",
+        label: "매우 우수한 배터리 효율",
+        value: 12,
+      });
+    } else if (batteryEfficiency >= 4) {
+      score += 9;
+
+      factors.push({
+        type: "bonus",
+        label: "우수한 배터리 효율",
+        value: 9,
+      });
+    } else if (batteryEfficiency >= 3) {
+      score += 5;
+
+      factors.push({
+        type: "bonus",
+        label: "양호한 배터리 효율",
+        value: 5,
+      });
+    } else if (batteryEfficiency >= 2) {
+      score += 1;
+
+      factors.push({
+        type: "bonus",
+        label: "보통 수준의 배터리 효율",
+        value: 1,
+      });
+    } else {
+      score -= 8;
+
+      factors.push({
+        type: "penalty",
+        label: "배터리 소모가 큰 주행",
+        value: -8,
+      });
     }
+  } else {
+    dataQuality = "limited";
+
+    factors.push({
+      type: "info",
+      label: "배터리 사용량 데이터 부족",
+      value: 0,
+    });
   }
+
+  /*
+   * 운행 횟수
+   */
+
+  if (
+    tripCount >= 1 &&
+    tripCount <= 4
+  ) {
+    score += 2;
+
+    factors.push({
+      type: "bonus",
+      label: "적정한 운행 횟수",
+      value: 2,
+    });
+  }
+
+  /*
+   * 비정상 데이터 방어
+   */
 
   if (
     totalDurationSec > 0 &&
-    avgSpeedKmh < 8
+    totalDistanceKm > 0
   ) {
-    score -= 4;
+    const calculatedAvgSpeed =
+      totalDistanceKm /
+      (totalDurationSec / 3600);
+
+    if (calculatedAvgSpeed > 130) {
+      score -= 5;
+
+      factors.push({
+        type: "penalty",
+        label: "비정상적으로 높은 평균속도",
+        value: -5,
+      });
+    }
   }
 
-  return clamp(Math.round(score), 60, 100);
+  /*
+   * 배터리 데이터가 없으면
+   * 점수가 지나치게 높아지지 않게 제한
+   */
+
+  if (dataQuality === "limited") {
+    score = Math.min(score, 85);
+  }
+
+  return {
+    score: clamp(
+      Math.round(score),
+      60,
+      100
+    ),
+    dataQuality,
+    factors,
+    batteryEfficiency,
+  };
 }
 
-function getBadge(score, avgSpeedKmh, batteryEfficiency) {
+function getBadge(
+  score,
+  avgSpeedKmh,
+  batteryEfficiency
+) {
   if (score >= 95) {
     return {
       name: "Elite Driver",
@@ -224,9 +392,12 @@ function getBadge(score, avgSpeedKmh, batteryEfficiency) {
   };
 }
 
-function getComment(score, batteryEfficiency) {
+function getComment(
+  score,
+  batteryEfficiency
+) {
   if (score >= 95) {
-    return "오늘은 거리와 배터리 사용의 균형이 아주 좋았습니다.";
+    return "오늘은 거리와 배터리 사용의 균형이 매우 좋았습니다.";
   }
 
   if (batteryEfficiency >= 4) {
@@ -238,13 +409,16 @@ function getComment(score, batteryEfficiency) {
   }
 
   if (score >= 80) {
-    return "좋은 주행이었습니다. 데이터가 더 쌓이면 분석이 정교해집니다.";
+    return "좋은 주행이었습니다. 데이터가 더 쌓이면 분석이 더욱 정교해집니다.";
   }
 
-  return "오늘 기록을 바탕으로 다음 주행에서 효율 개선점을 찾아볼게요.";
+  return "다음 주행에서는 부드러운 가속과 효율적인 속도 유지에 집중해보세요.";
 }
 
-export default async function handler(req, res) {
+export default async function handler(
+  req,
+  res
+) {
   if (req.method !== "GET") {
     res.setHeader("Allow", "GET");
 
@@ -254,7 +428,10 @@ export default async function handler(req, res) {
     });
   }
 
-  res.setHeader("Cache-Control", "no-store");
+  res.setHeader(
+    "Cache-Control",
+    "no-store"
+  );
 
   try {
     const accessToken = getCookie(
@@ -269,49 +446,68 @@ export default async function handler(req, res) {
       });
     }
 
-    const vehicleId = await getLatestVehicleId();
+    const vehicleId =
+      await getLatestVehicleId();
 
     if (!vehicleId) {
       return res.status(200).json({
         ok: true,
         hasData: false,
-        message: "아직 저장된 주행 기록이 없습니다.",
+        score: null,
+        message:
+          "아직 저장된 주행 기록이 없습니다.",
       });
     }
 
-    const { start, end } = getKoreaDayRange();
+    const { start, end } =
+      getKoreaDayRange();
 
-    const sessions = await getTodaySessions(
-      vehicleId,
-      start,
-      end
-    );
+    const sessions =
+      await getTodaySessions(
+        vehicleId,
+        start,
+        end
+      );
 
     if (sessions.length === 0) {
       return res.status(200).json({
         ok: true,
         hasData: false,
-        message: "오늘 완료된 주행 기록이 없습니다.",
+        score: null,
+        message:
+          "오늘 완료된 주행 기록이 없습니다.",
       });
     }
 
-    const totalDistanceKm = sessions.reduce(
-      (sum, session) =>
-        sum + Number(session.distance_km || 0),
-      0
-    );
+    const totalDistanceKm =
+      sessions.reduce(
+        (sum, session) =>
+          sum +
+          Number(
+            session.distance_km || 0
+          ),
+        0
+      );
 
-    const totalDurationSec = sessions.reduce(
-      (sum, session) =>
-        sum + Number(session.duration_sec || 0),
-      0
-    );
+    const totalDurationSec =
+      sessions.reduce(
+        (sum, session) =>
+          sum +
+          Number(
+            session.duration_sec || 0
+          ),
+        0
+      );
 
-    const totalBatteryUsed = sessions.reduce(
-      (sum, session) =>
-        sum + Number(session.battery_used || 0),
-      0
-    );
+    const totalBatteryUsed =
+      sessions.reduce(
+        (sum, session) =>
+          sum +
+          Number(
+            session.battery_used || 0
+          ),
+        0
+      );
 
     const avgSpeedKmh =
       totalDurationSec > 0
@@ -319,18 +515,19 @@ export default async function handler(req, res) {
           (totalDurationSec / 3600)
         : 0;
 
-    const batteryEfficiency =
-      totalBatteryUsed > 0
-        ? totalDistanceKm / totalBatteryUsed
-        : 0;
+    const scoreResult =
+      calculateScore({
+        totalDistanceKm,
+        totalDurationSec,
+        totalBatteryUsed,
+        avgSpeedKmh,
+        tripCount: sessions.length,
+      });
 
-    const score = calculateScore({
-      totalDistanceKm,
-      totalDurationSec,
-      totalBatteryUsed,
-      avgSpeedKmh,
-      tripCount: sessions.length,
-    });
+    const score = scoreResult.score;
+
+    const batteryEfficiency =
+      scoreResult.batteryEfficiency || 0;
 
     const badge = getBadge(
       score,
@@ -346,32 +543,61 @@ export default async function handler(req, res) {
     return res.status(200).json({
       ok: true,
       hasData: true,
+
       score,
+
+      dataQuality:
+        scoreResult.dataQuality,
+
+      factors:
+        scoreResult.factors,
+
       badge,
+
       comment,
+
       summary: {
         tripCount: sessions.length,
+
         totalDistanceKm:
-          Math.round(totalDistanceKm * 10) / 10,
+          Math.round(
+            totalDistanceKm * 10
+          ) / 10,
+
         totalDurationSec,
+
         avgSpeedKmh:
-          Math.round(avgSpeedKmh * 10) / 10,
+          Math.round(
+            avgSpeedKmh * 10
+          ) / 10,
+
         totalBatteryUsed,
+
         batteryEfficiency:
-          Math.round(batteryEfficiency * 10) / 10,
+          Math.round(
+            batteryEfficiency * 10
+          ) / 10,
       },
     });
   } catch (error) {
-    console.error("today-score error:", error);
+    console.error(
+      "today-score error:",
+      error
+    );
 
     return res
-      .status(error.statusCode || 500)
+      .status(
+        error.statusCode || 500
+      )
       .json({
         ok: false,
+
         error:
           error.message ||
           "오늘 운전 점수를 계산하지 못했습니다.",
-        details: error.details || null,
+
+        details:
+          error.details || null,
       });
   }
 }
