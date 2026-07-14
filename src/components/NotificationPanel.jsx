@@ -6,18 +6,6 @@ import {
   FiX,
 } from "react-icons/fi";
 
-const INITIAL_NOTIFICATIONS = [
-  {
-    id: "version-0-1",
-    type: "update",
-    title: "C-Volt ver 0.1",
-    message:
-      "프로필 설정과 알림 센터 기능이 추가되었습니다.",
-    createdAt: new Date().toISOString(),
-    read: false,
-  },
-];
-
 function loadNotifications() {
   try {
     const saved = localStorage.getItem("cvolt_notifications");
@@ -67,9 +55,9 @@ export default function NotificationPanel({
     if (!open) return;
 
     const nextItems =
-      Array.isArray(notifications) && notifications.length > 0
-        ? notifications
-        : loadNotifications();
+  Array.isArray(notifications)
+    ? notifications
+    : [];
 
     const readItems = nextItems.map((item) => ({
       ...item,

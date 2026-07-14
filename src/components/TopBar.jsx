@@ -1,4 +1,9 @@
-import { useEffect, useMemo, useState } from "react";
+import {
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
+
 import { FiBell } from "react-icons/fi";
 
 import quicksilver from "../assets/quicksilver.png";
@@ -6,6 +11,15 @@ import glacierblue from "../assets/glacierblue.png";
 
 import ProfilePanel from "./ProfilePanel";
 import NotificationPanel from "./NotificationPanel";
+
+import { APP_UPDATES } from "../data/appUpdates";
+
+const DEFAULT_PROFILE = {
+  displayName: "cem",
+  profileImage: "",
+  driveNotifications: true,
+  updateNotifications: true,
+};
 
 function getGreeting() {
   const hour = new Date().getHours();
@@ -18,89 +32,136 @@ function getGreeting() {
 }
 
 function getVehicleImage(vehicle) {
-  const name = (vehicle?.name || "").toLowerCase();
+  const name = (
+    vehicle?.name || ""
+  ).toLowerCase();
 
-  return name.includes("대기리차") || name.includes("ceh")
+  return name.includes("대기리차") ||
+    name.includes("ceh")
     ? glacierblue
     : quicksilver;
 }
 
 function loadProfile() {
   try {
-    const saved = localStorage.getItem("cvolt_profile");
+    const saved = localStorage.getItem(
+      "cvolt_profile"
+    );
+
+    return saved
+      ? {
+          ...DEFAULT_PROFILE,
+          ...JSON.parse(saved),
+        }
+      : DEFAULT_PROFILE;
+  } catch {
+    return DEFAULT_PROFILE;
+  }
+}
+
+function loadStoredNotifications() {
+  try {
+    const saved = localStorage.getItem(
+      "cvolt_notifications"
+    );
 
     return saved
       ? JSON.parse(saved)
-      : {
-          displayName: "cem",
-          profileImage: "",
-          driveNotifications: true,
-          updateNotifications: true,
-        };
+      : [];
   } catch {
-    return {
-      displayName: "cem",
-      profileImage: "",
-      driveNotifications: true,
-      updateNotifications: true,
-    };
+    return [];
   }
 }
 
-function loadNotifications() {
-  try {
-    const saved = localStorage.getItem("cvolt_notifications");
-
-    if (saved) return JSON.parse(saved);
-  } catch {
-    // 초기값 사용
+function syncUpdateNotifications(
+  notifications,
+  profile
+) {
+  if (
+    profile.updateNotifications === false
+  ) {
+    return notifications;
   }
 
-  const initial = [
-    {
-      id: "version-0-1",
-      type: "update",
-      title: "C-Volt ver 0.1",
-      message:
-        "프로필 설정과 알림 센터 기능이 추가되었습니다.",
-      createdAt: new Date().toISOString(),
-      read: false,
-    },
-  ];
-
-  localStorage.setItem(
-    "cvolt_notifications",
-    JSON.stringify(initial)
+  const existingIds = new Set(
+    notifications.map(
+      (notification) => notification.id
+    )
   );
 
-  return initial;
+  const missingUpdates = APP_UPDATES
+    .filter(
+      (update) =>
+        !existingIds.has(update.id)
+    )
+    .map((update) => ({
+      id: update.id,
+      type: update.type,
+      title: update.title,
+      message: update.message,
+      createdAt: update.releasedAt,
+      read: false,
+    }));
+
+  return [
+    ...missingUpdates,
+    ...notifications,
+  ];
 }
 
 export default function TopBar() {
-  const [vehicle, setVehicle] = useState(() => {
-    try {
-      const savedVehicle =
-        localStorage.getItem("cvolt_vehicle");
+  const [vehicle, setVehicle] =
+    useState(() => {
+      try {
+        const savedVehicle =
+          localStorage.getItem(
+            "cvolt_vehicle"
+          );
 
-      return savedVehicle
-        ? JSON.parse(savedVehicle)
-        : null;
-    } catch {
-      return null;
-    }
-  });
+        return savedVehicle
+          ? JSON.parse(savedVehicle)
+          : null;
+      } catch {
+        return null;
+      }
+    });
 
-  const [profile, setProfile] = useState(loadProfile);
+  const [profile, setProfile] =
+    useState(loadProfile);
+
   const [notifications, setNotifications] =
-    useState(loadNotifications);
+    useState(() => {
+      const savedProfile = loadProfile();
+      const stored =
+        loadStoredNotifications();
 
-  const [profileOpen, setProfileOpen] = useState(false);
-  const [notificationsOpen, setNotificationsOpen] =
-    useState(false);
+      return syncUpdateNotifications(
+        stored,
+        savedProfile
+      );
+    });
+
+  const [
+    profileOpen,
+    setProfileOpen,
+  ] = useState(false);
+
+  const [
+    notificationsOpen,
+    setNotificationsOpen,
+  ] = useState(false);
+
+  useEffect(() => {
+    localStorage.setItem(
+      "cvolt_notifications",
+      JSON.stringify(notifications)
+    );
+  }, [notifications]);
 
   useEffect(() => {
     function handleVehicleUpdated(event) {
-      const nextVehicle = event.detail;
+      const nextVehicle =
+        event.detail;
 
       setVehicle(nextVehicle);
 
@@ -111,14 +172,20 @@ export default function TopBar() {
     }
 
     function handleDriveEnded(event) {
-      const savedProfile = loadProfile();
+      const savedProfile =
+        loadProfile();
 
-      if (savedProfile.driveNotifications === false) {
+      if (
+        savedProfile
+          .driveNotifications === false
+      ) {
         return;
       }
 
-      const detail = event.detail || {};
-      const score =
+      const detail =
+        event.detail || {};
+
+      const scoreText =
         typeof detail.score === "number"
           ? `${detail.score}점`
           : "운전 점수";
@@ -126,22 +193,21 @@ export default function TopBar() {
       const nextNotification = {
         id: `drive-${Date.now()}`,
         type: "drive",
-        title: "오늘 운행이 종료되었습니다",
-        message: `${score}과 오늘의 운행 리포트를 확인해보세요.`,
-        createdAt: new Date().toISOString(),
+        title:
+          "오늘 운행이 종료되었습니다",
+        message:
+          `${scoreText}과 오늘의 운행 리포트를 확인해보세요.`,
+        createdAt:
+          new Date().toISOString(),
         read: false,
       };
 
-      setNotifications((previous) => {
-        const next = [nextNotification, ...previous];
-
-        localStorage.setItem(
-          "cvolt_notifications",
-          JSON.stringify(next)
-        );
-
-        return next;
-      });
+      setNotifications(
+        (previous) => [
+          nextNotification,
+          ...previous,
+        ]
+      );
     }
 
     window.addEventListener(
@@ -170,22 +236,37 @@ export default function TopBar() {
   const unreadCount = useMemo(
     () =>
       notifications.filter(
-        (notification) => !notification.read
+        (notification) =>
+          !notification.read
       ).length,
     [notifications]
   );
 
-  function updateNotifications(nextNotifications) {
-    setNotifications(nextNotifications);
-
-    localStorage.setItem(
-      "cvolt_notifications",
-      JSON.stringify(nextNotifications)
+  function updateNotifications(
+    nextNotifications
+  ) {
+    setNotifications(
+      nextNotifications
     );
   }
 
+  function handleProfileChange(
+    nextProfile
+  ) {
+    setProfile(nextProfile);
+
+    const synced =
+      syncUpdateNotifications(
+        notifications,
+        nextProfile
+      );
+
+    setNotifications(synced);
+  }
+
   const profileImage =
-    profile.profileImage || getVehicleImage(vehicle);
+    profile.profileImage ||
+    getVehicleImage(vehicle);
 
   return (
     <>
@@ -194,7 +275,9 @@ export default function TopBar() {
           <button
             type="button"
             className="cv-profile-image"
-            onClick={() => setProfileOpen(true)}
+            onClick={() =>
+              setProfileOpen(true)
+            }
             aria-label="프로필 설정 열기"
           >
             <img
@@ -209,7 +292,8 @@ export default function TopBar() {
             <h1>
               Welcome to{" "}
               <strong>
-                {vehicle?.name || "My Tesla"}
+                {vehicle?.name ||
+                  "My Tesla"}
               </strong>
             </h1>
           </div>
@@ -219,15 +303,20 @@ export default function TopBar() {
           type="button"
           className="cv-notification-button"
           aria-label="알림 열기"
-          onClick={() => setNotificationsOpen(true)}
+          onClick={() =>
+            setNotificationsOpen(true)
+          }
         >
           <FiBell />
 
           {unreadCount > 0 && (
             <>
               <i />
+
               <b>
-                {unreadCount > 9 ? "9+" : unreadCount}
+                {unreadCount > 9
+                  ? "9+"
+                  : unreadCount}
               </b>
             </>
           )}
@@ -236,15 +325,25 @@ export default function TopBar() {
 
       <ProfilePanel
         open={profileOpen}
-        onClose={() => setProfileOpen(false)}
-        onProfileChange={setProfile}
+        onClose={() =>
+          setProfileOpen(false)
+        }
+        onProfileChange={
+          handleProfileChange
+        }
       />
 
       <NotificationPanel
         open={notificationsOpen}
-        onClose={() => setNotificationsOpen(false)}
-        notifications={notifications}
-        onNotificationsChange={updateNotifications}
+        onClose={() =>
+          setNotificationsOpen(false)
+        }
+        notifications={
+          notifications
+        }
+        onNotificationsChange={
+          updateNotifications
+        }
       />
     </>
   );
