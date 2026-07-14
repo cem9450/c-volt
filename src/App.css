@@ -3234,3 +3234,208 @@ body {
     font-size: 8px;
   }
 }
+/* ==================================
+   C-VOLT UI 2.0 - AI BRIEFING
+================================== */
+
+.dashboard-ai {
+  padding: 18px;
+}
+
+.dashboard-ai
+.dashboard-section-heading,
+.dashboard-ai
+.dashboard-ai-content {
+  display: none;
+}
+
+.ai-reference-card {
+  width: 100%;
+}
+
+.ai-reference-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 15px;
+}
+
+.ai-reference-header h2 {
+  margin: 0;
+  color: #ffffff;
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.35px;
+}
+
+.ai-reference-header button {
+  display: inline-flex;
+  padding: 0;
+  align-items: center;
+  gap: 3px;
+  border: 0;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.74);
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.ai-reference-header button svg {
+  font-size: 16px;
+}
+
+.ai-reference-content {
+  display: flex;
+  min-height: 82px;
+  align-items: center;
+  gap: 17px;
+  padding: 2px 3px 0;
+}
+
+.ai-reference-content p {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.78);
+  font-size: 12px;
+  line-height: 1.85;
+  letter-spacing: -0.15px;
+}
+
+.ai-reference-gem {
+  position: relative;
+  width: 54px;
+  height: 54px;
+  flex-shrink: 0;
+  filter:
+    drop-shadow(
+      0 0 18px
+      rgba(162, 66, 255, 0.42)
+    );
+}
+
+.ai-reference-gem::before,
+.ai-reference-gem::after,
+.ai-reference-gem-core {
+  content: "";
+  position: absolute;
+  inset: 0;
+  clip-path:
+    polygon(
+      50% 0%,
+      92% 24%,
+      92% 76%,
+      50% 100%,
+      8% 76%,
+      8% 24%
+    );
+}
+
+.ai-reference-gem::before {
+  background:
+    linear-gradient(
+      145deg,
+      #e3b4ff 0%,
+      #b45fff 35%,
+      #7d2bd4 70%,
+      #4a157f 100%
+    );
+}
+
+.ai-reference-gem::after {
+  inset: 8px;
+  background:
+    linear-gradient(
+      145deg,
+      rgba(255, 255, 255, 0.5),
+      rgba(141, 51, 229, 0.35)
+    );
+}
+
+.ai-reference-gem-core {
+  inset: 15px;
+  background:
+    radial-gradient(
+      circle at 35% 30%,
+      #ffffff,
+      #cb7cff 28%,
+      #7421c0 70%
+    );
+  animation:
+    aiGemGlow
+    2.2s
+    ease-in-out
+    infinite;
+}
+
+.ai-reference-spark {
+  position: absolute;
+  z-index: 5;
+  display: block;
+  width: 9px;
+  height: 9px;
+  background: #c96eff;
+  clip-path:
+    polygon(
+      50% 0%,
+      62% 38%,
+      100% 50%,
+      62% 62%,
+      50% 100%,
+      38% 62%,
+      0% 50%,
+      38% 38%
+    );
+  box-shadow:
+    0 0 10px
+    rgba(201, 110, 255, 0.9);
+}
+
+.ai-reference-spark.one {
+  top: -5px;
+  right: -5px;
+  animation:
+    aiSparkPulse
+    1.7s
+    ease-in-out
+    infinite;
+}
+
+.ai-reference-spark.two {
+  bottom: -2px;
+  left: -4px;
+  width: 7px;
+  height: 7px;
+  animation:
+    aiSparkPulse
+    1.7s
+    ease-in-out
+    infinite
+    0.45s;
+}
+
+@keyframes aiGemGlow {
+  0%,
+  100% {
+    opacity: 0.68;
+    transform: scale(0.94);
+  }
+
+  50% {
+    opacity: 1;
+    transform: scale(1.04);
+  }
+}
+
+@keyframes aiSparkPulse {
+  0%,
+  100% {
+    opacity: 0.35;
+    transform: scale(0.75);
+  }
+
+  50% {
+    opacity: 1;
+    transform: scale(1.15);
+  }
+}
