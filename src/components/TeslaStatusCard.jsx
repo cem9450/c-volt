@@ -89,6 +89,40 @@ export default function TeslaStatusCard() {
 
       setVehicle(data.vehicle);
       setError("");
+if (data.event === "driving_ended") {
+  let score = null;
+
+  try {
+    const scoreResponse = await fetch("/api/today-score", {
+      credentials: "include",
+      cache: "no-store",
+    });
+
+    const scoreData = await scoreResponse.json();
+
+    if (
+      scoreResponse.ok &&
+      scoreData.ok &&
+      scoreData.hasData
+    ) {
+      score = scoreData.score;
+    }
+  } catch (scoreError) {
+    console.error(
+      "운행 종료 점수 조회 실패:",
+      scoreError
+    );
+  }
+
+  window.dispatchEvent(
+    new CustomEvent("cvolt:drive-ended", {
+      detail: {
+        score,
+        session: data.session || null,
+      },
+    })
+  );
+}
       setLastUpdated(new Date());
       setSecondsAgo(0);
 
