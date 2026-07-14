@@ -1,4 +1,7 @@
-import { FiInfo } from "react-icons/fi";
+import {
+  FiChevronRight,
+  FiInfo,
+} from "react-icons/fi";
 
 import TopBar from "../components/TopBar";
 import TodayDrivingCard from "../components/TodayDrivingCard";
