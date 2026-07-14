@@ -95,13 +95,16 @@ function syncUpdateNotifications(
         !existingIds.has(update.id)
     )
     .map((update) => ({
-      id: update.id,
-      type: update.type,
-      title: update.title,
-      message: update.message,
-      createdAt: update.releasedAt,
-      read: false,
-    }));
+  id: update.id,
+  type: update.type,
+  title: update.title,
+  message: update.message,
+
+  // 실제로 사용자 알림센터에 등록된 시간
+  createdAt: new Date().toISOString(),
+
+  read: false,
+}));
 
   return [
     ...missingUpdates,

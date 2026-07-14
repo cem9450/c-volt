@@ -1,5 +1,15 @@
 export const APP_UPDATES = [
     {
+  id: "version-0-1-3",
+  version: "0.1.3",
+  type: "update",
+  title: "C-Volt ver 0.1.3",
+  message:
+    "업데이트 알림의 시간이 실제 등록 시각과 다르게 표시되던 오류를 수정했습니다.",
+  releasedAt:
+    "2026-07-14T22:30:00+09:00",
+},
+    {
   id: "version-0-1-2",
   version: "0.1.2",
   type: "update",
