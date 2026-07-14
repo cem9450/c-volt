@@ -4017,3 +4017,63 @@ body {
     transform: translateY(0);
   }
 }
+/* 알림 종 버튼 강제 복구 */
+.cv-notification-button {
+  position: relative !important;
+  display: flex !important;
+
+  width: 44px !important;
+  height: 44px !important;
+  min-width: 44px !important;
+  min-height: 44px !important;
+
+  padding: 0 !important;
+  align-items: center !important;
+  justify-content: center !important;
+
+  border: 0 !important;
+  border-radius: 50% !important;
+  outline: none !important;
+
+  background: transparent !important;
+  box-shadow: none !important;
+
+  color: #ffffff !important;
+  font-size: 26px !important;
+  line-height: 1 !important;
+
+  appearance: none !important;
+  -webkit-appearance: none !important;
+}
+
+.cv-notification-button svg {
+  display: block !important;
+  width: 25px !important;
+  height: 25px !important;
+  stroke-width: 1.8 !important;
+}
+
+.cv-notification-button:hover,
+.cv-notification-button:focus,
+.cv-notification-button:active {
+  border: 0 !important;
+  outline: none !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.cv-unread-dot {
+  position: absolute !important;
+  top: 5px !important;
+  right: 5px !important;
+
+  display: block !important;
+  width: 8px !important;
+  height: 8px !important;
+
+  border: 2px solid #08040d !important;
+  border-radius: 50% !important;
+
+  background: #a944ff !important;
+  box-shadow: 0 0 10px rgba(169, 68, 255, 0.8) !important;
+}

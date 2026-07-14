@@ -1,5 +1,14 @@
 export const APP_UPDATES = [
     {
+  id: "version-0-1-5",
+  version: "0.1.5",
+  type: "update",
+  title: "C-Volt ver 0.1.5",
+  message:
+    "알림 종 버튼이 흰색 사각형으로 표시되던 화면 오류를 수정했습니다.",
+  releasedAt: "2026-07-14T23:00:00+09:00",
+},
+    {
   id: "version-0-1-4",
   version: "0.1.4",
   type: "update",
