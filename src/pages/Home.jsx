@@ -50,6 +50,7 @@ export default function Home() {
 
 <footer className="app-footer">
   <div className="footer-brand">
+    <span className="footer-icon">⚡</span>
     <span className="footer-built-by">Built by</span>
     <span className="footer-cem-labs">CEM Labs</span>
   </div>

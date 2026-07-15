@@ -4247,7 +4247,7 @@ body {
 .simple-feature-page {
   padding-bottom:
     calc(
-      105px + env(safe-area-inset-bottom)
+      68px + env(safe-area-inset-bottom)
     ) !important;
 }
 
@@ -4617,4 +4617,11 @@ body {
 
 .app-footer:hover .footer-cem-labs {
   color: #7b5cff;
+}
+.footer-icon {
+  color: #FFC83D;
+  font-size: 12px;
+  margin-right: 6px;
+  display: inline-flex;
+  align-items: center;
 }
