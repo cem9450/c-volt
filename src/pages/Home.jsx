@@ -48,6 +48,16 @@ export default function Home() {
          <AIBriefingCard />
       </section>
 
+<footer className="cvolt-footer">
+  <span className="cvolt-footer-built">
+    ⚡ Built by{" "}
+  </span>
+
+  <span className="cvolt-footer-brand">
+    CEM Labs
+  </span>
+</footer>
+
     </main>
   );
 }

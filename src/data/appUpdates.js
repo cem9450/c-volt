@@ -1,5 +1,14 @@
 export const APP_UPDATES = [
     {
+  id: "version-0-1-9",
+  version: "0.1.9",
+  type: "update",
+  title: "C-Volt ver 0.1.9",
+  message:
+    "홈 화면 하단에 CEM Labs 브랜드 푸터를 추가했습니다.",
+  releasedAt: "2026-07-15T23:50:00+09:00",
+},
+    {
   id: "version-0-1-8",
   version: "0.1.8",
   type: "update",

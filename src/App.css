@@ -4528,3 +4528,51 @@ body {
     width: 175px !important;
   }
 }
+/* ===============================
+   CEM Labs Footer
+=============================== */
+
+.cvolt-footer{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+    gap:4px;
+
+    margin-top:18px;
+    margin-bottom:8px;
+
+    user-select:none;
+}
+
+.cvolt-footer-built{
+
+    font-size:11px;
+    font-weight:500;
+
+    letter-spacing:.18em;
+
+    color:rgba(255,255,255,.28);
+
+    text-transform:uppercase;
+}
+
+.cvolt-footer-brand{
+
+    font-size:11px;
+    font-weight:500;
+
+    letter-spacing:.18em;
+
+    color:rgba(255,255,255,.55);
+
+    text-transform:uppercase;
+
+    transition:.25s ease;
+}
+
+.cvolt-footer:hover .cvolt-footer-brand{
+
+    color:#b88cff;
+
+}
