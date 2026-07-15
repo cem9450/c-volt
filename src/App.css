@@ -4245,10 +4245,7 @@ body {
 .reference-home,
 .cv-preparing-page,
 .simple-feature-page {
-  padding-bottom:
-    calc(
-      68px + env(safe-area-inset-bottom)
-    ) !important;
+  padding-bottom: calc(72px + env(safe-area-inset-bottom)) !important;
 }
 
 @media (max-width: 360px) {
@@ -4532,66 +4529,35 @@ body {
    CEM Labs Footer
 =============================== */
 
-.cvolt-footer{
-    display:flex;
-    justify-content:center;
-    align-items:center;
-
-    gap:4px;
-
-    margin-top:18px;
-    margin-bottom:8px;
-
-    user-select:none;
-}
-
-.cvolt-footer-built{
-
-    font-size:11px;
-    font-weight:500;
-
-    letter-spacing:.18em;
-
-    color:rgba(255,255,255,.28);
-
-    text-transform:uppercase;
-}
-
-.cvolt-footer-brand{
-
-    font-size:11px;
-    font-weight:500;
-
-    letter-spacing:.18em;
-
-    color:rgba(255,255,255,.55);
-
-    text-transform:uppercase;
-
-    transition:.25s ease;
-}
-
-.cvolt-footer:hover .cvolt-footer-brand{
-
-    color:#b88cff;
-
-}
 .app-footer {
   width: 100%;
-  padding: 22px 20px 8px;
+  margin: 0;
+  padding: 6px 20px 0;
   text-align: center;
+  user-select: none;
 }
 
 .footer-brand {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 5px;
+  gap: 4px;
 
   font-size: 11px;
   font-weight: 500;
-  letter-spacing: 0.18em;
   line-height: 1;
+  letter-spacing: 0.18em;
+}
+
+.footer-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  margin-right: 2px;
+  font-size: 12px;
+  line-height: 1;
+  color: #ffc83d;
 }
 
 .footer-built-by {
@@ -4604,24 +4570,16 @@ body {
 }
 
 .footer-slogan {
-  margin: 9px 0 0;
+  margin: 5px 0 0;
 
   font-size: 9px;
   font-weight: 500;
   line-height: 1;
   letter-spacing: 0.2em;
-
   color: rgba(255, 255, 255, 0.22);
   text-transform: uppercase;
 }
 
 .app-footer:hover .footer-cem-labs {
-  color: #7b5cff;
-}
-.footer-icon {
-  color: #FFC83D;
-  font-size: 12px;
-  margin-right: 6px;
-  display: inline-flex;
-  align-items: center;
+  color: #b88cff;
 }
