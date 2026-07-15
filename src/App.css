@@ -4261,3 +4261,270 @@ body {
     font-size: 7px !important;
   }
 }
+/* ==================================
+   C-VOLT HOME FINAL ALIGNMENT
+================================== */
+
+/* 홈 전체 폭과 좌우 여백 */
+.home.home-v2 {
+  box-sizing: border-box !important;
+  width: 100% !important;
+  max-width: 430px !important;
+  min-height: 100vh !important;
+  margin: 0 auto !important;
+
+  padding:
+    max(24px, env(safe-area-inset-top))
+    18px
+    calc(105px + env(safe-area-inset-bottom)) !important;
+}
+
+/* 상단 프로필 영역 */
+.cv-topbar {
+  margin-bottom: 24px !important;
+}
+
+.cv-profile {
+  gap: 11px !important;
+}
+
+.cv-profile-image {
+  width: 46px !important;
+  height: 46px !important;
+  min-width: 46px !important;
+  min-height: 46px !important;
+}
+
+.cv-profile-image img {
+  box-sizing: border-box !important;
+  width: 100% !important;
+  height: 100% !important;
+  padding: 3px !important;
+
+  object-fit: contain !important;
+  object-position: center !important;
+  transform: none !important;
+}
+
+.cv-profile-copy > span,
+.cv-greeting {
+  margin-bottom: 3px !important;
+  color: rgba(255, 255, 255, 0.58) !important;
+  font-size: 12px !important;
+  font-weight: 600 !important;
+  text-align: left !important;
+}
+
+.cv-profile-copy h1 {
+  max-width: 260px !important;
+  margin: 0 !important;
+  font-size: 20px !important;
+  line-height: 1.12 !important;
+  letter-spacing: -0.55px !important;
+  text-align: left !important;
+}
+
+/* 모든 홈 카드 공통 */
+.dashboard-section {
+  box-sizing: border-box !important;
+  width: 100% !important;
+  margin: 0 0 14px !important;
+  padding: 19px !important;
+
+  overflow: hidden !important;
+
+  border:
+    1px solid
+    rgba(255, 255, 255, 0.11) !important;
+
+  border-radius: 24px !important;
+
+  background:
+    radial-gradient(
+      circle at 85% 8%,
+      rgba(102, 39, 169, 0.12),
+      transparent 43%
+    ),
+    linear-gradient(
+      145deg,
+      rgba(18, 18, 23, 0.99),
+      rgba(8, 8, 11, 0.99)
+    ) !important;
+
+  box-shadow:
+    0 18px 42px rgba(0, 0, 0, 0.36),
+    inset 0 1px 0
+      rgba(255, 255, 255, 0.025) !important;
+}
+
+/* 오늘의 드라이브만 보라색 강조 */
+.dashboard-drive {
+  border-color:
+    rgba(137, 66, 203, 0.42) !important;
+
+  background:
+    radial-gradient(
+      circle at 12% 7%,
+      rgba(113, 40, 183, 0.3),
+      transparent 55%
+    ),
+    radial-gradient(
+      circle at 88% 80%,
+      rgba(75, 30, 126, 0.17),
+      transparent 45%
+    ),
+    #0b0b10 !important;
+}
+
+/* 카드 제목 공통 */
+.dashboard-section-heading,
+.vehicle-reference-title-row,
+.parking-reference-header,
+.ai-reference-header {
+  min-height: 36px !important;
+  margin-bottom: 12px !important;
+  align-items: center !important;
+}
+
+.dashboard-card-title,
+.vehicle-reference-title-row h2,
+.parking-reference-header h2,
+.ai-reference-header h2 {
+  margin: 0 !important;
+  color: #ffffff !important;
+  font-size: 18px !important;
+  font-weight: 700 !important;
+  line-height: 1.2 !important;
+  letter-spacing: -0.4px !important;
+}
+
+/* 오늘의 드라이브 */
+.dashboard-drive
+.reference-drive-dashboard {
+  min-height: 205px !important;
+  padding-top: 5px !important;
+  padding-bottom: 0 !important;
+}
+
+.dashboard-detail-button {
+  min-height: 36px !important;
+  padding: 0 13px !important;
+
+  border:
+    1px solid
+    rgba(255, 255, 255, 0.12) !important;
+
+  border-radius: 999px !important;
+
+  background:
+    rgba(255, 255, 255, 0.035) !important;
+
+  color:
+    rgba(255, 255, 255, 0.82) !important;
+
+  font-size: 10px !important;
+  font-weight: 700 !important;
+}
+
+/* 차량 상태 */
+.vehicle-reference-main {
+  min-height: 160px !important;
+}
+
+.vehicle-reference-battery {
+  padding-left: 0 !important;
+  text-align: left !important;
+}
+
+.vehicle-reference-battery > span,
+.vehicle-reference-battery > strong,
+.vehicle-reference-battery p {
+  text-align: left !important;
+}
+
+.vehicle-reference-visual {
+  height: 150px !important;
+  margin-right: -4px !important;
+}
+
+.vehicle-reference-visual img {
+  width: 190px !important;
+  max-width: 140% !important;
+}
+
+.vehicle-reference-status {
+  margin-top: 5px !important;
+}
+
+.vehicle-reference-status > div {
+  min-height: 58px !important;
+}
+
+/* 주차 위치 */
+.dashboard-parking {
+  padding: 19px !important;
+}
+
+.parking-reference-header {
+  margin-bottom: 13px !important;
+}
+
+.parking-reference-map-wrap {
+  height: 118px !important;
+}
+
+.parking-reference-note {
+  margin-top: 12px !important;
+}
+
+/* AI 브리핑 */
+.dashboard-ai {
+  padding: 19px !important;
+}
+
+.ai-reference-header {
+  margin-bottom: 11px !important;
+}
+
+.ai-reference-content {
+  min-height: 72px !important;
+  gap: 15px !important;
+  padding: 0 2px !important;
+}
+
+.ai-reference-gem {
+  width: 50px !important;
+  height: 50px !important;
+}
+
+.ai-reference-content p {
+  font-size: 11px !important;
+  line-height: 1.8 !important;
+}
+
+/* 마지막 카드 아래 여백 */
+.dashboard-section:last-child {
+  margin-bottom: 8px !important;
+}
+
+/* 모바일 작은 화면 */
+@media (max-width: 375px) {
+  .home.home-v2 {
+    padding-right: 13px !important;
+    padding-left: 13px !important;
+  }
+
+  .dashboard-section {
+    padding: 16px !important;
+    border-radius: 22px !important;
+  }
+
+  .cv-profile-copy h1 {
+    max-width: 225px !important;
+    font-size: 19px !important;
+  }
+
+  .vehicle-reference-visual img {
+    width: 175px !important;
+  }
+}

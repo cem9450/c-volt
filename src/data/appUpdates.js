@@ -1,5 +1,14 @@
 export const APP_UPDATES = [
     {
+  id: "version-0-1-8",
+  version: "0.1.8",
+  type: "update",
+  title: "C-Volt ver 0.1.8",
+  message:
+    "홈 화면의 카드 크기, 간격, 제목과 차량 이미지 배치를 레퍼런스 디자인에 맞게 개선했습니다.",
+  releasedAt: "2026-07-15T23:30:00+09:00",
+},
+    {
   id: "version-0-1-7",
   version: "0.1.7",
   type: "update",
