@@ -4576,3 +4576,45 @@ body {
     color:#b88cff;
 
 }
+.app-footer {
+  width: 100%;
+  padding: 22px 20px 8px;
+  text-align: center;
+}
+
+.footer-brand {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  line-height: 1;
+}
+
+.footer-built-by {
+  color: rgba(255, 255, 255, 0.28);
+}
+
+.footer-cem-labs {
+  color: rgba(255, 255, 255, 0.55);
+  transition: color 0.25s ease;
+}
+
+.footer-slogan {
+  margin: 9px 0 0;
+
+  font-size: 9px;
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: 0.2em;
+
+  color: rgba(255, 255, 255, 0.22);
+  text-transform: uppercase;
+}
+
+.app-footer:hover .footer-cem-labs {
+  color: #7b5cff;
+}

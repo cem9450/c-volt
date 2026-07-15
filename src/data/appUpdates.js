@@ -1,5 +1,12 @@
 export const APP_UPDATES = [
     {
+  version: "0.1.x",
+  title: "Footer branding updated",
+  description:
+    "CEM Labs footer slogan을 추가하고 하단 여백을 조정했습니다.",
+  releasedAt: "2026-07-15",
+},
+    {
   id: "version-0-1-9",
   version: "0.1.9",
   type: "update",
