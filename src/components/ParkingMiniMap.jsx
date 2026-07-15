@@ -20,7 +20,10 @@ import {
 
 import "leaflet/dist/leaflet.css";
 
-function MoveMap({ latitude, longitude }) {
+function MoveMap({
+  latitude,
+  longitude,
+}) {
   const map = useMap();
 
   useEffect(() => {
@@ -31,7 +34,10 @@ function MoveMap({ latitude, longitude }) {
       return;
     }
 
-    map.setView([latitude, longitude], 16);
+    map.setView(
+      [latitude, longitude],
+      16
+    );
   }, [latitude, longitude, map]);
 
   return null;
@@ -42,8 +48,15 @@ function getElapsedText(startedAt) {
     return "주차 시간 확인 중";
   }
 
+  const startedTime =
+    new Date(startedAt).getTime();
+
+  if (!Number.isFinite(startedTime)) {
+    return "주차 시간 확인 중";
+  }
+
   const elapsedMs =
-    Date.now() - new Date(startedAt).getTime();
+    Date.now() - startedTime;
 
   const elapsedMinutes = Math.max(
     Math.floor(elapsedMs / 60000),
@@ -58,112 +71,189 @@ function getElapsedText(startedAt) {
     return `주차 ${elapsedMinutes}분 경과`;
   }
 
-  const hours = Math.floor(elapsedMinutes / 60);
-  const minutes = elapsedMinutes % 60;
+  const hours =
+    Math.floor(elapsedMinutes / 60);
+
+  const minutes =
+    elapsedMinutes % 60;
 
   return `주차 ${hours}시간 ${minutes}분 경과`;
 }
 
 export default function ParkingMiniMap() {
-  const [location, setLocation] = useState(null);
-  const [message, setMessage] = useState("");
-  const [loading, setLoading] = useState(true);
-  const [parkedAt, setParkedAt] = useState(null);
-  const [, setClockTick] = useState(0);
+  const [location, setLocation] =
+    useState(null);
 
-  const loadLocation = useCallback(async () => {
-    try {
-      const response = await fetch(
-        "/api/vehicle-location",
-        {
-          credentials: "include",
-          cache: "no-store",
-        }
-      );
+  const [message, setMessage] =
+    useState("");
 
-      const text = await response.text();
+  const [loading, setLoading] =
+    useState(true);
 
-      let data;
+  const [parkedAt, setParkedAt] =
+    useState(() =>
+      localStorage.getItem(
+        "cvolt_parked_at"
+      )
+    );
 
+  const [memo, setMemo] =
+    useState(() =>
+      localStorage.getItem(
+        "cvolt_parking_memo"
+      ) || ""
+    );
+
+  const [, setClockTick] =
+    useState(0);
+
+  const loadLocation =
+    useCallback(async () => {
       try {
-        data = JSON.parse(text);
-      } catch {
-        throw new Error(
-          "차량 위치 서버 응답을 확인하지 못했습니다."
-        );
-      }
-
-      if (!response.ok || !data.ok) {
-        throw new Error(
-          data.error ||
-            "차량 위치를 불러오지 못했습니다."
-        );
-      }
-
-      if (data.location) {
-        setLocation(data.location);
-        setMessage("");
-
-        setParkedAt((previous) => {
-          if (previous) return previous;
-
-          const saved = localStorage.getItem(
-            "cvolt_parked_at"
-          );
-
-          if (saved) {
-            return saved;
+        const response = await fetch(
+          "/api/vehicle-location",
+          {
+            credentials: "include",
+            cache: "no-store",
           }
-
-          const now = new Date().toISOString();
-
-          localStorage.setItem(
-            "cvolt_parked_at",
-            now
-          );
-
-          return now;
-        });
-      } else {
-        setLocation(null);
-        setMessage(
-          data.message ||
-            "현재 위치 정보가 없습니다."
         );
+
+        const text =
+          await response.text();
+
+        let data;
+
+        try {
+          data = JSON.parse(text);
+        } catch {
+          throw new Error(
+            "차량 위치 서버 응답을 확인하지 못했습니다."
+          );
+        }
+
+        if (!response.ok || !data.ok) {
+          throw new Error(
+            data.error ||
+              "차량 위치를 불러오지 못했습니다."
+          );
+        }
+
+        if (data.location) {
+          setLocation(data.location);
+          setMessage("");
+        } else {
+          setLocation(null);
+          setMessage(
+            data.message ||
+              "현재 위치 정보가 없습니다."
+          );
+        }
+      } catch (err) {
+        setMessage(
+          err instanceof Error
+            ? err.message
+            : "차량 위치를 불러오지 못했습니다."
+        );
+      } finally {
+        setLoading(false);
       }
-    } catch (err) {
-      setMessage(
-        err instanceof Error
-          ? err.message
-          : "차량 위치를 불러오지 못했습니다."
-      );
-    } finally {
-      setLoading(false);
-    }
-  }, []);
+    }, []);
 
   useEffect(() => {
     loadLocation();
 
-    const locationTimer = window.setInterval(
-      loadLocation,
-      30000
-    );
+    const locationTimer =
+      window.setInterval(
+        loadLocation,
+        30000
+      );
 
-    const clockTimer = window.setInterval(() => {
-      setClockTick((value) => value + 1);
-    }, 60000);
+    const clockTimer =
+      window.setInterval(() => {
+        setClockTick(
+          (value) => value + 1
+        );
+      }, 60000);
 
     return () => {
-      window.clearInterval(locationTimer);
-      window.clearInterval(clockTimer);
+      window.clearInterval(
+        locationTimer
+      );
+
+      window.clearInterval(
+        clockTimer
+      );
     };
   }, [loadLocation]);
+
+  useEffect(() => {
+    function handleParkingUpdated(
+      event
+    ) {
+      const detail =
+        event.detail || {};
+
+      if (detail.isDriving) {
+        setParkedAt(null);
+
+        localStorage.removeItem(
+          "cvolt_parked_at"
+        );
+      } else if (detail.parkedAt) {
+        setParkedAt(
+          detail.parkedAt
+        );
+
+        localStorage.setItem(
+          "cvolt_parked_at",
+          detail.parkedAt
+        );
+      }
+
+      if (detail.clearMemo) {
+        setMemo("");
+
+        localStorage.removeItem(
+          "cvolt_parking_memo"
+        );
+      }
+    }
+
+    window.addEventListener(
+      "cvolt:parking-updated",
+      handleParkingUpdated
+    );
+
+    return () => {
+      window.removeEventListener(
+        "cvolt:parking-updated",
+        handleParkingUpdated
+      );
+    };
+  }, []);
 
   const elapsedText = useMemo(
     () => getElapsedText(parkedAt),
     [parkedAt]
   );
+
+  function handleMemoChange(event) {
+    const nextMemo =
+      event.target.value;
+
+    setMemo(nextMemo);
+
+    if (nextMemo.trim()) {
+      localStorage.setItem(
+        "cvolt_parking_memo",
+        nextMemo
+      );
+    } else {
+      localStorage.removeItem(
+        "cvolt_parking_memo"
+      );
+    }
+  }
 
   function openGoogleMap() {
     if (!location) return;
@@ -190,7 +280,8 @@ export default function ParkingMiniMap() {
   if (!location) {
     return (
       <div className="parking-reference-empty">
-        {message || "현재 위치 정보가 없습니다."}
+        {message ||
+          "현재 위치 정보가 없습니다."}
       </div>
     );
   }
@@ -215,7 +306,9 @@ export default function ParkingMiniMap() {
             <FiMapPin />
 
             <div>
-              <strong>현재 차량 위치</strong>
+              <strong>
+                현재 차량 위치
+              </strong>
 
               <span>
                 지도에서 정확한 위치를
@@ -249,8 +342,12 @@ export default function ParkingMiniMap() {
             />
 
             <MoveMap
-              latitude={location.latitude}
-              longitude={location.longitude}
+              latitude={
+                location.latitude
+              }
+              longitude={
+                location.longitude
+              }
             />
 
             <CircleMarker
@@ -277,6 +374,8 @@ export default function ParkingMiniMap() {
 
         <input
           type="text"
+          value={memo}
+          onChange={handleMemoChange}
           placeholder="예: B3 C27, 엘리베이터 4번 옆"
         />
       </div>

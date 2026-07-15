@@ -81,7 +81,9 @@ function getChargingClass(state) {
   return "inactive";
 }
 
-export default function TeslaStatusCard() {
+export default function TeslaStatusCard({
+  onVehicleChange,
+}) {
   const [vehicle, setVehicle] =
     useState(null);
 
@@ -143,6 +145,50 @@ export default function TeslaStatusCard() {
 
         setVehicle(data.vehicle);
         setError("");
+        const nextVehicle = data.vehicle;
+
+onVehicleChange?.(nextVehicle);
+
+if (nextVehicle?.isDriving === true) {
+  localStorage.removeItem(
+    "cvolt_parked_at"
+  );
+
+  localStorage.removeItem(
+    "cvolt_parking_memo"
+  );
+
+  window.dispatchEvent(
+    new CustomEvent(
+      "cvolt:parking-updated",
+      {
+        detail: {
+          isDriving: true,
+          parkedAt: null,
+          clearMemo: true,
+        },
+      }
+    )
+  );
+} else if (data.parkedAt) {
+  localStorage.setItem(
+    "cvolt_parked_at",
+    data.parkedAt
+  );
+
+  window.dispatchEvent(
+    new CustomEvent(
+      "cvolt:parking-updated",
+      {
+        detail: {
+          isDriving: false,
+          parkedAt: data.parkedAt,
+          clearMemo: false,
+        },
+      }
+    )
+  );
+}
 
         if (data.event === "driving_ended") {
           let score = null;

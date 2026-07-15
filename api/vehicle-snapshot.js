@@ -1,7 +1,8 @@
 import { getCurrentVehicleData } from "./_vehicle-data.js";
 
 function supabaseHeaders() {
-  const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  const key =
+    process.env.SUPABASE_SERVICE_ROLE_KEY;
 
   return {
     apikey: key,
@@ -10,14 +11,19 @@ function supabaseHeaders() {
   };
 }
 
-async function supabaseRequest(path, options = {}) {
+async function supabaseRequest(
+  path,
+  options = {}
+) {
   const baseUrl = process.env.SUPABASE_URL;
-  const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  const key =
+    process.env.SUPABASE_SERVICE_ROLE_KEY;
 
   if (!baseUrl || !key) {
     const error = new Error(
       "Supabase 서버 환경 변수가 설정되지 않았습니다."
     );
+
     error.statusCode = 500;
     throw error;
   }
@@ -49,8 +55,10 @@ async function supabaseRequest(path, options = {}) {
     const error = new Error(
       "Supabase 요청에 실패했습니다."
     );
+
     error.statusCode = response.status;
     error.details = data;
+
     throw error;
   }
 
@@ -78,6 +86,24 @@ async function getOpenDrivingSession(vehicleId) {
     ended_at: "is.null",
     select: "*",
     order: "started_at.desc",
+    limit: "1",
+  });
+
+  const rows = await supabaseRequest(
+    `driving_sessions?${query.toString()}`
+  );
+
+  return rows?.[0] || null;
+}
+
+async function getLatestCompletedSession(
+  vehicleId
+) {
+  const query = new URLSearchParams({
+    vehicle_id: `eq.${vehicleId}`,
+    ended_at: "not.is.null",
+    select: "*",
+    order: "ended_at.desc",
     limit: "1",
   });
 
@@ -164,7 +190,9 @@ async function finishDrivingSession(
   session,
   vehicle
 ) {
-  const startedAt = new Date(session.started_at);
+  const startedAt =
+    new Date(session.started_at);
+
   const endedAt = new Date();
 
   const startSnapshot =
@@ -175,7 +203,10 @@ async function finishDrivingSession(
 
   const durationSec = Math.max(
     Math.round(
-      (endedAt.getTime() - startedAt.getTime()) / 1000
+      (
+        endedAt.getTime() -
+        startedAt.getTime()
+      ) / 1000
     ),
     0
   );
@@ -191,7 +222,10 @@ async function finishDrivingSession(
     typeof endOdometer === "number"
       ? Math.max(
           Math.round(
-            (endOdometer - startOdometer) * 10
+            (
+              endOdometer -
+              startOdometer
+            ) * 10
           ) / 10,
           0
         )
@@ -216,9 +250,10 @@ async function finishDrivingSession(
     typeof distanceKm === "number" &&
     durationSec > 0
       ? Math.round(
-          (distanceKm /
-            (durationSec / 3600)) *
-            10
+          (
+            distanceKm /
+            (durationSec / 3600)
+          ) * 10
         ) / 10
       : null;
 
@@ -249,7 +284,10 @@ async function finishDrivingSession(
   return rows?.[0] || null;
 }
 
-export default async function handler(req, res) {
+export default async function handler(
+  req,
+  res
+) {
   if (req.method !== "POST") {
     res.setHeader("Allow", "POST");
 
@@ -259,7 +297,10 @@ export default async function handler(req, res) {
     });
   }
 
-  res.setHeader("Cache-Control", "no-store");
+  res.setHeader(
+    "Cache-Control",
+    "no-store"
+  );
 
   try {
     const vehicle =
@@ -268,7 +309,8 @@ export default async function handler(req, res) {
     if (!vehicle.id) {
       return res.status(400).json({
         ok: false,
-        error: "차량 ID를 확인할 수 없습니다.",
+        error:
+          "차량 ID를 확인할 수 없습니다.",
       });
     }
 
@@ -276,7 +318,9 @@ export default async function handler(req, res) {
       await getLatestSnapshot(vehicle.id);
 
     const openSession =
-      await getOpenDrivingSession(vehicle.id);
+      await getOpenDrivingSession(
+        vehicle.id
+      );
 
     let event = "snapshot";
     let session = openSession;
@@ -315,12 +359,29 @@ export default async function handler(req, res) {
     const snapshot =
       await insertSnapshot(vehicle);
 
+    const latestCompletedSession =
+      event === "driving_ended"
+        ? session
+        : await getLatestCompletedSession(
+            vehicle.id
+          );
+
+    const parkedAt =
+      isDriving
+        ? null
+        : latestCompletedSession
+            ?.ended_at || null;
+
     return res.status(200).json({
       ok: true,
       event,
-      vehicle,
+      vehicle: {
+        ...vehicle,
+        parkedAt,
+      },
       snapshot,
       session,
+      parkedAt,
     });
   } catch (error) {
     console.error(

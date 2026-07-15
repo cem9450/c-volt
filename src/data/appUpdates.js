@@ -1,5 +1,15 @@
 export const APP_UPDATES = [
   {
+  id: "version-0-1-14",
+  version: "0.1.14",
+  type: "update",
+  title: "C-Volt ver 0.1.14",
+  message:
+    "실제 운행 종료 시각을 기준으로 주차 시간을 계산하도록 수정하고, 운전 상태에 따른 카드 순서 변경과 주행 시작 시 주차 메모 자동 초기화 기능을 추가했습니다.",
+  releasedAt:
+    "2026-07-15T23:1５:00+09:00",
+},
+    {
   id: "version-0-1-13",
   version: "0.1.13",
   type: "update",
