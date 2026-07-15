@@ -9,7 +9,9 @@ function formatDuration(seconds) {
   if (!seconds) return "0분";
 
   const hours = Math.floor(seconds / 3600);
-  const minutes = Math.floor((seconds % 3600) / 60);
+  const minutes = Math.floor(
+    (seconds % 3600) / 60
+  );
 
   if (hours > 0) {
     return `${hours}시간 ${minutes}분`;
@@ -19,11 +21,13 @@ function formatDuration(seconds) {
 }
 
 function getScoreMessage(score) {
-  if (score >= 95) return "최고예요!";
-  if (score >= 90) return "훌륭해요!";
-  if (score >= 85) return "아주 좋아요!";
-  if (score >= 75) return "좋은 주행이에요";
-  return "조금 더 힘내요!";
+  if (score >= 95) return "최고의 주행";
+  if (score >= 90) return "아주 훌륭해요";
+  if (score >= 85) return "매우 안정적";
+  if (score >= 80) return "좋은 주행";
+  if (score >= 75) return "양호한 주행";
+
+  return "개선 가능";
 }
 
 function getGaugeDegrees(score) {
@@ -42,24 +46,30 @@ export default function TodayDrivingCard() {
   const [scoreData, setScoreData] =
     useState(null);
 
+  const [animatedScore, setAnimatedScore] =
+    useState(0);
+
   const [error, setError] = useState("");
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] =
+    useState(true);
 
   const loadDashboardData =
     useCallback(async () => {
       try {
-        const [drivingResponse, scoreResponse] =
-          await Promise.all([
-            fetch("/api/today-driving", {
-              credentials: "include",
-              cache: "no-store",
-            }),
+        const [
+          drivingResponse,
+          scoreResponse,
+        ] = await Promise.all([
+          fetch("/api/today-driving", {
+            credentials: "include",
+            cache: "no-store",
+          }),
 
-            fetch("/api/today-score", {
-              credentials: "include",
-              cache: "no-store",
-            }),
-          ]);
+          fetch("/api/today-score", {
+            credentials: "include",
+            cache: "no-store",
+          }),
+        ]);
 
         const [drivingJson, scoreJson] =
           await Promise.all([
@@ -112,6 +122,26 @@ export default function TodayDrivingCard() {
       window.clearInterval(intervalId);
     };
   }, [loadDashboardData]);
+
+  useEffect(() => {
+    if (!scoreData?.hasData) {
+      setAnimatedScore(0);
+      return;
+    }
+
+    setAnimatedScore(0);
+
+    const animationTimer =
+      window.setTimeout(() => {
+        setAnimatedScore(
+          Number(scoreData.score) || 0
+        );
+      }, 120);
+
+    return () => {
+      window.clearTimeout(animationTimer);
+    };
+  }, [scoreData]);
 
   const displayData = useMemo(() => {
     const isDriving =
@@ -182,6 +212,9 @@ export default function TodayDrivingCard() {
     hasCompletedDrive ||
     displayData.isDriving;
 
+  const hasScore =
+    scoreData?.hasData === true;
+
   return (
     <div className="reference-drive-dashboard">
       <div className="reference-drive-metric">
@@ -209,22 +242,34 @@ export default function TodayDrivingCard() {
         <span>AI 운전 점수</span>
 
         <div
-          className="reference-score-gauge"
+          className={
+            hasScore
+              ? "reference-score-gauge has-score"
+              : "reference-score-gauge"
+          }
           style={{
             "--score-angle":
               getGaugeDegrees(
-                displayData.score
+                animatedScore
               ),
           }}
         >
           <div className="reference-score-gauge-inner">
             <strong>
-              {scoreData?.hasData
+              {hasScore
                 ? displayData.score
                 : "-"}
             </strong>
 
-            <small>점</small>
+            <div className="reference-score-meta">
+              <small>점</small>
+
+              {hasScore && (
+                <em>
+                  {scoreData.grade}
+                </em>
+              )}
+            </div>
           </div>
         </div>
 
@@ -237,19 +282,27 @@ export default function TodayDrivingCard() {
         >
           {displayData.isDriving
             ? "Driving..."
-            : scoreData?.hasData
+            : hasScore
               ? getScoreMessage(
                   displayData.score
                 )
               : "운행 후 계산"}
         </p>
+
+        {hasScore && (
+          <span className="reference-score-badge">
+            {scoreData.badge?.emoji}
+            {" "}
+            {scoreData.badge?.name}
+          </span>
+        )}
       </div>
 
       <div className="reference-drive-metric right">
         <span>배터리 효율</span>
 
         <strong>
-          {scoreData?.hasData
+          {hasScore
             ? displayData.efficiency.toFixed(1)
             : "-"}
           <small>km/%</small>
@@ -263,6 +316,14 @@ export default function TodayDrivingCard() {
             : "주행 대기 중"}
         </p>
       </div>
+
+      {hasScore && scoreData.comment && (
+        <div className="reference-score-comment">
+          <span>AI</span>
+
+          <p>{scoreData.comment}</p>
+        </div>
+      )}
 
       <div className="reference-drive-mobile-summary">
         <div>

@@ -2284,14 +2284,14 @@ body {
 
 .reference-drive-dashboard {
   display: grid;
-  min-height: 210px;
+  min-height: 226px;
   grid-template-columns:
     minmax(0, 1fr)
     minmax(118px, 1.08fr)
     minmax(0, 1fr);
   align-items: center;
   gap: 10px;
-  padding: 11px 3px 5px;
+  padding: 11px 3px 7px;
 }
 
 .reference-drive-metric {
@@ -2364,6 +2364,7 @@ body {
   align-items: center;
   justify-content: center;
   border-radius: 50%;
+
   background:
     conic-gradient(
       from 225deg,
@@ -2376,11 +2377,22 @@ body {
       transparent 270deg,
       transparent 360deg
     );
+
   filter:
     drop-shadow(
       0 0 14px rgba(164, 60, 255, 0.2)
     );
-  transform: rotate(0deg);
+
+  transition:
+    background 900ms
+    cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.reference-score-gauge.has-score {
+  filter:
+    drop-shadow(
+      0 0 17px rgba(164, 60, 255, 0.26)
+    );
 }
 
 .reference-score-gauge::before {
@@ -2388,6 +2400,7 @@ body {
   position: absolute;
   inset: 8px;
   border-radius: 50%;
+
   background:
     radial-gradient(
       circle at 50% 36%,
@@ -2414,11 +2427,38 @@ body {
   letter-spacing: -1px;
 }
 
-.reference-score-gauge-inner small {
-  margin-top: 3px;
-  color: rgba(255, 255, 255, 0.68);
-  font-size: 10px;
+.reference-score-meta {
+  display: flex;
+  margin-top: 4px;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+}
+
+.reference-score-meta small {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.58);
+  font-size: 9px;
   font-weight: 700;
+}
+
+.reference-score-meta em {
+  display: inline-flex;
+  min-width: 22px;
+  height: 16px;
+  padding: 0 5px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+
+  background:
+    rgba(179, 84, 255, 0.15);
+
+  color: #c878ff;
+  font-size: 8px;
+  font-style: normal;
+  font-weight: 900;
+  line-height: 1;
 }
 
 .reference-score-message {
@@ -2430,11 +2470,62 @@ body {
 
 .reference-score-message.live {
   color: #50ff9e;
+
   animation:
     referenceDriveLivePulse
     1.2s
     ease-in-out
     infinite;
+}
+
+.reference-score-badge {
+  display: block;
+  margin-top: 5px;
+  color: rgba(255, 255, 255, 0.38);
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.reference-score-comment {
+  display: flex;
+  grid-column: 1 / -1;
+  margin-top: 1px;
+  padding: 8px 10px;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  border-radius: 11px;
+
+  background:
+    rgba(255, 255, 255, 0.025);
+}
+
+.reference-score-comment > span {
+  display: inline-flex;
+  min-width: 22px;
+  height: 17px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+
+  background:
+    rgba(179, 84, 255, 0.15);
+
+  color: #c878ff;
+  font-size: 8px;
+  font-weight: 900;
+}
+
+.reference-score-comment p {
+  overflow: hidden;
+  margin: 0;
+  color: rgba(255, 255, 255, 0.48);
+  font-size: 9px;
+  font-weight: 600;
+  line-height: 1.35;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .reference-drive-mobile-summary {
@@ -2459,12 +2550,14 @@ body {
   padding: 0 14px;
   border: 0;
   border-radius: 999px;
+
   background:
     linear-gradient(
       135deg,
       #8e32f5,
       #b654ff
     );
+
   color: #ffffff;
   font-size: 11px;
   font-weight: 800;
@@ -2502,6 +2595,15 @@ body {
   .reference-score-gauge-inner strong {
     font-size: 31px;
   }
+
+  .reference-score-comment {
+    padding-right: 7px;
+    padding-left: 7px;
+  }
+
+  .reference-score-comment p {
+    font-size: 8px;
+  }
 }
 
 @media (max-width: 350px) {
@@ -2519,9 +2621,14 @@ body {
     grid-row: 2;
   }
 
+  .reference-score-comment {
+    grid-row: 3;
+  }
+
   .reference-drive-mobile-summary {
     display: grid;
     grid-column: 1 / -1;
+    grid-row: 4;
     grid-template-columns: repeat(2, 1fr);
     gap: 8px;
     margin-top: 8px;
@@ -2530,7 +2637,8 @@ body {
   .reference-drive-mobile-summary > div {
     padding: 10px 6px;
     border-radius: 12px;
-    background: rgba(255, 255, 255, 0.025);
+    background:
+      rgba(255, 255, 255, 0.025);
     text-align: center;
   }
 
@@ -4556,14 +4664,13 @@ body {
 
 .footer-icon {
   position: absolute;
-  right: calc(100% + 4px);
+  right: calc(100% - 4px);
+  top: 50%;
+  transform: translateY(-50%);
 
-  display: flex;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-
-  margin: 0;
-  padding: 0;
 
   font-size: 12px;
   line-height: 1;

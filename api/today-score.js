@@ -153,6 +153,10 @@ function clamp(value, min, max) {
   );
 }
 
+function roundOne(value) {
+  return Math.round(value * 10) / 10;
+}
+
 function calculateScore({
   totalDistanceKm,
   totalDurationSec,
@@ -160,79 +164,134 @@ function calculateScore({
   avgSpeedKmh,
   tripCount,
 }) {
-  let score = 75;
-  let dataQuality = "good";
-
   const factors = [];
 
   const hasDistance =
     Number.isFinite(totalDistanceKm) &&
     totalDistanceKm > 0;
 
+  const hasDuration =
+    Number.isFinite(totalDurationSec) &&
+    totalDurationSec > 0;
+
   const hasBatteryData =
     Number.isFinite(totalBatteryUsed) &&
     totalBatteryUsed > 0;
 
-  if (!hasDistance) {
+  if (!hasDistance || !hasDuration) {
     return {
       score: 0,
       dataQuality: "insufficient",
+      confidence: "low",
       factors: [],
+      batteryEfficiency: 0,
     };
   }
 
   /*
-   * 주행거리 점수
+   * 기본 점수
+   *
+   * 실제 Telemetry가 연결되기 전까지는
+   * 거리, 시간, 평균속도, 배터리 효율을 이용한
+   * 추정 점수입니다.
    */
 
-  if (totalDistanceKm >= 5) {
-    score += 3;
+  let score = 72;
+  let dataQuality = "good";
+  let confidence = "medium";
+
+  /*
+   * 주행 데이터 신뢰도
+   */
+
+  if (totalDistanceKm >= 3) {
+    score += 1;
 
     factors.push({
       type: "bonus",
-      label: "충분한 주행거리",
-      value: 3,
+      label: "주행 데이터 확보",
+      value: 1,
     });
   }
 
-  if (totalDistanceKm >= 20) {
+  if (totalDistanceKm >= 10) {
     score += 2;
 
     factors.push({
       type: "bonus",
-      label: "장거리 주행 완료",
+      label: "충분한 분석 거리",
       value: 2,
     });
   }
 
+  if (totalDistanceKm >= 30) {
+    score += 1;
+
+    factors.push({
+      type: "bonus",
+      label: "장거리 데이터 확보",
+      value: 1,
+    });
+  }
+
   /*
-   * 평균속도 점수
+   * 평균속도 분석
    */
 
   if (
-    avgSpeedKmh >= 15 &&
-    avgSpeedKmh <= 70
+    avgSpeedKmh >= 18 &&
+    avgSpeedKmh <= 55
+  ) {
+    score += 7;
+
+    factors.push({
+      type: "bonus",
+      label: "안정적인 평균속도",
+      value: 7,
+    });
+  } else if (
+    avgSpeedKmh > 55 &&
+    avgSpeedKmh <= 75
   ) {
     score += 5;
 
     factors.push({
       type: "bonus",
-      label: "안정적인 평균속도",
+      label: "원활한 주행 속도",
       value: 5,
     });
-  } else if (avgSpeedKmh < 8) {
+  } else if (
+    avgSpeedKmh >= 10 &&
+    avgSpeedKmh < 18
+  ) {
+    score += 2;
+
+    factors.push({
+      type: "bonus",
+      label: "도심 주행 구간",
+      value: 2,
+    });
+  } else if (avgSpeedKmh < 10) {
+    score -= 4;
+
+    factors.push({
+      type: "penalty",
+      label: "정체 또는 저속 주행",
+      value: -4,
+    });
+  } else if (avgSpeedKmh > 95) {
     score -= 5;
 
     factors.push({
       type: "penalty",
-      label: "저속 정체 주행",
+      label: "높은 평균속도",
       value: -5,
     });
   }
 
   /*
-   * 배터리 효율 점수
-   * 주행거리 ÷ 배터리 사용 퍼센트
+   * 배터리 효율 분석
+   * 거리 ÷ 배터리 사용 퍼센트
    */
 
   let batteryEfficiency = 0;
@@ -241,35 +300,48 @@ function calculateScore({
     batteryEfficiency =
       totalDistanceKm / totalBatteryUsed;
 
-    if (batteryEfficiency >= 5) {
-      score += 12;
+    confidence =
+      totalDistanceKm >= 10
+        ? "high"
+        : "medium";
+
+    if (batteryEfficiency >= 6) {
+      score += 14;
+
+      factors.push({
+        type: "bonus",
+        label: "최상급 배터리 효율",
+        value: 14,
+      });
+    } else if (batteryEfficiency >= 5) {
+      score += 11;
 
       factors.push({
         type: "bonus",
         label: "매우 우수한 배터리 효율",
-        value: 12,
+        value: 11,
       });
     } else if (batteryEfficiency >= 4) {
-      score += 9;
+      score += 8;
 
       factors.push({
         type: "bonus",
         label: "우수한 배터리 효율",
-        value: 9,
+        value: 8,
       });
     } else if (batteryEfficiency >= 3) {
-      score += 5;
+      score += 4;
 
       factors.push({
         type: "bonus",
         label: "양호한 배터리 효율",
-        value: 5,
+        value: 4,
       });
     } else if (batteryEfficiency >= 2) {
       score += 1;
 
       factors.push({
-        type: "bonus",
+        type: "info",
         label: "보통 수준의 배터리 효율",
         value: 1,
       });
@@ -278,12 +350,13 @@ function calculateScore({
 
       factors.push({
         type: "penalty",
-        label: "배터리 소모가 큰 주행",
+        label: "높은 배터리 소모",
         value: -8,
       });
     }
   } else {
     dataQuality = "limited";
+    confidence = "low";
 
     factors.push({
       type: "info",
@@ -294,70 +367,106 @@ function calculateScore({
 
   /*
    * 운행 횟수
+   *
+   * 운행 횟수 자체가 운전 실력을 의미하지 않으므로
+   * 영향은 작게 제한합니다.
    */
 
-  if (
-    tripCount >= 1 &&
-    tripCount <= 4
-  ) {
+  if (tripCount >= 1 && tripCount <= 3) {
     score += 2;
 
     factors.push({
       type: "bonus",
-      label: "적정한 운행 횟수",
+      label: "안정적인 운행 기록",
       value: 2,
+    });
+  } else if (tripCount >= 7) {
+    score -= 1;
+
+    factors.push({
+      type: "info",
+      label: "짧은 운행이 여러 번 기록됨",
+      value: -1,
     });
   }
 
   /*
-   * 비정상 데이터 방어
+   * 데이터 이상값 확인
    */
 
+  const calculatedAvgSpeed =
+    totalDistanceKm /
+    (totalDurationSec / 3600);
+
   if (
-    totalDurationSec > 0 &&
-    totalDistanceKm > 0
+    calculatedAvgSpeed > 140 ||
+    calculatedAvgSpeed < 0
   ) {
-    const calculatedAvgSpeed =
-      totalDistanceKm /
-      (totalDurationSec / 3600);
+    score -= 8;
+    dataQuality = "limited";
+    confidence = "low";
 
-    if (calculatedAvgSpeed > 130) {
-      score -= 5;
+    factors.push({
+      type: "penalty",
+      label: "일부 주행 데이터 확인 필요",
+      value: -8,
+    });
+  }
 
-      factors.push({
-        type: "penalty",
-        label: "비정상적으로 높은 평균속도",
-        value: -5,
-      });
-    }
+  /*
+   * 짧은 주행은 점수 신뢰도가 낮으므로
+   * 최고점 제한
+   */
+
+  if (totalDistanceKm < 3) {
+    score = Math.min(score, 82);
+    confidence = "low";
+  } else if (totalDistanceKm < 8) {
+    score = Math.min(score, 89);
   }
 
   /*
    * 배터리 데이터가 없으면
-   * 점수가 지나치게 높아지지 않게 제한
+   * 높은 점수가 나오지 않도록 제한
    */
 
   if (dataQuality === "limited") {
-    score = Math.min(score, 85);
+    score = Math.min(score, 84);
   }
+
+  /*
+   * Telemetry 연결 전에는
+   * 100점을 쉽게 주지 않도록 최고 97점 제한
+   */
 
   return {
     score: clamp(
       Math.round(score),
       60,
-      100
+      97
     ),
     dataQuality,
+    confidence,
     factors,
     batteryEfficiency,
   };
 }
 
-function getBadge(
+function getGrade(score) {
+  if (score >= 95) return "S";
+  if (score >= 90) return "A+";
+  if (score >= 85) return "A";
+  if (score >= 80) return "B+";
+  if (score >= 75) return "B";
+  if (score >= 70) return "C+";
+  return "C";
+}
+
+function getBadge({
   score,
   avgSpeedKmh,
-  batteryEfficiency
-) {
+  batteryEfficiency,
+}) {
   if (score >= 95) {
     return {
       name: "Elite Driver",
@@ -365,24 +474,27 @@ function getBadge(
     };
   }
 
-  if (batteryEfficiency >= 4) {
+  if (batteryEfficiency >= 5) {
     return {
-      name: "Eco Driver",
+      name: "Eco Master",
       emoji: "🌱",
     };
   }
 
-  if (avgSpeedKmh >= 60) {
-    return {
-      name: "Highway Cruiser",
-      emoji: "🛣️",
-    };
-  }
-
-  if (score >= 88) {
+  if (
+    avgSpeedKmh >= 18 &&
+    avgSpeedKmh <= 55
+  ) {
     return {
       name: "Smooth Driver",
       emoji: "✨",
+    };
+  }
+
+  if (avgSpeedKmh >= 55) {
+    return {
+      name: "Highway Cruiser",
+      emoji: "🛣️",
     };
   }
 
@@ -392,27 +504,43 @@ function getBadge(
   };
 }
 
-function getComment(
+function getComment({
   score,
-  batteryEfficiency
-) {
-  if (score >= 95) {
-    return "오늘은 거리와 배터리 사용의 균형이 매우 좋았습니다.";
+  batteryEfficiency,
+  avgSpeedKmh,
+  dataQuality,
+}) {
+  if (dataQuality === "limited") {
+    return "배터리 데이터가 더 쌓이면 점수가 더 정확해져요.";
   }
 
-  if (batteryEfficiency >= 4) {
-    return "배터리를 효율적으로 사용한 주행이었습니다.";
+  if (
+    score >= 95 &&
+    batteryEfficiency >= 5
+  ) {
+    return "속도와 배터리 효율의 균형이 매우 뛰어났어요.";
   }
 
-  if (score >= 88) {
-    return "전체적으로 안정적이고 균형 잡힌 주행이었습니다.";
+  if (batteryEfficiency >= 5) {
+    return "배터리를 아주 효율적으로 사용한 주행이었어요.";
   }
 
-  if (score >= 80) {
-    return "좋은 주행이었습니다. 데이터가 더 쌓이면 분석이 더욱 정교해집니다.";
+  if (
+    avgSpeedKmh >= 18 &&
+    avgSpeedKmh <= 55
+  ) {
+    return "전체적으로 안정적이고 균형 잡힌 주행이었어요.";
   }
 
-  return "다음 주행에서는 부드러운 가속과 효율적인 속도 유지에 집중해보세요.";
+  if (score >= 85) {
+    return "오늘도 부드럽고 효율적인 주행을 유지했어요.";
+  }
+
+  if (score >= 75) {
+    return "좋은 주행이에요. 효율을 조금 더 높여볼 수 있어요.";
+  }
+
+  return "다음 주행에서는 일정한 속도 유지에 집중해보세요.";
 }
 
 export default async function handler(
@@ -529,54 +657,58 @@ export default async function handler(
     const batteryEfficiency =
       scoreResult.batteryEfficiency || 0;
 
-    const badge = getBadge(
+    const grade = getGrade(score);
+
+    const badge = getBadge({
       score,
       avgSpeedKmh,
-      batteryEfficiency
-    );
+      batteryEfficiency,
+    });
 
-    const comment = getComment(
+    const comment = getComment({
       score,
-      batteryEfficiency
-    );
+      batteryEfficiency,
+      avgSpeedKmh,
+      dataQuality:
+        scoreResult.dataQuality,
+    });
 
     return res.status(200).json({
       ok: true,
       hasData: true,
 
       score,
+      grade,
+      badge,
+      comment,
+
+      scoringMode: "estimated",
 
       dataQuality:
         scoreResult.dataQuality,
 
+      confidence:
+        scoreResult.confidence,
+
       factors:
         scoreResult.factors,
-
-      badge,
-
-      comment,
 
       summary: {
         tripCount: sessions.length,
 
         totalDistanceKm:
-          Math.round(
-            totalDistanceKm * 10
-          ) / 10,
+          roundOne(totalDistanceKm),
 
         totalDurationSec,
 
         avgSpeedKmh:
-          Math.round(
-            avgSpeedKmh * 10
-          ) / 10,
+          roundOne(avgSpeedKmh),
 
-        totalBatteryUsed,
+        totalBatteryUsed:
+          roundOne(totalBatteryUsed),
 
         batteryEfficiency:
-          Math.round(
-            batteryEfficiency * 10
-          ) / 10,
+          roundOne(batteryEfficiency),
       },
     });
   } catch (error) {
