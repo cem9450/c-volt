@@ -4077,3 +4077,15 @@ body {
   background: #a944ff !important;
   box-shadow: 0 0 10px rgba(169, 68, 255, 0.8) !important;
 }
+/* 프로필 사진이 원 안에서 잘리지 않게 */
+.cv-profile-image img,
+.cv-profile-photo-button > img {
+  object-fit: contain !important;
+  object-position: center !important;
+  transform: none !important;
+  background: #0b0b0f;
+}
+.cv-profile-image img {
+  padding: 3px !important;
+  box-sizing: border-box !important;
+}

@@ -1,5 +1,14 @@
 export const APP_UPDATES = [
     {
+  id: "version-0-1-6",
+  version: "0.1.6",
+  type: "update",
+  title: "C-Volt ver 0.1.6",
+  message:
+    "프로필 사진이 원형 영역에서 잘리던 문제와 업데이트 알림 시간 표시 방식을 수정했습니다.",
+  releasedAt: "2026-07-15T22:20:00+09:00",
+},
+    {
   id: "version-0-1-5",
   version: "0.1.5",
   type: "update",

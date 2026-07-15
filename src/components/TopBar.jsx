@@ -100,8 +100,8 @@ function syncUpdateNotifications(
   title: update.title,
   message: update.message,
 
-  // 실제로 사용자 알림센터에 등록된 시간
-  createdAt: new Date().toISOString(),
+  // 실제 앱 업데이트 배포 시각
+  createdAt: update.releasedAt,
 
   read: false,
 }));
