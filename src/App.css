@@ -2840,6 +2840,8 @@ body {
     infinite;
 }
 
+/* 차량 상태 */
+
 .vehicle-reference-status {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -2847,7 +2849,7 @@ body {
   margin-top: 4px;
 }
 
-.vehicle-reference-status > div {
+.vehicle-status-item {
   display: flex;
   min-width: 0;
   min-height: 62px;
@@ -2858,12 +2860,30 @@ body {
   color: rgba(255, 255, 255, 0.56);
 }
 
-.vehicle-reference-status svg {
+.vehicle-status-icon {
+  position: relative;
+  display: inline-flex;
+  width: 30px;
+  height: 30px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+
+  transition:
+    color 0.3s ease,
+    background 0.3s ease,
+    box-shadow 0.3s ease,
+    transform 0.3s ease;
+}
+
+.vehicle-status-icon > svg {
+  position: relative;
+  z-index: 2;
   font-size: 22px;
   stroke-width: 1.65;
 }
 
-.vehicle-reference-status span {
+.vehicle-status-label {
   overflow: hidden;
   width: 100%;
   text-align: center;
@@ -2871,7 +2891,220 @@ body {
   white-space: nowrap;
   font-size: 9px;
   font-weight: 600;
+
+  transition:
+    color 0.3s ease;
 }
+
+/* 잠김 */
+
+.vehicle-status-lock.locked
+.vehicle-status-icon {
+  color: #b96cff;
+  background:
+    rgba(168, 71, 255, 0.08);
+  box-shadow:
+    0 0 16px rgba(166, 72, 255, 0.12);
+}
+
+.vehicle-status-lock.locked
+.vehicle-status-label {
+  color: rgba(210, 168, 255, 0.82);
+}
+
+/* 잠금 해제 */
+
+.vehicle-status-lock.unlocked
+.vehicle-status-icon {
+  color: #ffad62;
+  background:
+    rgba(255, 150, 75, 0.09);
+  box-shadow:
+    0 0 16px rgba(255, 148, 68, 0.17);
+
+  animation:
+    vehicleStatusWarningPulse
+    1.7s
+    ease-in-out
+    infinite;
+}
+
+.vehicle-status-lock.unlocked
+.vehicle-status-label {
+  color: rgba(255, 180, 115, 0.9);
+}
+
+/* 적정 실내 온도 */
+
+.vehicle-status-temperature.comfortable
+.vehicle-status-icon {
+  color: #b96cff;
+  background:
+    rgba(168, 71, 255, 0.07);
+}
+
+/* 낮은 실내 온도 */
+
+.vehicle-status-temperature.cold
+.vehicle-status-icon {
+  color: #75c7ff;
+  background:
+    rgba(80, 177, 255, 0.08);
+  box-shadow:
+    0 0 15px rgba(80, 177, 255, 0.12);
+}
+
+.vehicle-status-temperature.cold
+.vehicle-status-label {
+  color: rgba(132, 204, 255, 0.8);
+}
+
+/* 높은 실내 온도 */
+
+.vehicle-status-temperature.hot
+.vehicle-status-icon {
+  color: #ff9d5c;
+  background:
+    rgba(255, 137, 68, 0.09);
+  box-shadow:
+    0 0 16px rgba(255, 121, 54, 0.15);
+
+  animation:
+    vehicleTemperatureHeat
+    1.8s
+    ease-in-out
+    infinite;
+}
+
+.vehicle-status-temperature.hot
+.vehicle-status-label {
+  color: rgba(255, 173, 115, 0.86);
+}
+
+/* 충전 아이콘 */
+
+.charging-icon {
+  overflow: hidden;
+}
+
+.charging-icon-fill {
+  position: absolute;
+  z-index: 1;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: 0;
+
+  background:
+    linear-gradient(
+      180deg,
+      #d48cff,
+      #8c2cff
+    );
+
+  opacity: 0.9;
+}
+
+/* 충전 중 */
+
+.vehicle-status-charging.charging
+.charging-icon {
+  color: #ffffff;
+  background:
+    rgba(162, 66, 255, 0.1);
+  box-shadow:
+    0 0 18px rgba(168, 70, 255, 0.24);
+}
+
+.vehicle-status-charging.charging
+.charging-icon-fill {
+  animation:
+    vehicleChargingFill
+    1.8s
+    ease-in-out
+    infinite;
+}
+
+.vehicle-status-charging.charging
+.vehicle-status-label {
+  color: #c879ff;
+}
+
+/* 충전 준비 */
+
+.vehicle-status-charging.starting
+.charging-icon {
+  color: #c27aff;
+  background:
+    rgba(162, 66, 255, 0.08);
+
+  animation:
+    vehicleChargingPreparing
+    1.2s
+    ease-in-out
+    infinite;
+}
+
+.vehicle-status-charging.starting
+.vehicle-status-label {
+  color: rgba(200, 131, 255, 0.83);
+}
+
+/* 충전 완료 */
+
+.vehicle-status-charging.complete
+.charging-icon {
+  color: #dca6ff;
+  background:
+    rgba(162, 66, 255, 0.14);
+  box-shadow:
+    0 0 18px rgba(168, 70, 255, 0.24);
+}
+
+.vehicle-status-charging.complete
+.charging-icon-fill {
+  height: 100%;
+}
+
+.vehicle-status-charging.complete
+.vehicle-status-label {
+  color: #d69aff;
+}
+
+/* 충전 오류 및 중지 */
+
+.vehicle-status-charging.charging-warning
+.charging-icon {
+  color: #ff9b64;
+  background:
+    rgba(255, 135, 75, 0.08);
+}
+
+.vehicle-status-charging.charging-warning
+.vehicle-status-label {
+  color: rgba(255, 166, 111, 0.86);
+}
+
+/* 충전 중 아님 */
+
+.vehicle-status-charging.inactive
+.charging-icon {
+  color: rgba(255, 255, 255, 0.56);
+}
+
+/* 트렁크 */
+
+.vehicle-status-trunk.closed
+.vehicle-status-icon {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.vehicle-status-trunk.closed
+.vehicle-status-icon > svg {
+  font-size: 24px;
+}
+
+/* 로딩 */
 
 .vehicle-reference-loading {
   display: flex;
@@ -2901,8 +3134,14 @@ body {
 }
 
 .vehicle-spin {
-  animation: vehicleReferenceSpin 0.75s linear infinite;
+  animation:
+    vehicleReferenceSpin
+    0.75s
+    linear
+    infinite;
 }
+
+/* 애니메이션 */
 
 @keyframes vehicleBatteryFill {
   from {
@@ -2946,6 +3185,60 @@ body {
   }
 }
 
+@keyframes vehicleStatusWarningPulse {
+  0%,
+  100% {
+    opacity: 0.68;
+    transform: scale(0.96);
+  }
+
+  50% {
+    opacity: 1;
+    transform: scale(1.04);
+  }
+}
+
+@keyframes vehicleTemperatureHeat {
+  0%,
+  100% {
+    box-shadow:
+      0 0 10px rgba(255, 121, 54, 0.08);
+  }
+
+  50% {
+    box-shadow:
+      0 0 21px rgba(255, 121, 54, 0.25);
+  }
+}
+
+@keyframes vehicleChargingFill {
+  0% {
+    height: 10%;
+    opacity: 0.42;
+  }
+
+  50% {
+    height: 100%;
+    opacity: 0.94;
+  }
+
+  100% {
+    height: 10%;
+    opacity: 0.42;
+  }
+}
+
+@keyframes vehicleChargingPreparing {
+  0%,
+  100% {
+    opacity: 0.48;
+  }
+
+  50% {
+    opacity: 1;
+  }
+}
+
 @media (max-width: 390px) {
   .vehicle-reference-main {
     grid-template-columns: 0.9fr 1.1fr;
@@ -2977,11 +3270,11 @@ body {
     width: 195px;
   }
 
-  .vehicle-reference-status svg {
+  .vehicle-status-icon > svg {
     font-size: 19px;
   }
 
-  .vehicle-reference-status span {
+  .vehicle-status-label {
     font-size: 8px;
   }
 }

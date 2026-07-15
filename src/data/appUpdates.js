@@ -1,5 +1,15 @@
 export const APP_UPDATES = [
   {
+  id: "version-0-1-12",
+  version: "0.1.12",
+  type: "update",
+  title: "C-Volt ver 0.1.12",
+  message:
+    "차량 잠금, 실내 온도와 충전 상태에 따른 시각 효과를 추가하고 트렁크 상태 아이콘을 차량 형태로 변경했습니다.",
+  releasedAt:
+    "2026-07-15T21:47:00+09:00",
+},
+    {
     id: "version-0-1-11",
     version: "0.1.11",
     type: "update",

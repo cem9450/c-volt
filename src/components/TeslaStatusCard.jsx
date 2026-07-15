@@ -9,12 +9,11 @@ import {
   FiLock,
   FiRefreshCw,
   FiThermometer,
+  FiUnlock,
 } from "react-icons/fi";
 
-import {
-  HiOutlineBolt,
-  HiOutlineTruck,
-} from "react-icons/hi2";
+import { HiOutlineBolt } from "react-icons/hi2";
+import { IoCarSportOutline } from "react-icons/io5";
 
 import quicksilver from "../assets/quicksilver.png";
 import glacierblue from "../assets/glacierblue.png";
@@ -40,139 +39,218 @@ function formatUpdatedTime(seconds) {
   return `${Math.floor(seconds / 60)}분 전`;
 }
 
-export default function TeslaStatusCard() {
-  const [vehicle, setVehicle] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
-  const [lastUpdated, setLastUpdated] = useState(null);
-  const [secondsAgo, setSecondsAgo] = useState(0);
-
-  const requestInProgress = useRef(false);
-
-  const loadVehicle = useCallback(async (silent = false) => {
-    if (requestInProgress.current) return;
-
-    requestInProgress.current = true;
-
-    if (!silent) {
-      setLoading(true);
-    }
-
-    try {
-      const response = await fetch(
-        "/api/vehicle-snapshot",
-        {
-          method: "POST",
-          credentials: "include",
-          cache: "no-store",
-        }
-      );
-
-      const text = await response.text();
-
-      let data;
-
-      try {
-        data = JSON.parse(text);
-      } catch {
-        throw new Error(
-          "차량 서버 응답을 확인하지 못했습니다."
-        );
-      }
-
-      if (!response.ok || !data.ok) {
-        throw new Error(
-          data.error ||
-            "차량 정보를 불러오지 못했습니다."
-        );
-      }
-
-      setVehicle(data.vehicle);
-      setError("");
-if (data.event === "driving_ended") {
-  let score = null;
-
-  try {
-    const scoreResponse = await fetch("/api/today-score", {
-      credentials: "include",
-      cache: "no-store",
-    });
-
-    const scoreData = await scoreResponse.json();
-
-    if (
-      scoreResponse.ok &&
-      scoreData.ok &&
-      scoreData.hasData
-    ) {
-      score = scoreData.score;
-    }
-  } catch (scoreError) {
-    console.error(
-      "운행 종료 점수 조회 실패:",
-      scoreError
-    );
+function getTemperatureClass(temperature) {
+  if (
+    temperature === null ||
+    temperature === undefined
+  ) {
+    return "unknown";
   }
 
-  window.dispatchEvent(
-    new CustomEvent("cvolt:drive-ended", {
-      detail: {
-        score,
-        session: data.session || null,
-      },
-    })
-  );
+  if (temperature <= 15) {
+    return "cold";
+  }
+
+  if (temperature >= 28) {
+    return "hot";
+  }
+
+  return "comfortable";
 }
-      setLastUpdated(new Date());
-      setSecondsAgo(0);
 
-      localStorage.setItem(
-        "cvolt_vehicle",
-        JSON.stringify(data.vehicle)
-      );
+function getChargingClass(state) {
+  if (state === "Charging") {
+    return "charging";
+  }
 
-      window.dispatchEvent(
-        new CustomEvent("cvolt:vehicle-updated", {
-          detail: data.vehicle,
-        })
-      );
-    } catch (err) {
-      setError(
-        err instanceof Error
-          ? err.message
-          : "차량 정보를 불러오지 못했습니다."
-      );
-    } finally {
-      requestInProgress.current = false;
+  if (state === "Starting") {
+    return "starting";
+  }
+
+  if (state === "Complete") {
+    return "complete";
+  }
+
+  if (
+    state === "Stopped" ||
+    state === "NoPower"
+  ) {
+    return "charging-warning";
+  }
+
+  return "inactive";
+}
+
+export default function TeslaStatusCard() {
+  const [vehicle, setVehicle] =
+    useState(null);
+
+  const [loading, setLoading] =
+    useState(true);
+
+  const [error, setError] =
+    useState("");
+
+  const [lastUpdated, setLastUpdated] =
+    useState(null);
+
+  const [secondsAgo, setSecondsAgo] =
+    useState(0);
+
+  const requestInProgress =
+    useRef(false);
+
+  const loadVehicle = useCallback(
+    async (silent = false) => {
+      if (requestInProgress.current) {
+        return;
+      }
+
+      requestInProgress.current = true;
 
       if (!silent) {
-        setLoading(false);
+        setLoading(true);
       }
-    }
-  }, []);
+
+      try {
+        const response = await fetch(
+          "/api/vehicle-snapshot",
+          {
+            method: "POST",
+            credentials: "include",
+            cache: "no-store",
+          }
+        );
+
+        const text = await response.text();
+
+        let data;
+
+        try {
+          data = JSON.parse(text);
+        } catch {
+          throw new Error(
+            "차량 서버 응답을 확인하지 못했습니다."
+          );
+        }
+
+        if (!response.ok || !data.ok) {
+          throw new Error(
+            data.error ||
+              "차량 정보를 불러오지 못했습니다."
+          );
+        }
+
+        setVehicle(data.vehicle);
+        setError("");
+
+        if (data.event === "driving_ended") {
+          let score = null;
+
+          try {
+            const scoreResponse = await fetch(
+              "/api/today-score",
+              {
+                credentials: "include",
+                cache: "no-store",
+              }
+            );
+
+            const scoreData =
+              await scoreResponse.json();
+
+            if (
+              scoreResponse.ok &&
+              scoreData.ok &&
+              scoreData.hasData
+            ) {
+              score = scoreData.score;
+            }
+          } catch (scoreError) {
+            console.error(
+              "운행 종료 점수 조회 실패:",
+              scoreError
+            );
+          }
+
+          window.dispatchEvent(
+            new CustomEvent(
+              "cvolt:drive-ended",
+              {
+                detail: {
+                  score,
+                  session:
+                    data.session || null,
+                },
+              }
+            )
+          );
+        }
+
+        setLastUpdated(new Date());
+        setSecondsAgo(0);
+
+        localStorage.setItem(
+          "cvolt_vehicle",
+          JSON.stringify(data.vehicle)
+        );
+
+        window.dispatchEvent(
+          new CustomEvent(
+            "cvolt:vehicle-updated",
+            {
+              detail: data.vehicle,
+            }
+          )
+        );
+      } catch (err) {
+        setError(
+          err instanceof Error
+            ? err.message
+            : "차량 정보를 불러오지 못했습니다."
+        );
+      } finally {
+        requestInProgress.current = false;
+
+        if (!silent) {
+          setLoading(false);
+        }
+      }
+    },
+    []
+  );
 
   useEffect(() => {
     loadVehicle();
 
-    const refreshTimer = window.setInterval(() => {
-      loadVehicle(true);
-    }, 30000);
+    const refreshTimer =
+      window.setInterval(() => {
+        loadVehicle(true);
+      }, 30000);
 
     return () => {
-      window.clearInterval(refreshTimer);
+      window.clearInterval(
+        refreshTimer
+      );
     };
   }, [loadVehicle]);
 
   useEffect(() => {
-    const clockTimer = window.setInterval(() => {
-      if (!lastUpdated) return;
+    const clockTimer =
+      window.setInterval(() => {
+        if (!lastUpdated) {
+          return;
+        }
 
-      setSecondsAgo(
-        Math.floor(
-          (Date.now() - lastUpdated.getTime()) / 1000
-        )
-      );
-    }, 1000);
+        setSecondsAgo(
+          Math.floor(
+            (
+              Date.now() -
+              lastUpdated.getTime()
+            ) / 1000
+          )
+        );
+      }, 1000);
 
     return () => {
       window.clearInterval(clockTimer);
@@ -192,7 +270,10 @@ if (data.event === "driving_ended") {
       <div className="vehicle-reference-loading">
         <span>{error}</span>
 
-        <button onClick={() => loadVehicle()}>
+        <button
+          type="button"
+          onClick={() => loadVehicle()}
+        >
           다시 불러오기
         </button>
       </div>
@@ -209,7 +290,29 @@ if (data.event === "driving_ended") {
       ? glacierblue
       : quicksilver;
 
-  const isDriving = vehicle?.isDriving === true;
+  const isDriving =
+    vehicle?.isDriving === true;
+
+  const isLocked =
+    vehicle?.locked === true;
+
+  const lockClass =
+    vehicle?.locked === null ||
+    vehicle?.locked === undefined
+      ? "unknown"
+      : isLocked
+        ? "locked"
+        : "unlocked";
+
+  const temperatureClass =
+    getTemperatureClass(
+      vehicle?.insideTemp
+    );
+
+  const chargingClass =
+    getChargingClass(
+      vehicle?.chargingState
+    );
 
   return (
     <div
@@ -228,10 +331,15 @@ if (data.event === "driving_ended") {
           onClick={() => loadVehicle()}
           disabled={loading}
         >
-          업데이트: {formatUpdatedTime(secondsAgo)}
+          업데이트:{" "}
+          {formatUpdatedTime(secondsAgo)}
 
           <FiRefreshCw
-            className={loading ? "vehicle-spin" : ""}
+            className={
+              loading
+                ? "vehicle-spin"
+                : ""
+            }
           />
         </button>
       </div>
@@ -257,7 +365,9 @@ if (data.event === "driving_ended") {
 
           <p>
             예상 주행 가능 거리{" "}
-            <b>{vehicle?.rangeKm ?? "-"}km</b>
+            <b>
+              {vehicle?.rangeKm ?? "-"}km
+            </b>
           </p>
         </div>
 
@@ -272,24 +382,39 @@ if (data.event === "driving_ended") {
       </div>
 
       <div className="vehicle-reference-status">
-        <div>
-          <FiLock />
+        <div
+          className={`vehicle-status-item vehicle-status-lock ${lockClass}`}
+        >
+          <span className="vehicle-status-icon">
+            {isLocked ? (
+              <FiLock />
+            ) : (
+              <FiUnlock />
+            )}
+          </span>
 
-          <span>
-            {vehicle?.locked === null
+          <span className="vehicle-status-label">
+            {vehicle?.locked === null ||
+            vehicle?.locked === undefined
               ? "확인 불가"
-              : vehicle?.locked
+              : isLocked
                 ? "잠김"
                 : "열림"}
           </span>
         </div>
 
-        <div>
-          <FiThermometer />
+        <div
+          className={`vehicle-status-item vehicle-status-temperature ${temperatureClass}`}
+        >
+          <span className="vehicle-status-icon">
+            <FiThermometer />
+          </span>
 
-          <span>
+          <span className="vehicle-status-label">
             실내{" "}
-            {vehicle?.insideTemp !== null
+            {vehicle?.insideTemp !== null &&
+            vehicle?.insideTemp !==
+              undefined
               ? `${Math.round(
                   vehicle.insideTemp
                 )}℃`
@@ -297,20 +422,30 @@ if (data.event === "driving_ended") {
           </span>
         </div>
 
-        <div>
-          <HiOutlineBolt />
+        <div
+          className={`vehicle-status-item vehicle-status-charging ${chargingClass}`}
+        >
+          <span className="vehicle-status-icon charging-icon">
+            <span className="charging-icon-fill" />
 
-          <span>
+            <HiOutlineBolt />
+          </span>
+
+          <span className="vehicle-status-label">
             {translateChargingState(
               vehicle?.chargingState
             )}
           </span>
         </div>
 
-        <div>
-          <HiOutlineTruck />
+        <div className="vehicle-status-item vehicle-status-trunk closed">
+          <span className="vehicle-status-icon">
+            <IoCarSportOutline />
+          </span>
 
-          <span>트렁크 닫힘</span>
+          <span className="vehicle-status-label">
+            트렁크 닫힘
+          </span>
         </div>
       </div>
     </div>
