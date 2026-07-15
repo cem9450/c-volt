@@ -49,21 +49,29 @@ export default function BottomNav({
     <nav className="cv-bottom-nav">
       {tabs.map((tab) => {
         const Icon = tab.icon;
-        const isActive = page === tab.id;
+        const active = page === tab.id;
 
         return (
           <button
             type="button"
             key={tab.id}
             className={
-              isActive
+              active
                 ? "cv-nav-item active"
                 : "cv-nav-item"
             }
             onClick={() => setPage(tab.id)}
+            aria-current={
+              active ? "page" : undefined
+            }
           >
-            <Icon />
-            <span>{tab.label}</span>
+            <span className="cv-nav-icon">
+              <Icon />
+            </span>
+
+            <span className="cv-nav-label">
+              {tab.label}
+            </span>
           </button>
         );
       })}

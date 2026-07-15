@@ -1,5 +1,15 @@
 export const APP_UPDATES = [
     {
+  id: "version-0-1-7",
+  version: "0.1.7",
+  type: "update",
+  title: "C-Volt ver 0.1.7",
+  message:
+    "하단 메뉴바의 아이콘, 간격, 활성 메뉴 표시와 화면 여백을 개선했습니다.",
+  releasedAt:
+    "2026-07-15T23:00:00+09:00",
+},
+    {
   id: "version-0-1-6",
   version: "0.1.6",
   type: "update",

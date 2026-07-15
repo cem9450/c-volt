@@ -4089,3 +4089,175 @@ body {
   padding: 3px !important;
   box-sizing: border-box !important;
 }
+/* ==================================
+   C-VOLT BOTTOM NAV REFERENCE FIX
+================================== */
+
+.cv-bottom-nav {
+  position: fixed !important;
+  z-index: 2000 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  left: 0 !important;
+
+  display: grid !important;
+  box-sizing: border-box !important;
+
+  width: 100% !important;
+  max-width: 430px !important;
+  min-height: 76px !important;
+
+  margin: 0 auto !important;
+  padding:
+    8px 5px
+    max(8px, env(safe-area-inset-bottom)) !important;
+
+  grid-template-columns:
+    repeat(6, minmax(0, 1fr)) !important;
+
+  border: 0 !important;
+  border-top:
+    1px solid
+    rgba(255, 255, 255, 0.1) !important;
+
+  border-radius: 0 !important;
+
+  background:
+    rgba(3, 3, 5, 0.96) !important;
+
+  box-shadow:
+    0 -14px 34px
+    rgba(0, 0, 0, 0.34) !important;
+
+  backdrop-filter: blur(22px) !important;
+  -webkit-backdrop-filter: blur(22px) !important;
+}
+
+.cv-nav-item {
+  display: flex !important;
+  min-width: 0 !important;
+
+  margin: 0 !important;
+  padding: 4px 1px !important;
+
+  align-items: center !important;
+  justify-content: center !important;
+  flex-direction: column !important;
+  gap: 5px !important;
+
+  border: 0 !important;
+  border-radius: 0 !important;
+  outline: none !important;
+
+  background: transparent !important;
+  box-shadow: none !important;
+
+  color:
+    rgba(255, 255, 255, 0.45) !important;
+
+  appearance: none !important;
+  -webkit-appearance: none !important;
+
+  transition:
+    color 0.18s ease,
+    transform 0.18s ease !important;
+}
+
+.cv-nav-item:hover,
+.cv-nav-item:focus {
+  border: 0 !important;
+  outline: none !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.cv-nav-item:active {
+  transform: scale(0.94) !important;
+}
+
+.cv-nav-icon {
+  position: relative !important;
+
+  display: flex !important;
+  width: 28px !important;
+  height: 28px !important;
+
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+.cv-nav-icon svg {
+  display: block !important;
+
+  width: 23px !important;
+  height: 23px !important;
+
+  stroke-width: 1.65 !important;
+}
+
+.cv-nav-label {
+  overflow: hidden !important;
+  max-width: 100% !important;
+
+  color: inherit !important;
+  font-size: 8px !important;
+  font-weight: 600 !important;
+  line-height: 1 !important;
+
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+
+.cv-nav-item.active {
+  color: #aa48ff !important;
+}
+
+.cv-nav-item.active .cv-nav-icon {
+  filter:
+    drop-shadow(
+      0 0 7px
+      rgba(170, 72, 255, 0.55)
+    ) !important;
+}
+
+.cv-nav-item.active .cv-nav-icon::after {
+  content: "" !important;
+
+  position: absolute !important;
+  right: 4px !important;
+  bottom: -2px !important;
+  left: 4px !important;
+
+  height: 2px !important;
+
+  border-radius: 999px !important;
+
+  background: #aa48ff !important;
+
+  box-shadow:
+    0 0 9px
+    rgba(170, 72, 255, 0.72) !important;
+}
+
+/* 메뉴바에 홈 콘텐츠가 가리지 않게 */
+.home,
+.home-v2,
+.reference-home,
+.cv-preparing-page,
+.simple-feature-page {
+  padding-bottom:
+    calc(
+      105px + env(safe-area-inset-bottom)
+    ) !important;
+}
+
+@media (max-width: 360px) {
+  .cv-nav-icon svg {
+    width: 21px !important;
+    height: 21px !important;
+  }
+
+  .cv-nav-label {
+    font-size: 7px !important;
+  }
+}
