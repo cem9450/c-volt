@@ -1,10 +1,5 @@
-import {
-  FiChevronRight,
-  FiInfo,
-} from "react-icons/fi";
-
 import TopBar from "../components/TopBar";
-import TodayDrivingCard from "../components/TodayDrivingCard";
+import DriveDashboardSection from "../components/DriveDashboardSection";
 import TeslaStatusCard from "../components/TeslaStatusCard";
 import ParkingMiniMap from "../components/ParkingMiniMap";
 import AIBriefingCard from "../components/AIBriefingCard";
@@ -14,27 +9,7 @@ export default function Home() {
     <main className="home home-v2">
       <TopBar />
 
-      <section className="dashboard-section dashboard-drive">
-        <div className="dashboard-section-heading">
-          <div>
-            
-            <h2 className="dashboard-card-title">
-              오늘의 드라이브
-              <FiInfo className="dashboard-info-icon" />
-            </h2>
-          </div>
-
-          <button
-            type="button"
-            className="dashboard-detail-button"
-          >
-            상세 보기
-            <FiChevronRight />
-          </button>
-        </div>
-
-        <TodayDrivingCard />
-      </section>
+      <DriveDashboardSection />
 
       <section className="dashboard-section dashboard-vehicle">
         <TeslaStatusCard />
@@ -44,22 +19,25 @@ export default function Home() {
         <ParkingMiniMap />
       </section>
 
-       <section className="dashboard-section dashboard-ai">
-         <AIBriefingCard />
+      <section className="dashboard-section dashboard-ai">
+        <AIBriefingCard />
       </section>
 
-<footer className="app-footer">
-  <div className="footer-brand">
-    <span className="footer-icon">⚡</span>
-    <span className="footer-built-by">Built by</span>
-    <span className="footer-cem-labs">CEM Labs</span>
-  </div>
+      <footer className="app-footer">
+        <div className="footer-brand">
+          <span className="footer-icon">⚡</span>
+          <span className="footer-built-by">
+            Built by
+          </span>
+          <span className="footer-cem-labs">
+            CEM Labs
+          </span>
+        </div>
 
-  <p className="footer-slogan">
-    Connect. Evolve. Move.
-  </p>
-</footer>
-
+        <p className="footer-slogan">
+          Connect. Evolve. Move.
+        </p>
+      </footer>
     </main>
   );
 }

@@ -4997,3 +4997,500 @@ body {
 .app-footer:hover .footer-cem-labs {
   color: #b88cff;
 }
+/* ==================================
+   TODAY DRIVE MODAL
+================================== */
+
+.dashboard-info-button {
+  display: inline-flex;
+  width: 22px;
+  height: 22px;
+  margin: 0;
+  padding: 0;
+  align-items: center;
+  justify-content: center;
+
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.48);
+  font-size: 14px;
+}
+
+.dashboard-info-button:active {
+  background: rgba(255, 255, 255, 0.07);
+  color: #c16fff;
+}
+
+.drive-modal-backdrop {
+  position: fixed;
+  z-index: 12000;
+  inset: 0;
+
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+
+  background: rgba(0, 0, 0, 0.76);
+  backdrop-filter: blur(9px);
+  -webkit-backdrop-filter: blur(9px);
+}
+
+.drive-modal {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 430px;
+  max-height: 88vh;
+  padding:
+    10px 20px
+    max(24px, env(safe-area-inset-bottom));
+
+  overflow-y: auto;
+
+  border:
+    1px solid
+    rgba(255, 255, 255, 0.12);
+  border-bottom: 0;
+  border-radius: 28px 28px 0 0;
+
+  background:
+    radial-gradient(
+      circle at 80% 0%,
+      rgba(133, 48, 220, 0.2),
+      transparent 38%
+    ),
+    #0b0b0f;
+
+  box-shadow:
+    0 -28px 75px
+    rgba(0, 0, 0, 0.7);
+
+  animation:
+    driveModalUp
+    0.25s
+    ease-out;
+}
+
+.drive-modal-handle {
+  width: 42px;
+  height: 4px;
+  margin: 0 auto 14px;
+  border-radius: 999px;
+  background:
+    rgba(255, 255, 255, 0.2);
+}
+
+.drive-modal-header {
+  display: flex;
+  min-height: 52px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.drive-modal-header span {
+  display: block;
+  margin-bottom: 4px;
+  color: #ad53ff;
+  font-size: 8px;
+  font-weight: 800;
+  letter-spacing: 1.7px;
+}
+
+.drive-modal-header h2 {
+  margin: 0;
+  color: #ffffff;
+  font-size: 20px;
+  letter-spacing: -0.4px;
+}
+
+.drive-modal-header button {
+  display: flex;
+  width: 38px;
+  height: 38px;
+  flex-shrink: 0;
+  padding: 0;
+  align-items: center;
+  justify-content: center;
+
+  border:
+    1px solid
+    rgba(255, 255, 255, 0.09);
+  border-radius: 50%;
+
+  background:
+    rgba(255, 255, 255, 0.04);
+  color:
+    rgba(255, 255, 255, 0.75);
+  font-size: 18px;
+}
+
+.drive-modal-content {
+  padding-top: 17px;
+}
+
+.drive-info-intro {
+  display: flex;
+  padding: 17px;
+  align-items: center;
+  gap: 14px;
+  border-radius: 18px;
+  background:
+    rgba(161, 65, 255, 0.09);
+}
+
+.drive-info-intro > div {
+  display: flex;
+  width: 42px;
+  height: 42px;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 14px;
+  background:
+    linear-gradient(
+      145deg,
+      #ad54ff,
+      #6f2bd0
+    );
+  color: #ffffff;
+  font-size: 20px;
+  box-shadow:
+    0 0 20px
+    rgba(162, 65, 255, 0.25);
+}
+
+.drive-info-intro p {
+  margin: 0;
+  color:
+    rgba(255, 255, 255, 0.72);
+  font-size: 11px;
+  line-height: 1.7;
+}
+
+.drive-info-list {
+  display: grid;
+  gap: 2px;
+  margin-top: 13px;
+}
+
+.drive-info-list > div {
+  display: flex;
+  min-height: 69px;
+  padding: 13px 4px;
+  align-items: center;
+  gap: 13px;
+
+  border-bottom:
+    1px solid
+    rgba(255, 255, 255, 0.06);
+}
+
+.drive-info-list > div > svg {
+  flex-shrink: 0;
+  color: #ba65ff;
+  font-size: 21px;
+}
+
+.drive-info-list section {
+  min-width: 0;
+}
+
+.drive-info-list strong {
+  display: block;
+  color: #ffffff;
+  font-size: 12px;
+}
+
+.drive-info-list span {
+  display: block;
+  margin-top: 4px;
+  color:
+    rgba(255, 255, 255, 0.45);
+  font-size: 9px;
+  line-height: 1.55;
+}
+
+.drive-info-notice {
+  margin-top: 16px;
+  padding: 14px;
+  border:
+    1px solid
+    rgba(255, 255, 255, 0.07);
+  border-radius: 15px;
+  background:
+    rgba(255, 255, 255, 0.025);
+
+  color:
+    rgba(255, 255, 255, 0.43);
+  font-size: 9px;
+  line-height: 1.65;
+}
+
+.drive-detail-loading,
+.drive-detail-error,
+.drive-detail-empty {
+  display: flex;
+  min-height: 270px;
+  padding: 24px;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 10px;
+
+  text-align: center;
+  color:
+    rgba(255, 255, 255, 0.52);
+  font-size: 11px;
+}
+
+.drive-detail-error button {
+  min-height: 36px;
+  padding: 0 15px;
+  border: 0;
+  border-radius: 999px;
+  background: #a13fff;
+  color: #ffffff;
+  font-weight: 700;
+}
+
+.drive-detail-empty > svg {
+  color:
+    rgba(183, 91, 255, 0.55);
+  font-size: 34px;
+}
+
+.drive-detail-empty strong {
+  color: #ffffff;
+  font-size: 13px;
+}
+
+.drive-detail-empty span {
+  color:
+    rgba(255, 255, 255, 0.43);
+  font-size: 10px;
+}
+
+.drive-detail-score {
+  display: flex;
+  padding: 15px;
+  align-items: center;
+  gap: 18px;
+  border-radius: 20px;
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(151, 52, 255, 0.15),
+      rgba(255, 255, 255, 0.025)
+    );
+}
+
+.drive-detail-score-ring {
+  position: relative;
+  display: flex;
+  width: 95px;
+  height: 95px;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+
+  background:
+    conic-gradient(
+      #b64fff var(--detail-score),
+      rgba(255, 255, 255, 0.08)
+        var(--detail-score)
+    );
+}
+
+.drive-detail-score-ring::before {
+  content: "";
+  position: absolute;
+  inset: 7px;
+  border-radius: 50%;
+  background: #0d0c11;
+}
+
+.drive-detail-score-ring > div {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: baseline;
+  gap: 3px;
+}
+
+.drive-detail-score-ring strong {
+  color: #ffffff;
+  font-size: 29px;
+}
+
+.drive-detail-score-ring span {
+  color:
+    rgba(255, 255, 255, 0.52);
+  font-size: 9px;
+}
+
+.drive-detail-score > section > span {
+  color:
+    rgba(255, 255, 255, 0.45);
+  font-size: 9px;
+}
+
+.drive-detail-score > section > strong {
+  display: block;
+  margin-top: 3px;
+  color: #ffffff;
+  font-size: 26px;
+}
+
+.drive-detail-score > section > p {
+  margin: 6px 0 0;
+  color: #c77bff;
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.drive-detail-grid {
+  display: grid;
+  grid-template-columns:
+    repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.drive-detail-grid > div {
+  min-width: 0;
+  min-height: 91px;
+  padding: 13px;
+  border:
+    1px solid
+    rgba(255, 255, 255, 0.055);
+  border-radius: 16px;
+  background:
+    rgba(255, 255, 255, 0.025);
+}
+
+.drive-detail-grid svg {
+  color: #b65cff;
+  font-size: 17px;
+}
+
+.drive-detail-grid span {
+  display: block;
+  margin-top: 8px;
+  color:
+    rgba(255, 255, 255, 0.43);
+  font-size: 9px;
+}
+
+.drive-detail-grid strong {
+  display: block;
+  margin-top: 4px;
+  overflow: hidden;
+  color: #ffffff;
+  font-size: 15px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.drive-detail-grid small {
+  margin-left: 3px;
+  color:
+    rgba(255, 255, 255, 0.48);
+  font-size: 9px;
+}
+
+.drive-detail-comment {
+  display: flex;
+  margin-top: 12px;
+  padding: 13px;
+  align-items: flex-start;
+  gap: 9px;
+  border-radius: 15px;
+
+  background:
+    rgba(153, 57, 255, 0.08);
+}
+
+.drive-detail-comment > span {
+  display: inline-flex;
+  min-width: 27px;
+  height: 20px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  background:
+    rgba(181, 85, 255, 0.17);
+  color: #cd84ff;
+  font-size: 8px;
+  font-weight: 900;
+}
+
+.drive-detail-comment p {
+  margin: 0;
+  color:
+    rgba(255, 255, 255, 0.65);
+  font-size: 10px;
+  line-height: 1.6;
+}
+
+.drive-detail-factors {
+  margin-top: 13px;
+  padding: 15px;
+  border:
+    1px solid
+    rgba(255, 255, 255, 0.06);
+  border-radius: 17px;
+}
+
+.drive-detail-factors h3 {
+  margin: 0 0 10px;
+  color: #ffffff;
+  font-size: 12px;
+}
+
+.drive-detail-factors > div {
+  display: flex;
+  min-height: 31px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+
+  border-top:
+    1px solid
+    rgba(255, 255, 255, 0.045);
+}
+
+.drive-detail-factors span {
+  color:
+    rgba(255, 255, 255, 0.5);
+  font-size: 9px;
+}
+
+.drive-detail-factors strong {
+  color:
+    rgba(255, 255, 255, 0.52);
+  font-size: 10px;
+}
+
+.drive-detail-factors strong.positive {
+  color: #bf6cff;
+}
+
+.drive-detail-factors strong.negative {
+  color: #ff9b68;
+}
+
+@keyframes driveModalUp {
+  from {
+    opacity: 0;
+    transform: translateY(35px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

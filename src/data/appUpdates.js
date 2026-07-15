@@ -1,5 +1,15 @@
 export const APP_UPDATES = [
   {
+  id: "version-0-1-13",
+  version: "0.1.13",
+  type: "update",
+  title: "C-Volt ver 0.1.13",
+  message:
+    "오늘의 드라이브 안내와 상세 주행 리포트를 추가했습니다. 주행 거리, 시간, 평균속도, 배터리 효율과 AI 점수 분석을 자세히 확인할 수 있습니다.",
+  releasedAt:
+    "2026-07-15T23:00:00+09:00",
+},
+    {
   id: "version-0-1-12",
   version: "0.1.12",
   type: "update",
@@ -7,7 +17,7 @@ export const APP_UPDATES = [
   message:
     "차량 잠금, 실내 온도와 충전 상태에 따른 시각 효과를 추가하고 트렁크 상태 아이콘을 차량 형태로 변경했습니다.",
   releasedAt:
-    "2026-07-15T21:47:00+09:00",
+    "2026-07-15T22:54:00+09:00",
 },
     {
     id: "version-0-1-11",
@@ -17,7 +27,7 @@ export const APP_UPDATES = [
     message:
       "AI 운전 점수의 계산 기준을 개선하고 등급, 운전자 배지, AI 주행 코멘트와 게이지 애니메이션을 추가했습니다.",
     releasedAt:
-      "2026-07-15T21:30:00+09:00",
+      "2026-07-15T22:30:00+09:00",
   },
   {
     id: "version-0-1-10",
