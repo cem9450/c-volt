@@ -4533,15 +4533,20 @@ body {
   width: 100%;
   margin: 0;
   padding: 6px 20px 0;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
   text-align: center;
   user-select: none;
 }
 
 .footer-brand {
-  display: flex;
+  position: relative;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 4px;
 
   font-size: 11px;
   font-weight: 500;
@@ -4550,17 +4555,23 @@ body {
 }
 
 .footer-icon {
-  display: inline-flex;
+  position: absolute;
+  right: calc(100% + 4px);
+
+  display: flex;
   align-items: center;
   justify-content: center;
 
-  margin-right: 2px;
+  margin: 0;
+  padding: 0;
+
   font-size: 12px;
   line-height: 1;
   color: #ffc83d;
 }
 
 .footer-built-by {
+  margin-right: 5px;
   color: rgba(255, 255, 255, 0.28);
 }
 
@@ -4571,12 +4582,15 @@ body {
 
 .footer-slogan {
   margin: 5px 0 0;
+  padding: 0;
 
   font-size: 9px;
   font-weight: 500;
   line-height: 1;
   letter-spacing: 0.2em;
+
   color: rgba(255, 255, 255, 0.22);
+  text-align: center;
   text-transform: uppercase;
 }
 
