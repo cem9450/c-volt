@@ -7204,3 +7204,10 @@ body {
 .chargers-reference-notice {
   text-align: center;
 }
+.charger-destination-symbol {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 17px;
+  line-height: 1;
+}

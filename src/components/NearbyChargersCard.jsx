@@ -11,8 +11,6 @@ import {
   FiZap,
 } from "react-icons/fi";
 
-import { HiOutlinePlug } from "react-icons/hi2";
-
 function getStallText(site) {
   const available =
     Number(site.availableStalls);
@@ -336,12 +334,14 @@ export default function NearbyChargersCard() {
                     }
                   >
                     {destination ? (
-                      <HiOutlinePlug />
-                    ) : index === 0 ? (
-                      <FiZap />
-                    ) : (
-                      index + 1
-                    )}
+  <span className="charger-destination-symbol">
+    🔌
+  </span>
+) : index === 0 ? (
+  <FiZap />
+) : (
+  index + 1
+)}
                   </div>
 
                   <div className="charger-reference-copy">
