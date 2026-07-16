@@ -234,6 +234,24 @@ export default function DriveDashboardSection() {
   const totalBatteryUsed =
     summary.totalBatteryUsed ?? 0;
 
+useEffect(() => {
+  function handleOpenDriveDetail() {
+    setActiveModal("detail");
+  }
+
+  window.addEventListener(
+    "cvolt:open-drive-detail",
+    handleOpenDriveDetail
+  );
+
+  return () => {
+    window.removeEventListener(
+      "cvolt:open-drive-detail",
+      handleOpenDriveDetail
+    );
+  };
+}, []);
+
   return (
     <>
       <section className="dashboard-section dashboard-drive">

@@ -1,5 +1,15 @@
 export const APP_UPDATES = [
   {
+  id: "version-0-1-15",
+  version: "0.1.15",
+  type: "update",
+  title: "C-Volt ver 0.1.15",
+  message:
+    "운행 종료 시 AI 운전 점수, 주행 거리, 운행 시간, 배터리 사용량과 평균 속도를 보여주는 자동 운행 리포트를 추가했습니다.",
+  releasedAt:
+    "2026-07-16T19:39:00+09:00",
+},
+  {
   id: "version-0-1-14",
   version: "0.1.14",
   type: "update",
