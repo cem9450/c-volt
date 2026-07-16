@@ -6274,9 +6274,8 @@ body {
 .records-page {
   box-sizing: border-box;
   width: 100%;
-  max-width: 430px;
   min-height: 100vh;
-  margin: 0 auto;
+  margin: 0;
   padding:
     max(27px, env(safe-area-inset-top))
     18px
@@ -6948,4 +6947,115 @@ body {
   to {
     transform: rotate(360deg);
   }
+}
+/* ==================================
+   STATISTICS 2.0
+================================== */
+
+.stats-comparison {
+  display: inline-flex;
+  margin-top: 10px;
+  padding: 5px 8px;
+  align-items: center;
+  gap: 4px;
+  border-radius: 999px;
+  background:
+    rgba(157, 63, 255, 0.1);
+  color: #c778ff;
+  font-size: 8px;
+  font-weight: 700;
+}
+
+.stats-comparison.down {
+  background:
+    rgba(255, 139, 88, 0.09);
+  color: #ffab78;
+}
+
+.stats-comparison.same {
+  background:
+    rgba(255, 255, 255, 0.05);
+  color:
+    rgba(255, 255, 255, 0.5);
+}
+
+.stats-comparison svg {
+  font-size: 11px;
+}
+
+.stats-score-ring {
+  background:
+    radial-gradient(
+      circle,
+      #111016 58%,
+      transparent 59%
+    ),
+    conic-gradient(
+      #b64fff 0
+        var(--stats-score, 0%),
+      rgba(255, 255, 255, 0.08)
+        var(--stats-score, 0%)
+    );
+}
+
+.stats-records-card {
+  margin-top: 13px;
+  padding: 18px;
+  border:
+    1px solid
+    rgba(255, 255, 255, 0.075);
+  border-radius: 22px;
+  background:
+    radial-gradient(
+      circle at 88% 0%,
+      rgba(132, 44, 210, 0.14),
+      transparent 42%
+    ),
+    #0b0b0f;
+}
+
+.stats-records-grid {
+  display: grid;
+  grid-template-columns:
+    repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.stats-records-grid > div {
+  min-height: 91px;
+  padding: 13px;
+  border:
+    1px solid
+    rgba(255, 255, 255, 0.05);
+  border-radius: 16px;
+  background:
+    rgba(255, 255, 255, 0.025);
+}
+
+.stats-records-grid svg {
+  color: #b65cff;
+  font-size: 17px;
+}
+
+.stats-records-grid span {
+  display: block;
+  margin-top: 8px;
+  color:
+    rgba(255, 255, 255, 0.43);
+  font-size: 9px;
+}
+
+.stats-records-grid strong {
+  display: block;
+  margin-top: 5px;
+  color: #ffffff;
+  font-size: 15px;
+}
+
+.stats-records-grid small {
+  margin-left: 3px;
+  color:
+    rgba(255, 255, 255, 0.47);
+  font-size: 8px;
 }

@@ -10,7 +10,9 @@ import {
   FiAward,
   FiBatteryCharging,
   FiClock,
+  FiMap,
   FiRefreshCw,
+  FiTrendingDown,
   FiTrendingUp,
 } from "react-icons/fi";
 
@@ -78,7 +80,7 @@ function createLinePoints(
 function StatsLineChart({
   values,
   labels,
-  unit,
+  id,
   emptyText,
 }) {
   const width = 320;
@@ -102,7 +104,7 @@ function StatsLineChart({
         Number(value) > 0
     );
 
-  const polylinePoints =
+  const line =
     points
       .map(
         (point) =>
@@ -110,7 +112,7 @@ function StatsLineChart({
       )
       .join(" ");
 
-  const areaPoints = [
+  const area = [
     `${points[0]?.x ?? padding},${
       height - padding
     }`,
@@ -128,102 +130,100 @@ function StatsLineChart({
     },${height - padding}`,
   ].join(" ");
 
+  if (!hasData) {
+    return (
+      <div className="stats-chart-empty">
+        {emptyText}
+      </div>
+    );
+  }
+
   return (
     <div className="stats-chart">
-      {hasData ? (
-        <>
-          <svg
-            viewBox={`0 0 ${width} ${height}`}
-            role="img"
-            aria-label="최근 7일 통계 그래프"
+      <svg
+        viewBox={`0 0 ${width} ${height}`}
+      >
+        <defs>
+          <linearGradient
+            id={`stats-gradient-${id}`}
+            x1="0"
+            y1="0"
+            x2="0"
+            y2="1"
           >
-            <defs>
-              <linearGradient
-                id={`statsFill-${unit}`}
-                x1="0"
-                y1="0"
-                x2="0"
-                y2="1"
-              >
-                <stop
-                  offset="0%"
-                  stopColor="#b14cff"
-                  stopOpacity="0.32"
-                />
-
-                <stop
-                  offset="100%"
-                  stopColor="#b14cff"
-                  stopOpacity="0"
-                />
-              </linearGradient>
-            </defs>
-
-            <line
-              x1={padding}
-              y1={height - padding}
-              x2={width - padding}
-              y2={height - padding}
-              className="stats-chart-axis"
+            <stop
+              offset="0%"
+              stopColor="#b14cff"
+              stopOpacity="0.34"
             />
 
-            <polygon
-              points={areaPoints}
-              fill={`url(#statsFill-${unit})`}
+            <stop
+              offset="100%"
+              stopColor="#b14cff"
+              stopOpacity="0"
             />
+          </linearGradient>
+        </defs>
 
-            <polyline
-              points={polylinePoints}
-              className="stats-chart-line"
-            />
+        <line
+          x1={padding}
+          y1={height - padding}
+          x2={width - padding}
+          y2={height - padding}
+          className="stats-chart-axis"
+        />
 
-            {points.map(
-              (point, index) => (
-                <g
-                  key={`${labels[index]}-${index}`}
-                >
-                  <circle
-                    cx={point.x}
-                    cy={point.y}
-                    r="4"
-                    className="stats-chart-dot"
-                  />
+        <polygon
+          points={area}
+          fill={`url(#stats-gradient-${id})`}
+        />
 
-                  {point.value > 0 && (
-                    <text
-                      x={point.x}
-                      y={Math.max(
-                        point.y - 10,
-                        12
-                      )}
-                      textAnchor="middle"
-                      className="stats-chart-value"
-                    >
-                      {point.value}
-                    </text>
+        <polyline
+          points={line}
+          className="stats-chart-line"
+        />
+
+        {points.map(
+          (point, index) => (
+            <g
+              key={`${id}-${index}`}
+            >
+              <circle
+                cx={point.x}
+                cy={point.y}
+                r="4"
+                className="stats-chart-dot"
+              />
+
+              {point.value > 0 && (
+                <text
+                  x={point.x}
+                  y={Math.max(
+                    point.y - 10,
+                    12
                   )}
-                </g>
-              )
-            )}
-          </svg>
-
-          <div className="stats-chart-labels">
-            {labels.map(
-              (label, index) => (
-                <span
-                  key={`${label}-${index}`}
+                  textAnchor="middle"
+                  className="stats-chart-value"
                 >
-                  {label}
-                </span>
-              )
-            )}
-          </div>
-        </>
-      ) : (
-        <div className="stats-chart-empty">
-          {emptyText}
-        </div>
-      )}
+                  {point.value}
+                </text>
+              )}
+            </g>
+          )
+        )}
+      </svg>
+
+      <div className="stats-chart-labels">
+        {labels.map(
+          (label, index) => (
+            <span
+              key={`${label}-${index}`}
+            >
+              {label}
+            </span>
+          )
+        )}
+      </div>
     </div>
   );
 }
@@ -314,6 +314,12 @@ export default function Stats() {
   const summary =
     data?.summary || {};
 
+  const records =
+    data?.records || {};
+
+  const comparison =
+    data?.comparison || {};
+
   const labels =
     days.map((day) => day.label);
 
@@ -329,14 +335,23 @@ export default function Stats() {
         day.score || 0
     );
 
+  const comparisonIcon =
+    comparison.direction === "down"
+      ? <FiTrendingDown />
+      : <FiTrendingUp />;
+
   return (
     <main className="stats-page">
       <header className="stats-header">
         <div>
-          <span>STATISTICS</span>
+          <span>
+            STATISTICS 2.0
+          </span>
+
           <h1>주행 통계</h1>
+
           <p>
-            최근 7일간의 주행 데이터를
+            최근 7일간의 주행과 성장을
             분석했어요.
           </p>
         </div>
@@ -359,7 +374,7 @@ export default function Stats() {
 
       <section className="stats-hero-card">
         <div>
-          <span>최근 7일 주행 거리</span>
+          <span>이번 주 주행 거리</span>
 
           <strong>
             {Number(
@@ -374,9 +389,39 @@ export default function Stats() {
             {summary.totalTripCount || 0}
             회 운행
           </p>
+
+          <div
+            className={`stats-comparison ${comparison.direction}`}
+          >
+            {comparisonIcon}
+
+            <span>
+              지난주보다{" "}
+              {comparison.distancePercent ||
+                0}
+              %
+              {comparison.direction ===
+              "down"
+                ? " 감소"
+                : comparison.direction ===
+                    "same"
+                  ? " 동일"
+                  : " 증가"}
+            </span>
+          </div>
         </div>
 
-        <div className="stats-score-ring">
+        <div
+          className="stats-score-ring"
+          style={{
+            "--stats-score":
+              `${
+                Number(
+                  summary.averageScore
+                ) || 0
+              }%`,
+          }}
+        >
           <strong>
             {summary.averageScore || "-"}
           </strong>
@@ -409,21 +454,21 @@ export default function Stats() {
 
         <div>
           <FiBatteryCharging />
-          <span>평균 효율</span>
+          <span>배터리 사용</span>
 
           <strong>
-            {summary.averageEfficiency ||
-              "-"}
-            <small>km/%</small>
+            {summary.totalBatteryUsed ||
+              0}
+            <small>%</small>
           </strong>
         </div>
 
         <div>
           <FiAward />
-          <span>최고 효율</span>
+          <span>평균 효율</span>
 
           <strong>
-            {summary.bestEfficiency ||
+            {summary.averageEfficiency ||
               "-"}
             <small>km/%</small>
           </strong>
@@ -434,7 +479,7 @@ export default function Stats() {
         <div className="stats-card-heading">
           <div>
             <span>DISTANCE</span>
-            <h2>주행거리</h2>
+            <h2>최근 7일 주행거리</h2>
           </div>
 
           <FiTrendingUp />
@@ -443,8 +488,8 @@ export default function Stats() {
         <StatsLineChart
           values={distanceValues}
           labels={labels}
-          unit="distance"
-          emptyText="운행을 완료하면 주행거리 그래프가 표시돼요."
+          id="distance"
+          emptyText="운행을 완료하면 거리 그래프가 표시돼요."
         />
       </section>
 
@@ -452,7 +497,7 @@ export default function Stats() {
         <div className="stats-card-heading">
           <div>
             <span>AI SCORE</span>
-            <h2>운전 점수</h2>
+            <h2>최근 7일 운전 점수</h2>
           </div>
 
           <FiAward />
@@ -461,15 +506,75 @@ export default function Stats() {
         <StatsLineChart
           values={scoreValues}
           labels={labels}
-          unit="score"
-          emptyText="점수가 계산되면 최근 7일 변화가 표시돼요."
+          id="score"
+          emptyText="점수가 계산되면 변화가 표시돼요."
         />
       </section>
 
+      <section className="stats-records-card">
+        <div className="stats-card-heading">
+          <div>
+            <span>BEST RECORDS</span>
+            <h2>이번 주 최고 기록</h2>
+          </div>
+
+          <FiAward />
+        </div>
+
+        <div className="stats-records-grid">
+          <div>
+            <FiAward />
+            <span>최고 점수</span>
+
+            <strong>
+              {records.bestScore || "-"}
+              <small>점</small>
+            </strong>
+          </div>
+
+          <div>
+            <FiMap />
+            <span>가장 긴 운행</span>
+
+            <strong>
+              {records.longestDistanceKm ||
+                "-"}
+              <small>km</small>
+            </strong>
+          </div>
+
+          <div>
+            <FiBatteryCharging />
+            <span>최고 효율</span>
+
+            <strong>
+              {records.bestEfficiency ||
+                "-"}
+              <small>km/%</small>
+            </strong>
+          </div>
+
+          <div>
+            <FiTrendingUp />
+            <span>최다 주행일</span>
+
+            <strong>
+              {records.busiestDay?.label ||
+                "-"}
+              <small>
+                {records.busiestDay
+                  ? ` ${records.busiestDay.distanceKm}km`
+                  : ""}
+              </small>
+            </strong>
+          </div>
+        </div>
+      </section>
+
       <div className="stats-notice">
-        현재 통계 점수는 거리, 운행 시간,
-        평균속도와 배터리 사용량을 기준으로
-        계산됩니다.
+        현재 AI 점수는 주행 거리,
+        운행 시간, 평균속도와 배터리
+        효율을 기준으로 계산됩니다.
       </div>
     </main>
   );

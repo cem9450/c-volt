@@ -8,9 +8,7 @@ function getCookie(cookieHeader, name) {
     cookie.startsWith(`${name}=`)
   );
 
-  if (!target) {
-    return null;
-  }
+  if (!target) return null;
 
   return decodeURIComponent(
     target.slice(name.length + 1)
@@ -112,40 +110,48 @@ function getKoreaDayLabel(date) {
     .replace("요일", "");
 }
 
-function getSevenDayRange() {
-  const now = new Date();
-
+function createDateRange() {
   const todayKey =
-    getKoreaDateKey(now);
+    getKoreaDateKey(new Date());
 
   const todayStart = new Date(
     `${todayKey}T00:00:00+09:00`
   );
 
-  const start = new Date(todayStart);
+  const currentWeekStart =
+    new Date(todayStart);
 
-  start.setUTCDate(
-    start.getUTCDate() - 6
+  currentWeekStart.setUTCDate(
+    currentWeekStart.getUTCDate() - 6
   );
 
-  const end = new Date(todayStart);
+  const previousWeekStart =
+    new Date(currentWeekStart);
 
-  end.setUTCDate(
-    end.getUTCDate() + 1
+  previousWeekStart.setUTCDate(
+    previousWeekStart.getUTCDate() - 7
+  );
+
+  const rangeEnd = new Date(todayStart);
+
+  rangeEnd.setUTCDate(
+    rangeEnd.getUTCDate() + 1
   );
 
   const days = [];
 
   for (let index = 0; index < 7; index += 1) {
-    const day = new Date(start);
+    const date =
+      new Date(currentWeekStart);
 
-    day.setUTCDate(
-      start.getUTCDate() + index
+    date.setUTCDate(
+      currentWeekStart.getUTCDate() +
+        index
     );
 
     days.push({
-      date: getKoreaDateKey(day),
-      label: getKoreaDayLabel(day),
+      date: getKoreaDateKey(date),
+      label: getKoreaDayLabel(date),
       distanceKm: 0,
       durationSec: 0,
       tripCount: 0,
@@ -156,8 +162,15 @@ function getSevenDayRange() {
   }
 
   return {
-    start: start.toISOString(),
-    end: end.toISOString(),
+    currentWeekStart:
+      currentWeekStart.toISOString(),
+
+    previousWeekStart:
+      previousWeekStart.toISOString(),
+
+    rangeEnd:
+      rangeEnd.toISOString(),
+
     days,
   };
 }
@@ -178,13 +191,12 @@ async function getLatestVehicleId() {
 
 async function getSessions(
   vehicleId,
-  start,
-  end
+  start
 ) {
   const query = new URLSearchParams({
     vehicle_id: `eq.${vehicleId}`,
     started_at: `gte.${start}`,
-    ended_at: `lt.${end}`,
+    ended_at: "not.is.null",
     select: "*",
     order: "started_at.asc",
   });
@@ -193,16 +205,14 @@ async function getSessions(
     `driving_sessions?${query.toString()}`
   );
 
-  return (rows || []).filter(
-    (session) => session.ended_at
-  );
+  return rows || [];
 }
 
 function calculateEstimatedScore({
   distanceKm,
   durationSec,
   batteryUsed,
-  tripCount,
+  tripCount = 1,
 }) {
   if (
     distanceKm <= 0 ||
@@ -272,12 +282,59 @@ function calculateEstimatedScore({
   }
 
   return Math.min(
-    Math.max(
-      Math.round(score),
-      60
-    ),
+    Math.max(Math.round(score), 60),
     97
   );
+}
+
+function getWeekSummary(sessions) {
+  const totalDistanceKm =
+    sessions.reduce(
+      (sum, session) =>
+        sum +
+        (Number(session.distance_km) ||
+          0),
+      0
+    );
+
+  const totalDurationSec =
+    sessions.reduce(
+      (sum, session) =>
+        sum +
+        (Number(session.duration_sec) ||
+          0),
+      0
+    );
+
+  const totalBatteryUsed =
+    sessions.reduce(
+      (sum, session) =>
+        sum +
+        (Number(session.battery_used) ||
+          0),
+      0
+    );
+
+  const efficiency =
+    totalBatteryUsed > 0
+      ? totalDistanceKm /
+        totalBatteryUsed
+      : 0;
+
+  return {
+    totalDistanceKm:
+      roundOne(totalDistanceKm),
+
+    totalDurationSec,
+
+    totalBatteryUsed:
+      roundOne(totalBatteryUsed),
+
+    totalTripCount: sessions.length,
+
+    efficiency:
+      roundOne(efficiency),
+  };
 }
 
 export default async function handler(
@@ -315,65 +372,139 @@ export default async function handler(
       await getLatestVehicleId();
 
     const range =
-      getSevenDayRange();
+      createDateRange();
 
     if (!vehicleId) {
       return res.status(200).json({
         ok: true,
         hasData: false,
         days: range.days,
+        comparison: {
+          distancePercent: 0,
+          direction: "same",
+        },
         summary: {
           totalDistanceKm: 0,
           totalDurationSec: 0,
           totalTripCount: 0,
+          totalBatteryUsed: 0,
           averageScore: 0,
           averageEfficiency: 0,
+        },
+        records: {
+          bestScore: 0,
+          longestDistanceKm: 0,
           bestEfficiency: 0,
+          busiestDay: null,
         },
       });
     }
 
-    const sessions =
+    const allSessions =
       await getSessions(
         vehicleId,
-        range.start,
-        range.end
+        range.previousWeekStart
       );
+
+    const rangeEndTime =
+      new Date(
+        range.rangeEnd
+      ).getTime();
+
+    const currentStartTime =
+      new Date(
+        range.currentWeekStart
+      ).getTime();
+
+    const previousStartTime =
+      new Date(
+        range.previousWeekStart
+      ).getTime();
+
+    const validSessions =
+      allSessions.filter((session) => {
+        const startedAt =
+          new Date(
+            session.started_at
+          ).getTime();
+
+        return (
+          Number.isFinite(startedAt) &&
+          startedAt < rangeEndTime
+        );
+      });
+
+    const currentSessions =
+      validSessions.filter((session) => {
+        const startedAt =
+          new Date(
+            session.started_at
+          ).getTime();
+
+        return startedAt >= currentStartTime;
+      });
+
+    const previousSessions =
+      validSessions.filter((session) => {
+        const startedAt =
+          new Date(
+            session.started_at
+          ).getTime();
+
+        return (
+          startedAt >= previousStartTime &&
+          startedAt < currentStartTime
+        );
+      });
+
+    const currentSummary =
+      getWeekSummary(currentSessions);
+
+    const previousSummary =
+      getWeekSummary(previousSessions);
 
     const daysByDate = new Map(
       range.days.map((day) => [
         day.date,
-        day,
+        { ...day },
       ])
     );
 
-    for (const session of sessions) {
-      const date =
+    for (const session of currentSessions) {
+      const dateKey =
         getKoreaDateKey(
-          new Date(session.started_at)
+          new Date(
+            session.started_at
+          )
         );
 
       const day =
-        daysByDate.get(date);
+        daysByDate.get(dateKey);
 
-      if (!day) {
-        continue;
-      }
+      if (!day) continue;
 
       day.distanceKm +=
-        Number(session.distance_km) || 0;
+        Number(session.distance_km) ||
+        0;
 
       day.durationSec +=
-        Number(session.duration_sec) || 0;
+        Number(session.duration_sec) ||
+        0;
 
       day.batteryUsed +=
-        Number(session.battery_used) || 0;
+        Number(session.battery_used) ||
+        0;
 
       day.tripCount += 1;
     }
 
     const days = range.days.map(
-      (day) => {
+      (baseDay) => {
+        const day =
+          daysByDate.get(
+            baseDay.date
+          );
+
         const efficiency =
           day.batteryUsed > 0
             ? day.distanceKm /
@@ -384,10 +515,13 @@ export default async function handler(
           calculateEstimatedScore({
             distanceKm:
               day.distanceKm,
+
             durationSec:
               day.durationSec,
+
             batteryUsed:
               day.batteryUsed,
+
             tripCount:
               day.tripCount,
           });
@@ -395,10 +529,14 @@ export default async function handler(
         return {
           ...day,
           distanceKm:
-            roundOne(day.distanceKm),
+            roundOne(
+              day.distanceKm
+            ),
 
           batteryUsed:
-            roundOne(day.batteryUsed),
+            roundOne(
+              day.batteryUsed
+            ),
 
           efficiency:
             roundOne(efficiency),
@@ -408,88 +546,166 @@ export default async function handler(
       }
     );
 
-    const totalDistanceKm =
-      days.reduce(
-        (sum, day) =>
-          sum + day.distanceKm,
-        0
-      );
-
-    const totalDurationSec =
-      days.reduce(
-        (sum, day) =>
-          sum + day.durationSec,
-        0
-      );
-
-    const totalTripCount =
-      days.reduce(
-        (sum, day) =>
-          sum + day.tripCount,
-        0
-      );
-
-    const scoreDays =
+    const scoredDays =
       days.filter(
         (day) => day.score > 0
       );
 
     const efficiencyDays =
       days.filter(
-        (day) => day.efficiency > 0
+        (day) =>
+          day.efficiency > 0
       );
 
     const averageScore =
-      scoreDays.length > 0
-        ? scoreDays.reduce(
+      scoredDays.length > 0
+        ? scoredDays.reduce(
             (sum, day) =>
               sum + day.score,
             0
-          ) / scoreDays.length
+          ) / scoredDays.length
         : 0;
 
     const averageEfficiency =
-      efficiencyDays.length > 0
-        ? efficiencyDays.reduce(
-            (sum, day) =>
-              sum + day.efficiency,
-            0
-          ) /
-          efficiencyDays.length
+      currentSummary.totalBatteryUsed >
+      0
+        ? currentSummary.totalDistanceKm /
+          currentSummary.totalBatteryUsed
         : 0;
 
-    const bestEfficiency =
-      efficiencyDays.length > 0
+    const sessionRecords =
+      currentSessions.map((session) => {
+        const distanceKm =
+          Number(
+            session.distance_km
+          ) || 0;
+
+        const durationSec =
+          Number(
+            session.duration_sec
+          ) || 0;
+
+        const batteryUsed =
+          Number(
+            session.battery_used
+          ) || 0;
+
+        const efficiency =
+          batteryUsed > 0
+            ? distanceKm /
+              batteryUsed
+            : 0;
+
+        return {
+          distanceKm,
+          efficiency,
+          score:
+            calculateEstimatedScore({
+              distanceKm,
+              durationSec,
+              batteryUsed,
+            }),
+        };
+      });
+
+    const bestScore =
+      sessionRecords.length > 0
         ? Math.max(
-            ...efficiencyDays.map(
-              (day) =>
-                day.efficiency
+            ...sessionRecords.map(
+              (record) =>
+                record.score
             )
           )
         : 0;
 
+    const longestDistanceKm =
+      sessionRecords.length > 0
+        ? Math.max(
+            ...sessionRecords.map(
+              (record) =>
+                record.distanceKm
+            )
+          )
+        : 0;
+
+    const bestEfficiency =
+      sessionRecords.length > 0
+        ? Math.max(
+            ...sessionRecords.map(
+              (record) =>
+                record.efficiency
+            )
+          )
+        : 0;
+
+    const busiestDay =
+      days.reduce(
+        (best, day) => {
+          if (
+            !best ||
+            day.distanceKm >
+              best.distanceKm
+          ) {
+            return day;
+          }
+
+          return best;
+        },
+        null
+      );
+
+    let distancePercent = 0;
+    let direction = "same";
+
+    if (
+      previousSummary.totalDistanceKm >
+      0
+    ) {
+      distancePercent =
+        (
+          (
+            currentSummary.totalDistanceKm -
+            previousSummary.totalDistanceKm
+          ) /
+          previousSummary.totalDistanceKm
+        ) * 100;
+
+      direction =
+        distancePercent > 0
+          ? "up"
+          : distancePercent < 0
+            ? "down"
+            : "same";
+    } else if (
+      currentSummary.totalDistanceKm >
+      0
+    ) {
+      distancePercent = 100;
+      direction = "up";
+    }
+
     return res.status(200).json({
       ok: true,
-      hasData:
-        totalTripCount > 0,
 
-      range: {
-        start: range.days[0].date,
-        end:
-          range.days[
-            range.days.length - 1
-          ].date,
-      },
+      hasData:
+        currentSessions.length > 0,
 
       days,
 
+      comparison: {
+        distancePercent:
+          roundOne(
+            Math.abs(distancePercent)
+          ),
+
+        direction,
+
+        previousDistanceKm:
+          previousSummary.totalDistanceKm,
+      },
+
       summary: {
-        totalDistanceKm:
-          roundOne(totalDistanceKm),
-
-        totalDurationSec,
-
-        totalTripCount,
+        ...currentSummary,
 
         averageScore:
           roundOne(averageScore),
@@ -498,9 +714,32 @@ export default async function handler(
           roundOne(
             averageEfficiency
           ),
+      },
+
+      records: {
+        bestScore,
+
+        longestDistanceKm:
+          roundOne(
+            longestDistanceKm
+          ),
 
         bestEfficiency:
           roundOne(bestEfficiency),
+
+        busiestDay:
+          busiestDay?.distanceKm > 0
+            ? {
+                label:
+                  busiestDay.label,
+
+                date:
+                  busiestDay.date,
+
+                distanceKm:
+                  busiestDay.distanceKm,
+              }
+            : null,
       },
     });
   } catch (error) {
