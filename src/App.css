@@ -5906,3 +5906,364 @@ body {
     font-size: 15px;
   }
 }
+/* ==================================
+   C-VOLT STATISTICS
+================================== */
+
+.stats-page {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 430px;
+  min-height: 100vh;
+  margin: 0 auto;
+  padding:
+    max(27px, env(safe-area-inset-top))
+    18px
+    calc(100px + env(safe-area-inset-bottom));
+  color: #ffffff;
+}
+
+.stats-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 15px;
+  margin-bottom: 22px;
+}
+
+.stats-header > div > span {
+  display: block;
+  color: #aa4cff;
+  font-size: 8px;
+  font-weight: 800;
+  letter-spacing: 1.8px;
+}
+
+.stats-header h1 {
+  margin: 6px 0 0;
+  color: #ffffff;
+  font-size: 28px;
+  line-height: 1.15;
+  letter-spacing: -0.8px;
+}
+
+.stats-header p {
+  margin: 8px 0 0;
+  color: rgba(255, 255, 255, 0.48);
+  font-size: 11px;
+}
+
+.stats-header button {
+  display: flex;
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+  padding: 0;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.035);
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 17px;
+}
+
+.stats-hero-card {
+  display: flex;
+  min-height: 150px;
+  padding: 21px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+  border: 1px solid rgba(145, 66, 218, 0.38);
+  border-radius: 25px;
+  background:
+    radial-gradient(
+      circle at 85% 5%,
+      rgba(151, 55, 235, 0.28),
+      transparent 45%
+    ),
+    linear-gradient(
+      145deg,
+      #17101f,
+      #0a090d
+    );
+  box-shadow:
+    0 20px 50px rgba(0, 0, 0, 0.38);
+}
+
+.stats-hero-card > div:first-child > span {
+  color: rgba(255, 255, 255, 0.48);
+  font-size: 10px;
+  font-weight: 600;
+}
+
+.stats-hero-card > div:first-child > strong {
+  display: block;
+  margin-top: 10px;
+  color: #ffffff;
+  font-size: 37px;
+  line-height: 1;
+  letter-spacing: -1px;
+}
+
+.stats-hero-card small {
+  margin-left: 4px;
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 11px;
+}
+
+.stats-hero-card p {
+  margin: 11px 0 0;
+  color: #b960ff;
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.stats-score-ring {
+  display: flex;
+  width: 91px;
+  height: 91px;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  border-radius: 50%;
+  background:
+    radial-gradient(
+      circle,
+      #111016 58%,
+      transparent 59%
+    ),
+    conic-gradient(
+      #b64fff 0 82%,
+      rgba(255, 255, 255, 0.08) 82%
+    );
+  box-shadow:
+    0 0 21px rgba(168, 66, 255, 0.18);
+}
+
+.stats-score-ring strong {
+  color: #ffffff;
+  font-size: 28px;
+  line-height: 1;
+}
+
+.stats-score-ring span {
+  margin-top: 5px;
+  color: rgba(255, 255, 255, 0.43);
+  font-size: 8px;
+}
+
+.stats-summary-grid {
+  display: grid;
+  grid-template-columns:
+    repeat(2, minmax(0, 1fr));
+  gap: 9px;
+  margin-top: 13px;
+}
+
+.stats-summary-grid > div {
+  min-height: 92px;
+  padding: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.055);
+  border-radius: 17px;
+  background:
+    linear-gradient(
+      145deg,
+      rgba(255, 255, 255, 0.035),
+      rgba(255, 255, 255, 0.015)
+    );
+}
+
+.stats-summary-grid svg {
+  color: #b65cff;
+  font-size: 18px;
+}
+
+.stats-summary-grid span {
+  display: block;
+  margin-top: 9px;
+  color: rgba(255, 255, 255, 0.42);
+  font-size: 9px;
+}
+
+.stats-summary-grid strong {
+  display: block;
+  margin-top: 5px;
+  color: #ffffff;
+  font-size: 15px;
+}
+
+.stats-summary-grid small {
+  margin-left: 3px;
+  color: rgba(255, 255, 255, 0.47);
+  font-size: 9px;
+}
+
+.stats-chart-card {
+  margin-top: 13px;
+  padding: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.075);
+  border-radius: 22px;
+  background:
+    radial-gradient(
+      circle at 88% 0%,
+      rgba(125, 42, 201, 0.13),
+      transparent 42%
+    ),
+    #0b0b0f;
+}
+
+.stats-card-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 9px;
+}
+
+.stats-card-heading span {
+  display: block;
+  color: #a94cff;
+  font-size: 7px;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+}
+
+.stats-card-heading h2 {
+  margin: 4px 0 0;
+  color: #ffffff;
+  font-size: 16px;
+}
+
+.stats-card-heading > svg {
+  color: rgba(190, 101, 255, 0.66);
+  font-size: 19px;
+}
+
+.stats-chart {
+  width: 100%;
+}
+
+.stats-chart svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.stats-chart-axis {
+  stroke: rgba(255, 255, 255, 0.08);
+  stroke-width: 1;
+}
+
+.stats-chart-line {
+  fill: none;
+  stroke: #b64fff;
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  filter:
+    drop-shadow(
+      0 0 6px rgba(182, 79, 255, 0.52)
+    );
+}
+
+.stats-chart-dot {
+  fill: #d28aff;
+  stroke: #ffffff;
+  stroke-width: 1.5;
+}
+
+.stats-chart-value {
+  fill: rgba(255, 255, 255, 0.6);
+  font-size: 7px;
+  font-weight: 700;
+}
+
+.stats-chart-labels {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  margin-top: -5px;
+  color: rgba(255, 255, 255, 0.32);
+  font-size: 8px;
+  text-align: center;
+}
+
+.stats-chart-empty {
+  display: flex;
+  min-height: 140px;
+  padding: 20px;
+  align-items: center;
+  justify-content: center;
+  color: rgba(255, 255, 255, 0.4);
+  font-size: 10px;
+  line-height: 1.6;
+  text-align: center;
+}
+
+.stats-notice {
+  margin-top: 13px;
+  padding: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.055);
+  border-radius: 15px;
+  background: rgba(255, 255, 255, 0.02);
+  color: rgba(255, 255, 255, 0.36);
+  font-size: 9px;
+  line-height: 1.65;
+}
+
+.stats-loading,
+.stats-error {
+  display: flex;
+  min-height: 70vh;
+  padding: 25px;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 13px;
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 11px;
+  text-align: center;
+}
+
+.stats-error button {
+  min-height: 37px;
+  padding: 0 15px;
+  border: 0;
+  border-radius: 999px;
+  background: #a13fff;
+  color: #ffffff;
+  font-weight: 700;
+}
+
+.stats-spin {
+  animation: statsSpin 0.75s linear infinite;
+}
+
+@keyframes statsSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (max-width: 360px) {
+  .stats-page {
+    padding-right: 13px;
+    padding-left: 13px;
+  }
+
+  .stats-hero-card {
+    padding: 17px;
+  }
+
+  .stats-hero-card
+  > div:first-child
+  > strong {
+    font-size: 32px;
+  }
+
+  .stats-score-ring {
+    width: 83px;
+    height: 83px;
+  }
+}

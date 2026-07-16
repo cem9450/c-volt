@@ -1,4 +1,8 @@
-import { useEffect, useState } from "react";
+import {
+  useEffect,
+  useState,
+} from "react";
+
 import "./App.css";
 
 import AuthCallback from "./pages/AuthCallback";
@@ -6,6 +10,7 @@ import Home from "./pages/Home";
 import Login from "./pages/Login";
 import League from "./pages/League";
 import Chat from "./pages/Chat";
+import Stats from "./pages/Stats";
 
 import BottomNav from "./components/BottomNav";
 
@@ -24,11 +29,18 @@ function PreparingPage({
 }
 
 export default function App() {
-  const [page, setPage] = useState("home");
-  const [isLoggedIn, setIsLoggedIn] =
-    useState(false);
-  const [isCheckingAuth, setIsCheckingAuth] =
-    useState(true);
+  const [page, setPage] =
+    useState("home");
+
+  const [
+    isLoggedIn,
+    setIsLoggedIn,
+  ] = useState(false);
+
+  const [
+    isCheckingAuth,
+    setIsCheckingAuth,
+  ] = useState(true);
 
   const isAuthCallback =
     window.location.pathname ===
@@ -43,9 +55,13 @@ export default function App() {
     fetch("/api/auth-status", {
       credentials: "include",
     })
-      .then((response) => response.json())
+      .then((response) =>
+        response.json()
+      )
       .then((data) => {
-        setIsLoggedIn(data.loggedIn === true);
+        setIsLoggedIn(
+          data.loggedIn === true
+        );
       })
       .catch((error) => {
         console.error(
@@ -88,14 +104,12 @@ export default function App() {
         />
       )}
 
-      {page === "league" && <League />}
+      {page === "league" && (
+        <League />
+      )}
 
       {page === "stats" && (
-        <PreparingPage
-          eyebrow="STATISTICS"
-          title="주행 통계"
-          description="주간·월간 거리, 전비와 성장 그래프를 보여줄 예정입니다."
-        />
+        <Stats />
       )}
 
       {page === "dna" && (
@@ -106,7 +120,9 @@ export default function App() {
         />
       )}
 
-      {page === "chat" && <Chat />}
+      {page === "chat" && (
+        <Chat />
+      )}
 
       <BottomNav
         page={page}
