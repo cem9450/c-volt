@@ -5,6 +5,7 @@ import {
 
 import "./App.css";
 
+import Records from "./pages/Records";
 import AuthCallback from "./pages/AuthCallback";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
@@ -97,12 +98,8 @@ export default function App() {
       {page === "home" && <Home />}
 
       {page === "records" && (
-        <PreparingPage
-          eyebrow="DRIVE HISTORY"
-          title="주행 기록"
-          description="날짜별 운행 리포트와 이동 경로를 보여줄 예정입니다."
-        />
-      )}
+  <Records />
+)}
 
       {page === "league" && (
         <League />

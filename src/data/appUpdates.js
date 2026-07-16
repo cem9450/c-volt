@@ -1,5 +1,25 @@
 export const APP_UPDATES = [
   {
+  id: "version-0-1-17",
+  version: "0.1.17",
+  type: "update",
+  title: "C-Volt ver 0.1.17",
+  message:
+    "주행 기록 화면을 활성화하고 날짜별 운행 목록, AI 점수, 주행거리, 운행시간, 배터리 사용량과 상세 리포트를 추가했습니다.",
+  releasedAt:
+    "2026-07-16T20:00:00+09:00",
+},
+  {
+  id: "version-0-1-16",
+  version: "0.1.16",
+  type: "update",
+  title: "C-Volt ver 0.1.16",
+  message:
+    "통계 화면을 활성화하고 최근 7일 주행거리와 AI 운전 점수 그래프, 총 운행시간, 운행횟수 및 배터리 효율 통계를 추가했습니다.",
+  releasedAt:
+    "2026-07-16T19:55:00+09:00",
+},
+  {
   id: "version-0-1-15",
   version: "0.1.15",
   type: "update",

@@ -6267,3 +6267,468 @@ body {
     height: 83px;
   }
 }
+/* ==================================
+   C-VOLT DRIVE RECORDS
+================================== */
+
+.records-page {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 430px;
+  min-height: 100vh;
+  margin: 0 auto;
+  padding:
+    max(27px, env(safe-area-inset-top))
+    18px
+    calc(100px + env(safe-area-inset-bottom));
+  color: #ffffff;
+}
+
+.records-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 15px;
+  margin-bottom: 23px;
+}
+
+.records-header > div > span {
+  display: block;
+  color: #aa4cff;
+  font-size: 8px;
+  font-weight: 800;
+  letter-spacing: 1.8px;
+}
+
+.records-header h1 {
+  margin: 6px 0 0;
+  font-size: 28px;
+  line-height: 1.15;
+  letter-spacing: -0.8px;
+}
+
+.records-header p {
+  margin: 8px 0 0;
+  color: rgba(255, 255, 255, 0.48);
+  font-size: 11px;
+}
+
+.records-header > button {
+  display: flex;
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+  padding: 0;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.035);
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 17px;
+}
+
+.records-day {
+  margin-bottom: 14px;
+  padding: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.075);
+  border-radius: 22px;
+  background:
+    radial-gradient(
+      circle at 90% 0%,
+      rgba(127, 42, 204, 0.13),
+      transparent 43%
+    ),
+    #0b0b0f;
+}
+
+.records-day-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  margin-bottom: 13px;
+}
+
+.records-day-heading h2 {
+  margin: 0;
+  font-size: 15px;
+}
+
+.records-day-heading span {
+  display: block;
+  margin-top: 4px;
+  color: rgba(255, 255, 255, 0.4);
+  font-size: 9px;
+}
+
+.records-day-heading > strong {
+  color: #ffffff;
+  font-size: 20px;
+}
+
+.records-day-heading small {
+  margin-left: 3px;
+  color: rgba(255, 255, 255, 0.45);
+  font-size: 9px;
+}
+
+.records-list {
+  display: grid;
+  gap: 7px;
+}
+
+.record-item {
+  display: grid;
+  width: 100%;
+  min-height: 71px;
+  padding: 10px;
+  grid-template-columns: 47px minmax(0, 1fr) 18px;
+  align-items: center;
+  gap: 11px;
+  border: 1px solid rgba(255, 255, 255, 0.045);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.025);
+  color: #ffffff;
+  text-align: left;
+}
+
+.record-item:active {
+  background: rgba(169, 69, 255, 0.08);
+  transform: scale(0.99);
+}
+
+.record-score {
+  display: flex;
+  width: 47px;
+  height: 47px;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  border-radius: 15px;
+  background: rgba(164, 66, 255, 0.12);
+  color: #c878ff;
+}
+
+.record-score strong {
+  font-size: 17px;
+  line-height: 1;
+}
+
+.record-score span {
+  margin-top: 3px;
+  font-size: 7px;
+}
+
+.record-copy {
+  min-width: 0;
+}
+
+.record-copy > strong {
+  display: block;
+  font-size: 11px;
+}
+
+.record-copy > span {
+  display: block;
+  overflow: hidden;
+  margin-top: 6px;
+  color: rgba(255, 255, 255, 0.43);
+  font-size: 9px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.record-item > svg {
+  color: rgba(255, 255, 255, 0.34);
+  font-size: 16px;
+}
+
+.records-state,
+.records-empty {
+  display: flex;
+  min-height: 60vh;
+  padding: 25px;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 11px;
+  color: rgba(255, 255, 255, 0.45);
+  font-size: 11px;
+  text-align: center;
+}
+
+.records-state button {
+  min-height: 37px;
+  padding: 0 15px;
+  border: 0;
+  border-radius: 999px;
+  background: #a13fff;
+  color: #ffffff;
+  font-weight: 700;
+}
+
+.records-empty > svg {
+  color: rgba(184, 90, 255, 0.48);
+  font-size: 37px;
+}
+
+.records-empty strong {
+  color: #ffffff;
+  font-size: 14px;
+}
+
+.records-empty span {
+  max-width: 230px;
+  color: rgba(255, 255, 255, 0.42);
+  font-size: 10px;
+  line-height: 1.6;
+}
+
+.records-detail-backdrop {
+  position: fixed;
+  z-index: 14000;
+  inset: 0;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.78);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.records-detail-sheet {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 430px;
+  max-height: 90vh;
+  padding:
+    10px 20px
+    max(25px, env(safe-area-inset-bottom));
+  overflow-y: auto;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-bottom: 0;
+  border-radius: 29px 29px 0 0;
+  background:
+    radial-gradient(
+      circle at 78% 0%,
+      rgba(148, 56, 240, 0.23),
+      transparent 40%
+    ),
+    #0a0a0e;
+  box-shadow: 0 -30px 80px rgba(0, 0, 0, 0.75);
+  animation: recordsSheetUp 0.27s ease-out;
+}
+
+.records-detail-handle {
+  width: 42px;
+  height: 4px;
+  margin: 0 auto 15px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.records-detail-header {
+  display: flex;
+  min-height: 53px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+}
+
+.records-detail-header span {
+  display: block;
+  margin-bottom: 4px;
+  color: #b65fff;
+  font-size: 8px;
+  font-weight: 800;
+  letter-spacing: 1.8px;
+}
+
+.records-detail-header h2 {
+  margin: 0;
+  font-size: 20px;
+}
+
+.records-detail-header button {
+  display: flex;
+  width: 38px;
+  height: 38px;
+  padding: 0;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.04);
+  color: rgba(255, 255, 255, 0.74);
+  font-size: 18px;
+}
+
+.records-detail-score {
+  display: flex;
+  min-height: 125px;
+  margin-top: 18px;
+  padding: 18px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  border-radius: 21px;
+  background:
+    linear-gradient(
+      135deg,
+      rgba(148, 51, 242, 0.17),
+      rgba(255, 255, 255, 0.025)
+    );
+}
+
+.records-detail-score > div:first-child > span {
+  color: rgba(255, 255, 255, 0.43);
+  font-size: 9px;
+}
+
+.records-detail-score > div:first-child > strong {
+  display: block;
+  margin-top: 6px;
+  font-size: 36px;
+}
+
+.records-detail-score small {
+  margin-left: 3px;
+  color: rgba(255, 255, 255, 0.46);
+  font-size: 10px;
+}
+
+.records-detail-score p {
+  margin: 6px 0 0;
+  color: #c878ff;
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.records-score-ring {
+  display: flex;
+  width: 89px;
+  height: 89px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background:
+    radial-gradient(
+      circle,
+      #0c0b10 58%,
+      transparent 59%
+    ),
+    conic-gradient(
+      #b64fff 0 var(--record-score),
+      rgba(255, 255, 255, 0.08)
+        var(--record-score)
+    );
+}
+
+.records-score-ring strong {
+  font-size: 25px;
+}
+
+.records-detail-time {
+  display: flex;
+  margin-top: 11px;
+  padding: 13px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  border-radius: 15px;
+  background: rgba(255, 255, 255, 0.025);
+}
+
+.records-detail-time span {
+  color: rgba(255, 255, 255, 0.43);
+  font-size: 9px;
+}
+
+.records-detail-time strong {
+  font-size: 11px;
+}
+
+.records-detail-grid {
+  display: grid;
+  grid-template-columns:
+    repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  margin-top: 11px;
+}
+
+.records-detail-grid > div {
+  min-height: 91px;
+  padding: 13px;
+  border: 1px solid rgba(255, 255, 255, 0.055);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.025);
+}
+
+.records-detail-grid svg {
+  color: #b960ff;
+  font-size: 17px;
+}
+
+.records-detail-grid span {
+  display: block;
+  margin-top: 8px;
+  color: rgba(255, 255, 255, 0.43);
+  font-size: 9px;
+}
+
+.records-detail-grid strong {
+  display: block;
+  margin-top: 4px;
+  font-size: 15px;
+}
+
+.records-detail-grid small {
+  margin-left: 3px;
+  color: rgba(255, 255, 255, 0.47);
+  font-size: 9px;
+}
+
+.records-detail-notice {
+  margin-top: 12px;
+  padding: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.055);
+  border-radius: 15px;
+  background: rgba(255, 255, 255, 0.02);
+  color: rgba(255, 255, 255, 0.38);
+  font-size: 9px;
+  line-height: 1.65;
+}
+
+.records-spin {
+  animation: recordsSpin 0.75s linear infinite;
+}
+
+@keyframes recordsSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes recordsSheetUp {
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 360px) {
+  .records-page {
+    padding-right: 13px;
+    padding-left: 13px;
+  }
+
+  .records-day {
+    padding: 15px;
+  }
+}
