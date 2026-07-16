@@ -3,8 +3,10 @@ import {
   useState,
 } from "react";
 
+import NearbyChargersCard from "../components/NearbyChargersCard";
 import TopBar from "../components/TopBar";
 import DriveDashboardSection from "../components/DriveDashboardSection";
+import DriveEndReport from "../components/DriveEndReport";
 import TeslaStatusCard from "../components/TeslaStatusCard";
 import ParkingMiniMap from "../components/ParkingMiniMap";
 import AIBriefingCard from "../components/AIBriefingCard";
@@ -16,7 +18,9 @@ function getSavedDrivingState() {
         "cvolt_vehicle"
       );
 
-    if (!saved) return false;
+    if (!saved) {
+      return false;
+    }
 
     const vehicle =
       JSON.parse(saved);
@@ -61,6 +65,14 @@ export default function Home() {
     );
   }
 
+  function openDriveDetail() {
+    window.dispatchEvent(
+      new CustomEvent(
+        "cvolt:open-drive-detail"
+      )
+    );
+  }
+
   const vehicleCard = (
     <section className="dashboard-section dashboard-vehicle">
       <TeslaStatusCard
@@ -94,6 +106,9 @@ export default function Home() {
           {vehicleCard}
         </>
       )}
+      <section className="dashboard-section dashboard-chargers">
+  <NearbyChargersCard />
+</section>
 
       <section className="dashboard-section dashboard-ai">
         <AIBriefingCard />
@@ -118,6 +133,12 @@ export default function Home() {
           Connect. Evolve. Move.
         </p>
       </footer>
+
+      <DriveEndReport
+        onOpenDetail={
+          openDriveDetail
+        }
+      />
     </main>
   );
 }

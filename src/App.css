@@ -6732,3 +6732,220 @@ body {
     padding: 15px;
   }
 }
+/* ==================================
+   C-VOLT NEARBY CHARGERS
+================================== */
+
+.dashboard-chargers {
+  padding: 19px !important;
+}
+
+.chargers-reference-card {
+  width: 100%;
+}
+
+.chargers-reference-header {
+  display: flex;
+  min-height: 40px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  margin-bottom: 13px;
+}
+
+.chargers-reference-header > div > span {
+  display: block;
+  margin-bottom: 4px;
+  color: #aa4cff;
+  font-size: 7px;
+  font-weight: 800;
+  letter-spacing: 1.6px;
+}
+
+.chargers-reference-header h2 {
+  margin: 0;
+  color: #ffffff;
+  font-size: 18px;
+  line-height: 1.2;
+  letter-spacing: -0.4px;
+}
+
+.chargers-reference-header > button {
+  display: flex;
+  width: 37px;
+  height: 37px;
+  flex-shrink: 0;
+  padding: 0;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.035);
+  color: rgba(255, 255, 255, 0.68);
+  font-size: 16px;
+}
+
+.chargers-reference-list {
+  display: grid;
+  gap: 7px;
+}
+
+.charger-reference-item {
+  display: grid;
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 67px;
+  padding: 9px 10px;
+  grid-template-columns:
+    42px
+    minmax(0, 1fr)
+    36px;
+  align-items: center;
+  gap: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.045);
+  border-radius: 16px;
+  background:
+    linear-gradient(
+      145deg,
+      rgba(255, 255, 255, 0.03),
+      rgba(255, 255, 255, 0.012)
+    );
+  color: #ffffff;
+  text-align: left;
+}
+
+.charger-reference-item:first-child {
+  border-color: rgba(168, 71, 255, 0.18);
+  background:
+    linear-gradient(
+      145deg,
+      rgba(152, 54, 255, 0.1),
+      rgba(255, 255, 255, 0.018)
+    );
+}
+
+.charger-reference-item:active {
+  transform: scale(0.99);
+  background: rgba(165, 65, 255, 0.1);
+}
+
+.charger-reference-rank {
+  display: flex;
+  width: 42px;
+  height: 42px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 14px;
+  background: rgba(161, 63, 255, 0.11);
+  color: #c778ff;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.charger-reference-rank svg {
+  font-size: 18px;
+  filter:
+    drop-shadow(
+      0 0 7px
+      rgba(183, 91, 255, 0.46)
+    );
+}
+
+.charger-reference-copy {
+  min-width: 0;
+}
+
+.charger-reference-copy strong {
+  display: block;
+  overflow: hidden;
+  color: #ffffff;
+  font-size: 11px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.charger-reference-copy span {
+  display: block;
+  overflow: hidden;
+  margin-top: 6px;
+  color: rgba(255, 255, 255, 0.43);
+  font-size: 9px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.charger-reference-action {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 3px;
+  color: rgba(255, 255, 255, 0.38);
+  font-size: 14px;
+}
+
+.charger-reference-action svg:first-child {
+  color: #b45cff;
+}
+
+.chargers-reference-state {
+  display: flex;
+  min-height: 145px;
+  padding: 18px;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 9px;
+  border: 1px solid rgba(255, 255, 255, 0.045);
+  border-radius: 17px;
+  background: rgba(255, 255, 255, 0.018);
+  color: rgba(255, 255, 255, 0.45);
+  text-align: center;
+}
+
+.chargers-reference-state > svg {
+  color: rgba(187, 97, 255, 0.65);
+  font-size: 27px;
+}
+
+.chargers-reference-state strong {
+  color: #ffffff;
+  font-size: 12px;
+}
+
+.chargers-reference-state span {
+  max-width: 250px;
+  font-size: 9px;
+  line-height: 1.6;
+}
+
+.chargers-reference-state button {
+  min-height: 34px;
+  padding: 0 13px;
+  border: 0;
+  border-radius: 999px;
+  background: #a13fff;
+  color: #ffffff;
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.chargers-reference-notice {
+  margin: 11px 2px 0;
+  color: rgba(255, 255, 255, 0.3);
+  font-size: 8px;
+  line-height: 1.55;
+}
+
+.chargers-spin {
+  animation:
+    chargersSpin
+    0.75s
+    linear
+    infinite;
+}
+
+@keyframes chargersSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}

@@ -1,5 +1,15 @@
 export const APP_UPDATES = [
   {
+  id: "version-0-1-18",
+  version: "0.1.18",
+  type: "update",
+  title: "C-Volt ver 0.1.18",
+  message:
+    "차량 현재 위치를 기준으로 가까운 Tesla 충전소를 확인하고 Google 지도 길찾기를 실행할 수 있는 주변 슈퍼차저 기능을 추가했습니다.",
+  releasedAt:
+    "2026-07-16T20:09:00+09:00",
+},
+  {
   id: "version-0-1-17",
   version: "0.1.17",
   type: "update",
