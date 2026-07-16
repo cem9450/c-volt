@@ -1,5 +1,15 @@
 export const APP_UPDATES = [
   {
+  id: "version-0-2-1",
+  version: "0.2.1",
+  type: "update",
+  title: "C-Volt ver 0.2.1",
+  message:
+    "주변 충전소 카드에 추천 충전소 강조, 혼잡도, 예상 이동시간과 Supercharger·Destination 구분을 추가하고 길찾기 아이콘을 간소화했습니다.",
+  releasedAt:
+    "2026-07-16T21:18:00+09:00",
+},
+  {
   id: "version-0-2-0",
   version: "0.2.0",
   type: "update",

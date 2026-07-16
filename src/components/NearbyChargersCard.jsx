@@ -5,12 +5,13 @@ import {
 } from "react";
 
 import {
-  FiChevronRight,
   FiMapPin,
   FiNavigation,
   FiRefreshCw,
   FiZap,
 } from "react-icons/fi";
+
+import { HiOutlinePlug } from "react-icons/hi2";
 
 function getStallText(site) {
   const available =
@@ -27,16 +28,101 @@ function getStallText(site) {
 
   if (
     hasAvailable &&
-    hasTotal
+    hasTotal &&
+    total > 0
   ) {
     return `${available}/${total}기 이용 가능`;
   }
 
-  if (hasTotal) {
+  if (hasTotal && total > 0) {
     return `총 ${total}기`;
   }
 
-  return "충전기 현황 확인";
+  return "실시간 현황 없음";
+}
+
+function getCongestion(site) {
+  const available =
+    Number(site.availableStalls);
+
+  const total =
+    Number(site.totalStalls);
+
+  if (
+    !Number.isFinite(available) ||
+    !Number.isFinite(total) ||
+    total <= 0
+  ) {
+    return {
+      key: "unknown",
+      label: "현황 미확인",
+      icon: "⚪",
+    };
+  }
+
+  const ratio =
+    available / total;
+
+  if (available === 0) {
+    return {
+      key: "busy",
+      label: "혼잡",
+      icon: "🔴",
+    };
+  }
+
+  if (ratio >= 0.5) {
+    return {
+      key: "available",
+      label: "여유",
+      icon: "🟢",
+    };
+  }
+
+  return {
+    key: "normal",
+    label: "보통",
+    icon: "🟡",
+  };
+}
+
+function getEstimatedMinutes(distanceKm) {
+  const distance =
+    Number(distanceKm);
+
+  if (!Number.isFinite(distance)) {
+    return null;
+  }
+
+  if (distance <= 1) {
+    return 2;
+  }
+
+  return Math.max(
+    Math.round(
+      (distance / 35) * 60
+    ),
+    2
+  );
+}
+
+function isDestinationCharger(site) {
+  const type = String(
+    site.type || ""
+  ).toLowerCase();
+
+  const name = String(
+    site.name || ""
+  ).toLowerCase();
+
+  return (
+    type.includes("destination") ||
+    type.includes("destination_charger") ||
+    name.includes("hotel") ||
+    name.includes("호텔") ||
+    name.includes("resort") ||
+    name.includes("리조트")
+  );
 }
 
 function openNavigation(site) {
@@ -169,6 +255,7 @@ export default function NearbyChargersCard() {
         sites.length === 0 && (
           <div className="chargers-reference-state">
             <FiZap />
+
             <span>
               차량 주변 충전소를 찾는 중...
             </span>
@@ -216,56 +303,103 @@ export default function NearbyChargersCard() {
       {sites.length > 0 && (
         <div className="chargers-reference-list">
           {sites.map(
-            (site, index) => (
-              <button
-                type="button"
-                className="charger-reference-item"
-                key={site.id}
-                onClick={() =>
-                  openNavigation(site)
-                }
-              >
-                <div className="charger-reference-rank">
-                  {index === 0 ? (
-                    <FiZap />
-                  ) : (
-                    index + 1
-                  )}
-                </div>
+            (site, index) => {
+              const congestion =
+                getCongestion(site);
 
-                <div className="charger-reference-copy">
-                  <strong>
-                    {site.name}
-                  </strong>
+              const estimatedMinutes =
+                getEstimatedMinutes(
+                  site.distanceKm
+                );
 
-                  <span>
-                    {site.distanceKm !==
-                    null
-                      ? `${site.distanceKm.toFixed(
-                          1
-                        )}km`
-                      : "거리 확인 중"}
+              const destination =
+                isDestinationCharger(site);
 
-                    {" · "}
+              return (
+                <button
+                  type="button"
+                  className={
+                    index === 0
+                      ? "charger-reference-item recommended"
+                      : "charger-reference-item"
+                  }
+                  key={site.id}
+                  onClick={() =>
+                    openNavigation(site)
+                  }
+                >
+                  <div
+                    className={
+                      destination
+                        ? "charger-reference-rank destination"
+                        : "charger-reference-rank"
+                    }
+                  >
+                    {destination ? (
+                      <HiOutlinePlug />
+                    ) : index === 0 ? (
+                      <FiZap />
+                    ) : (
+                      index + 1
+                    )}
+                  </div>
 
-                    {getStallText(site)}
-                  </span>
-                </div>
+                  <div className="charger-reference-copy">
+                    <div className="charger-reference-title-row">
+                      <strong>
+                        {site.name}
+                      </strong>
 
-                <div className="charger-reference-action">
-                  <FiNavigation />
-                  <FiChevronRight />
-                </div>
-              </button>
-            )
+                      {index === 0 && (
+                        <em>
+                          추천
+                        </em>
+                      )}
+                    </div>
+
+                    <div className="charger-reference-type">
+                      {destination
+                        ? "Destination"
+                        : "Supercharger"}
+                    </div>
+
+                    <span>
+                      {site.distanceKm !==
+                      null
+                        ? `${site.distanceKm.toFixed(
+                            1
+                          )}km`
+                        : "거리 확인 중"}
+
+                      {estimatedMinutes !==
+                        null &&
+                        ` · 약 ${estimatedMinutes}분`}
+                    </span>
+
+                    <span
+                      className={`charger-reference-congestion ${congestion.key}`}
+                    >
+                      {congestion.icon}
+                      {" "}
+                      {congestion.label}
+                      {" · "}
+                      {getStallText(site)}
+                    </span>
+                  </div>
+
+                  <div className="charger-reference-action">
+                    <FiNavigation />
+                  </div>
+                </button>
+              );
+            }
           )}
         </div>
       )}
 
       <p className="chargers-reference-notice">
-        충전기 이용 가능 수는 Tesla에서
-        제공될 때만 표시됩니다. 길찾기는
-        Google 지도에서 열립니다.
+        실시간 충전 정보는 Tesla Fleet API
+        기준입니다.
       </p>
     </div>
   );

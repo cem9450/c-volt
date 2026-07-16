@@ -7093,3 +7093,114 @@ body {
     padding-right: 14px;
   }
 }
+/* ==================================
+   SUPERCHARGER UI POLISH
+================================== */
+
+.charger-reference-item.recommended {
+  border-color:
+    rgba(184, 91, 255, 0.5);
+
+  background:
+    radial-gradient(
+      circle at 10% 50%,
+      rgba(166, 66, 255, 0.18),
+      transparent 35%
+    ),
+    linear-gradient(
+      145deg,
+      rgba(151, 55, 255, 0.14),
+      rgba(255, 255, 255, 0.02)
+    );
+
+  box-shadow:
+    0 0 24px
+    rgba(157, 63, 255, 0.15);
+}
+
+.charger-reference-title-row {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 7px;
+}
+
+.charger-reference-title-row strong {
+  min-width: 0;
+  flex: 1;
+}
+
+.charger-reference-title-row em {
+  display: inline-flex;
+  min-height: 17px;
+  padding: 0 6px;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 999px;
+
+  background:
+    rgba(183, 84, 255, 0.17);
+
+  color: #d08cff;
+  font-size: 7px;
+  font-style: normal;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.charger-reference-type {
+  margin-top: 3px;
+  color:
+    rgba(255, 255, 255, 0.33);
+  font-size: 7px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.charger-reference-congestion {
+  display: block;
+  margin-top: 4px;
+  font-size: 8px;
+  font-weight: 700;
+}
+
+.charger-reference-congestion.available {
+  color: #71e89a;
+}
+
+.charger-reference-congestion.normal {
+  color: #ffd166;
+}
+
+.charger-reference-congestion.busy {
+  color: #ff7d7d;
+}
+
+.charger-reference-congestion.unknown {
+  color:
+    rgba(255, 255, 255, 0.36);
+}
+
+.charger-reference-rank.destination {
+  color: #8fc9ff;
+  background:
+    rgba(85, 164, 255, 0.1);
+}
+
+.charger-reference-rank.destination svg {
+  font-size: 19px;
+}
+
+.charger-reference-action {
+  justify-content: center;
+}
+
+.charger-reference-action svg {
+  font-size: 18px;
+}
+
+.chargers-reference-notice {
+  text-align: center;
+}
