@@ -1,5 +1,14 @@
 export const APP_UPDATES = [
   {
+  id: "version-0-2-2",
+  version: "0.2.2",
+  type: "update",
+  title: "C-Volt ver 0.2.2",
+  message:
+    "주변 슈퍼차저 화면을 개선했습니다. 추천 충전소 강조, 충전기 이용 가능 수, 혼잡도 표시, 예상 이동시간, Destination Charger 구분 및 UI를 개선했습니다.",
+  releasedAt: "2026-07-16T실제배포완료시간+09:00",
+},
+  {
   id: "version-0-2-1",
   version: "0.2.1",
   type: "update",
