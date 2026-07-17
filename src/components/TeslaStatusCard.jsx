@@ -5,7 +5,10 @@ import {
   useState,
 } from "react";
 
-import { FiRefreshCw } from "react-icons/fi";
+import {
+  FiRefreshCw,
+  FiThermometer,
+} from "react-icons/fi";
 
 import {
   MdOutlineElectricBolt,
@@ -19,6 +22,20 @@ import { IoCarSportOutline } from "react-icons/io5";
 
 import quicksilver from "../assets/quicksilver.png";
 import glacierblue from "../assets/glacierblue.png";
+
+function translateChargingState(state) {
+  const labels = {
+    Charging: "충전 중",
+    Complete: "충전 완료",
+    Disconnected: "충전 중 아님",
+    Stopped: "충전 중지",
+    Starting: "충전 준비 중",
+    NoPower: "전원 없음",
+    Unknown: "확인 불가",
+  };
+
+  return labels[state] || state || "확인 불가";
+}
 
 function formatUpdatedTime(seconds) {
   if (seconds < 10) return "방금 전";
@@ -659,7 +676,7 @@ export default function TeslaStatusCard({
           </p>
         </div>
 
-          <div className="vehicle-reference-visual">
+        <div className="vehicle-reference-visual">
           <div className="vehicle-reference-glow" />
 
           <img
