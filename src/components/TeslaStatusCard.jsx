@@ -81,6 +81,118 @@ function getChargingClass(state) {
   return "inactive";
 }
 
+function getOpenDoorNames(doors) {
+  if (!doors) return [];
+
+  const labels = {
+    driverFront: "운전석",
+    driverRear: "운전석 뒷문",
+    passengerFront: "조수석",
+    passengerRear: "조수석 뒷문",
+  };
+
+  return Object.entries(doors)
+    .filter(([, isOpen]) => isOpen === true)
+    .map(([key]) => labels[key]);
+}
+
+function getOpenWindowNames(windows) {
+  if (!windows) return [];
+
+  const labels = {
+    driverFront: "운전석",
+    driverRear: "운전석 뒤",
+    passengerFront: "조수석",
+    passengerRear: "조수석 뒤",
+  };
+
+  return Object.entries(windows)
+    .filter(([, isOpen]) => isOpen === true)
+    .map(([key]) => labels[key]);
+}
+
+function getAccessSummary(vehicle) {
+  const openDoors =
+    getOpenDoorNames(vehicle?.doors);
+
+  const openWindows =
+    getOpenWindowNames(vehicle?.windows);
+
+  const opened = [
+    ...openDoors.map(
+      (name) => `${name} 문`
+    ),
+
+    ...openWindows.map(
+      (name) => `${name} 창문`
+    ),
+  ];
+
+  if (
+    !vehicle?.doors &&
+    !vehicle?.windows
+  ) {
+    return {
+      warning: false,
+      label: "상태 확인 불가",
+      detail: "차량 절전 또는 오프라인",
+    };
+  }
+
+  if (opened.length === 0) {
+    return {
+      warning: false,
+      label: "문·창문 닫힘",
+      detail: "모두 정상",
+    };
+  }
+
+  return {
+    warning: true,
+    label: `${opened.length}곳 열림`,
+    detail: opened.join(", "),
+  };
+}
+
+function getStorageSummary(vehicle) {
+  if (
+    vehicle?.frunkOpen === null ||
+    vehicle?.frunkOpen === undefined ||
+    vehicle?.trunkOpen === null ||
+    vehicle?.trunkOpen === undefined
+  ) {
+    return {
+      warning: false,
+      label: "트렁크 확인 불가",
+      detail: "차량 상태 확인 필요",
+    };
+  }
+
+  const opened = [];
+
+  if (vehicle.frunkOpen) {
+    opened.push("프렁크");
+  }
+
+  if (vehicle.trunkOpen) {
+    opened.push("트렁크");
+  }
+
+  if (opened.length === 0) {
+    return {
+      warning: false,
+      label: "프렁크·트렁크 닫힘",
+      detail: "모두 정상",
+    };
+  }
+
+  return {
+    warning: true,
+    label: `${opened.join("·")} 열림`,
+    detail: "차량을 확인하세요",
+  };
+}
+
 export default function TeslaStatusCard({
   onVehicleChange,
 }) {
@@ -124,7 +236,8 @@ export default function TeslaStatusCard({
           }
         );
 
-        const text = await response.text();
+        const text =
+          await response.text();
 
         let data;
 
@@ -143,64 +256,79 @@ export default function TeslaStatusCard({
           );
         }
 
-        setVehicle(data.vehicle);
+        const nextVehicle =
+          data.vehicle;
+
+        setVehicle(nextVehicle);
         setError("");
-        const nextVehicle = data.vehicle;
 
-onVehicleChange?.(nextVehicle);
+        onVehicleChange?.(
+          nextVehicle
+        );
 
-if (nextVehicle?.isDriving === true) {
-  localStorage.removeItem(
-    "cvolt_parked_at"
-  );
+        if (
+          nextVehicle?.isDriving === true
+        ) {
+          localStorage.removeItem(
+            "cvolt_parked_at"
+          );
 
-  localStorage.removeItem(
-    "cvolt_parking_memo"
-  );
+          localStorage.removeItem(
+            "cvolt_parking_memo"
+          );
 
-  window.dispatchEvent(
-    new CustomEvent(
-      "cvolt:parking-updated",
-      {
-        detail: {
-          isDriving: true,
-          parkedAt: null,
-          clearMemo: true,
-        },
-      }
-    )
-  );
-} else if (data.parkedAt) {
-  localStorage.setItem(
-    "cvolt_parked_at",
-    data.parkedAt
-  );
+          window.dispatchEvent(
+            new CustomEvent(
+              "cvolt:parking-updated",
+              {
+                detail: {
+                  isDriving: true,
+                  parkedAt: null,
+                  clearMemo: true,
+                },
+              }
+            )
+          );
+        } else if (data.parkedAt) {
+          localStorage.setItem(
+            "cvolt_parked_at",
+            data.parkedAt
+          );
 
-  window.dispatchEvent(
-    new CustomEvent(
-      "cvolt:parking-updated",
-      {
-        detail: {
-          isDriving: false,
-          parkedAt: data.parkedAt,
-          clearMemo: false,
-        },
-      }
-    )
-  );
-}
+          window.dispatchEvent(
+            new CustomEvent(
+              "cvolt:parking-updated",
+              {
+                detail: {
+                  isDriving: false,
+                  parkedAt:
+                    data.parkedAt,
 
-        if (data.event === "driving_ended") {
+                  clearMemo: false,
+                },
+              }
+            )
+          );
+        }
+
+        if (
+          data.event ===
+          "driving_ended"
+        ) {
           let score = null;
 
           try {
-            const scoreResponse = await fetch(
-              "/api/today-score",
-              {
-                credentials: "include",
-                cache: "no-store",
-              }
-            );
+            const scoreResponse =
+              await fetch(
+                "/api/today-score",
+                {
+                  credentials:
+                    "include",
+
+                  cache:
+                    "no-store",
+                }
+              );
 
             const scoreData =
               await scoreResponse.json();
@@ -210,7 +338,8 @@ if (nextVehicle?.isDriving === true) {
               scoreData.ok &&
               scoreData.hasData
             ) {
-              score = scoreData.score;
+              score =
+                scoreData.score;
             }
           } catch (scoreError) {
             console.error(
@@ -225,8 +354,10 @@ if (nextVehicle?.isDriving === true) {
               {
                 detail: {
                   score,
+
                   session:
-                    data.session || null,
+                    data.session ||
+                    null,
                 },
               }
             )
@@ -238,14 +369,17 @@ if (nextVehicle?.isDriving === true) {
 
         localStorage.setItem(
           "cvolt_vehicle",
-          JSON.stringify(data.vehicle)
+          JSON.stringify(
+            nextVehicle
+          )
         );
 
         window.dispatchEvent(
           new CustomEvent(
             "cvolt:vehicle-updated",
             {
-              detail: data.vehicle,
+              detail:
+                nextVehicle,
             }
           )
         );
@@ -256,14 +390,15 @@ if (nextVehicle?.isDriving === true) {
             : "차량 정보를 불러오지 못했습니다."
         );
       } finally {
-        requestInProgress.current = false;
+        requestInProgress.current =
+          false;
 
         if (!silent) {
           setLoading(false);
         }
       }
     },
-    []
+    [onVehicleChange]
   );
 
   useEffect(() => {
@@ -284,9 +419,7 @@ if (nextVehicle?.isDriving === true) {
   useEffect(() => {
     const clockTimer =
       window.setInterval(() => {
-        if (!lastUpdated) {
-          return;
-        }
+        if (!lastUpdated) return;
 
         setSecondsAgo(
           Math.floor(
@@ -299,7 +432,9 @@ if (nextVehicle?.isDriving === true) {
       }, 1000);
 
     return () => {
-      window.clearInterval(clockTimer);
+      window.clearInterval(
+        clockTimer
+      );
     };
   }, [lastUpdated]);
 
@@ -318,7 +453,9 @@ if (nextVehicle?.isDriving === true) {
 
         <button
           type="button"
-          onClick={() => loadVehicle()}
+          onClick={() =>
+            loadVehicle()
+          }
         >
           다시 불러오기
         </button>
@@ -360,6 +497,21 @@ if (nextVehicle?.isDriving === true) {
       vehicle?.chargingState
     );
 
+  const accessSummary =
+    getAccessSummary(vehicle);
+
+  const storageSummary =
+    getStorageSummary(vehicle);
+
+  const isOnline =
+    vehicle?.state === "online";
+
+  const sentryOn =
+    vehicle?.sentryMode === true;
+
+  const chargePortOpen =
+    vehicle?.chargePortOpen === true;
+
   return (
     <div
       className={
@@ -374,11 +526,15 @@ if (nextVehicle?.isDriving === true) {
         <button
           type="button"
           className="vehicle-reference-updated"
-          onClick={() => loadVehicle()}
+          onClick={() =>
+            loadVehicle()
+          }
           disabled={loading}
         >
           업데이트:{" "}
-          {formatUpdatedTime(secondsAgo)}
+          {formatUpdatedTime(
+            secondsAgo
+          )}
 
           <FiRefreshCw
             className={
@@ -395,7 +551,8 @@ if (nextVehicle?.isDriving === true) {
           <span>배터리</span>
 
           <strong>
-            {vehicle?.batteryLevel ?? "-"}
+            {vehicle?.batteryLevel ??
+              "-"}
             <small>%</small>
           </strong>
 
@@ -403,7 +560,8 @@ if (nextVehicle?.isDriving === true) {
             <i
               style={{
                 width: `${
-                  vehicle?.batteryLevel ?? 0
+                  vehicle?.batteryLevel ??
+                  0
                 }%`,
               }}
             />
@@ -412,7 +570,9 @@ if (nextVehicle?.isDriving === true) {
           <p>
             예상 주행 가능 거리{" "}
             <b>
-              {vehicle?.rangeKm ?? "-"}km
+              {vehicle?.rangeKm ??
+                "-"}
+              km
             </b>
           </p>
         </div>
@@ -422,12 +582,15 @@ if (nextVehicle?.isDriving === true) {
 
           <img
             src={vehicleImage}
-            alt={vehicle?.name || "Tesla"}
+            alt={
+              vehicle?.name ||
+              "Tesla"
+            }
           />
         </div>
       </div>
 
-      <div className="vehicle-reference-status">
+      <div className="vehicle-reference-status pro">
         <div
           className={`vehicle-status-item vehicle-status-lock ${lockClass}`}
         >
@@ -442,10 +605,10 @@ if (nextVehicle?.isDriving === true) {
           <span className="vehicle-status-label">
             {vehicle?.locked === null ||
             vehicle?.locked === undefined
-              ? "확인 불가"
+              ? "잠금 확인 불가"
               : isLocked
-                ? "잠김"
-                : "열림"}
+                ? "모두 잠김"
+                : "잠금 해제"}
           </span>
         </div>
 
@@ -458,7 +621,8 @@ if (nextVehicle?.isDriving === true) {
 
           <span className="vehicle-status-label">
             실내{" "}
-            {vehicle?.insideTemp !== null &&
+            {vehicle?.insideTemp !==
+              null &&
             vehicle?.insideTemp !==
               undefined
               ? `${Math.round(
@@ -473,7 +637,6 @@ if (nextVehicle?.isDriving === true) {
         >
           <span className="vehicle-status-icon charging-icon">
             <span className="charging-icon-fill" />
-
             <HiOutlineBolt />
           </span>
 
@@ -484,14 +647,99 @@ if (nextVehicle?.isDriving === true) {
           </span>
         </div>
 
-        <div className="vehicle-status-item vehicle-status-trunk closed">
+        <div
+          className={
+            accessSummary.warning
+              ? "vehicle-status-item vehicle-status-warning"
+              : "vehicle-status-item vehicle-status-normal"
+          }
+          title={accessSummary.detail}
+        >
+          <span className="vehicle-status-icon vehicle-status-symbol">
+            ◫
+          </span>
+
+          <span className="vehicle-status-label">
+            {accessSummary.label}
+          </span>
+        </div>
+
+        <div
+          className={
+            storageSummary.warning
+              ? "vehicle-status-item vehicle-status-warning"
+              : "vehicle-status-item vehicle-status-normal"
+          }
+          title={storageSummary.detail}
+        >
           <span className="vehicle-status-icon">
             <IoCarSportOutline />
           </span>
 
           <span className="vehicle-status-label">
-            트렁크 닫힘
+            {storageSummary.label}
           </span>
+        </div>
+
+        <div
+          className={
+            chargePortOpen
+              ? "vehicle-status-item vehicle-status-port open"
+              : "vehicle-status-item vehicle-status-port"
+          }
+        >
+          <span className="vehicle-status-icon vehicle-status-symbol">
+            ⚡
+          </span>
+
+          <span className="vehicle-status-label">
+            {chargePortOpen
+              ? "충전포트 열림"
+              : "충전포트 닫힘"}
+          </span>
+        </div>
+      </div>
+
+      <div className="vehicle-reference-system">
+        <div
+          className={
+            isOnline
+              ? "online"
+              : "sleeping"
+          }
+        >
+          <i />
+
+          <span>
+            {isOnline
+              ? "차량 온라인"
+              : vehicle?.state ===
+                  "asleep"
+                ? "차량 절전 중"
+                : "차량 오프라인"}
+          </span>
+        </div>
+
+        <div
+          className={
+            sentryOn
+              ? "sentry-on"
+              : "sentry-off"
+          }
+        >
+          <span>◆</span>
+
+          <b>
+            센트리{" "}
+            {vehicle?.sentryMode ===
+              null ||
+            vehicle?.sentryMode ===
+              undefined
+              ? "확인 불가"
+              : sentryOn
+                ? "ON"
+                : "OFF"}
+          </b>
         </div>
       </div>
     </div>

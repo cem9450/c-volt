@@ -84,6 +84,11 @@ export async function getCurrentVehicleData(req) {
   if (vehicle.state !== "online") {
     return {
       ...baseVehicle,
+      doors: null,
+      windows: null,
+      frunkOpen: null,
+      trunkOpen: null,
+      sentryMode: null,
       batteryLevel: null,
       rangeKm: null,
       chargingState: null,
@@ -130,6 +135,41 @@ export async function getCurrentVehicleData(req) {
   const charge = live.charge_state || {};
   const climate = live.climate_state || {};
   const vehicleState = live.vehicle_state || {};
+    const doorState = {
+    driverFront:
+      Number(vehicleState.df) > 0,
+
+    driverRear:
+      Number(vehicleState.dr) > 0,
+
+    passengerFront:
+      Number(vehicleState.pf) > 0,
+
+    passengerRear:
+      Number(vehicleState.pr) > 0,
+  };
+
+  const windowState = {
+    driverFront:
+      Number(vehicleState.fd) > 0,
+
+    driverRear:
+      Number(vehicleState.rd) > 0,
+
+    passengerFront:
+      Number(vehicleState.fp) > 0,
+
+    passengerRear:
+      Number(vehicleState.rp) > 0,
+  };
+
+  const trunkState = {
+    front:
+      Number(vehicleState.ft) > 0,
+
+    rear:
+      Number(vehicleState.rt) > 0,
+  };
   const driveState = live.drive_state || {};
 
   const latitude =
@@ -209,6 +249,19 @@ export async function getCurrentVehicleData(req) {
 
     locked:
       vehicleState.locked ?? null,
+          doors: doorState,
+
+    windows: windowState,
+
+    frunkOpen:
+      trunkState.front,
+
+    trunkOpen:
+      trunkState.rear,
+
+    sentryMode:
+      vehicleState.sentry_mode ??
+      null,
 
     odometerKm:
       typeof vehicleState.odometer === "number"

@@ -7261,3 +7261,177 @@ body {
     perspective: none !important;
   }
 }
+/* ==================================
+   VEHICLE STATUS PRO
+================================== */
+
+.vehicle-reference-status.pro {
+  grid-template-columns:
+    repeat(3, minmax(0, 1fr));
+  gap: 7px 5px;
+}
+
+.vehicle-reference-status.pro
+.vehicle-status-item {
+  min-height: 61px;
+}
+
+.vehicle-reference-status.pro
+.vehicle-status-label {
+  padding: 0 2px;
+}
+
+.vehicle-status-symbol {
+  color:
+    rgba(255, 255, 255, 0.62);
+  font-size: 22px;
+  font-weight: 500;
+  line-height: 1;
+}
+
+.vehicle-status-normal
+.vehicle-status-icon {
+  color:
+    rgba(255, 255, 255, 0.62);
+  background:
+    rgba(255, 255, 255, 0.035);
+}
+
+.vehicle-status-normal
+.vehicle-status-label {
+  color:
+    rgba(255, 255, 255, 0.57);
+}
+
+.vehicle-status-warning
+.vehicle-status-icon {
+  color: #ffad68;
+  background:
+    rgba(255, 145, 75, 0.11);
+  box-shadow:
+    0 0 17px
+    rgba(255, 133, 64, 0.17);
+
+  animation:
+    vehicleOpenWarning
+    1.5s
+    ease-in-out
+    infinite;
+}
+
+.vehicle-status-warning
+.vehicle-status-label {
+  color: #ffb47b;
+}
+
+.vehicle-status-port.open
+.vehicle-status-icon {
+  color: #c978ff;
+  background:
+    rgba(168, 69, 255, 0.12);
+  box-shadow:
+    0 0 17px
+    rgba(168, 69, 255, 0.2);
+}
+
+.vehicle-status-port.open
+.vehicle-status-label {
+  color: #cd87ff;
+}
+
+.vehicle-reference-system {
+  display: flex;
+  min-height: 38px;
+  margin-top: 6px;
+  padding: 7px 9px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+
+  border:
+    1px solid
+    rgba(255, 255, 255, 0.045);
+  border-radius: 13px;
+
+  background:
+    rgba(255, 255, 255, 0.02);
+}
+
+.vehicle-reference-system > div {
+  display: inline-flex;
+  min-width: 0;
+  align-items: center;
+  gap: 6px;
+}
+
+.vehicle-reference-system i {
+  width: 6px;
+  height: 6px;
+  flex-shrink: 0;
+  border-radius: 50%;
+}
+
+.vehicle-reference-system
+.online i {
+  background: #65e997;
+  box-shadow:
+    0 0 9px
+    rgba(101, 233, 151, 0.5);
+}
+
+.vehicle-reference-system
+.sleeping i {
+  background:
+    rgba(255, 255, 255, 0.3);
+}
+
+.vehicle-reference-system span,
+.vehicle-reference-system b {
+  overflow: hidden;
+  color:
+    rgba(255, 255, 255, 0.45);
+  font-size: 8px;
+  font-weight: 700;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.vehicle-reference-system
+.sentry-on span,
+.vehicle-reference-system
+.sentry-on b {
+  color: #c778ff;
+}
+
+.vehicle-reference-system
+.sentry-off span,
+.vehicle-reference-system
+.sentry-off b {
+  color:
+    rgba(255, 255, 255, 0.36);
+}
+
+@keyframes vehicleOpenWarning {
+  0%,
+  100% {
+    opacity: 0.72;
+    transform: scale(0.97);
+  }
+
+  50% {
+    opacity: 1;
+    transform: scale(1.03);
+  }
+}
+
+@media (max-width: 350px) {
+  .vehicle-reference-status.pro {
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+  }
+
+  .vehicle-reference-system {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}
