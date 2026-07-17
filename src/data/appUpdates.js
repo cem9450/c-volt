@@ -1,5 +1,25 @@
 export const APP_UPDATES = [
   {
+  id: "version-0-2-5",
+  version: "0.2.5",
+  type: "update",
+  title: "C-Volt ver 0.2.5",
+  message:
+    "차량 상태 화면을 Tesla 스타일로 전면 리디자인했습니다. 문과 창문, 프렁크·트렁크, 충전포트, 센트리, 온라인 상태를 한눈에 확인할 수 있도록 개선하고 UI를 더욱 깔끔하게 정리했습니다.",
+  releasedAt:
+    "2026-07-18T실제배포완료시각+09:00",
+},
+  {
+  id: "version-0-2-4",
+  version: "0.2.4",
+  type: "update",
+  title: "C-Volt ver 0.2.4",
+  message:
+    "차량 상태 화면을 확장했습니다. 문과 창문, 프렁크·트렁크, 충전포트, 센트리 모드 및 차량 온라인·절전 상태를 실제 차량 데이터로 확인할 수 있습니다.",
+  releasedAt:
+    "2026-07-18T00:35:00+09:00",
+},
+  {
   id: "version-0-2-3",
   version: "0.2.3",
   type: "update",
