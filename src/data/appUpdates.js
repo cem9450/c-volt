@@ -1,5 +1,15 @@
 export const APP_UPDATES = [
   {
+  id: "version-0-2-7",
+  version: "0.2.7",
+  type: "update",
+  title: "C-Volt ver 0.2.7",
+  message:
+    "배터리 영역에 실내 온도와 충전 상태를 복구하고, 모바일 화면에서 정보 카드가 세로로 찌그러지던 레이아웃을 개선했습니다. 차량 이미지와 배터리 정보가 자연스럽게 배치되도록 전체 구성을 정리했습니다.",
+  releasedAt:
+    "2026-07-18T０２：１９+09:00",
+},
+  {
   id: "version-0-2-6",
   version: "0.2.6",
   type: "update",

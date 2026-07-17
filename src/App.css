@@ -7867,3 +7867,173 @@ body {
     padding: 10px;
   }
 }
+/* ========================================
+   Battery Layout Fix
+======================================== */
+
+.vehicle-reference-main {
+  position: relative;
+  display: block;
+  min-height: 260px;
+  margin-top: 26px;
+}
+
+.vehicle-reference-battery {
+  width: 100%;
+  min-width: 0;
+}
+
+.vehicle-battery-heading {
+  width: 45%;
+}
+
+.vehicle-reference-battery .vehicle-reference-bar {
+  width: 45%;
+  margin-top: 12px;
+}
+
+.vehicle-reference-visual {
+  position: absolute;
+  top: 24px;
+  right: -4px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 54%;
+  height: 130px;
+}
+
+.vehicle-reference-visual img {
+  position: relative;
+  z-index: 2;
+
+  width: 100%;
+  max-width: 210px;
+  height: auto;
+
+  object-fit: contain;
+}
+
+.vehicle-battery-info-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+
+  width: 100%;
+  margin-top: 22px;
+}
+
+.vehicle-battery-info-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  min-width: 0;
+  min-height: 62px;
+  padding: 11px 12px;
+
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 14px;
+
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.vehicle-battery-info-item > div {
+  min-width: 0;
+}
+
+.vehicle-battery-info-item small {
+  display: block;
+  margin-bottom: 4px;
+
+  color: rgba(255, 255, 255, 0.42);
+  font-size: 10px;
+  font-weight: 500;
+  line-height: 1.2;
+
+  white-space: nowrap;
+}
+
+.vehicle-battery-info-item strong {
+  display: block;
+
+  color: rgba(255, 255, 255, 0.92);
+  font-size: 13px;
+  font-weight: 650;
+  line-height: 1.25;
+
+  white-space: nowrap;
+}
+
+.vehicle-battery-info-icon {
+  display: inline-flex;
+  flex: 0 0 34px;
+  align-items: center;
+  justify-content: center;
+
+  width: 34px;
+  height: 34px;
+
+  border-radius: 10px;
+
+  background: rgba(255, 255, 255, 0.055);
+  color: rgba(255, 255, 255, 0.72);
+
+  font-size: 18px;
+}
+
+.vehicle-battery-range {
+  width: 100%;
+  margin-top: 15px;
+}
+
+/* 모바일 */
+
+@media (max-width: 520px) {
+  .vehicle-reference-main {
+    min-height: 250px;
+  }
+
+  .vehicle-battery-heading,
+  .vehicle-reference-battery .vehicle-reference-bar {
+    width: 46%;
+  }
+
+  .vehicle-reference-visual {
+    top: 28px;
+    right: -8px;
+    width: 55%;
+    height: 120px;
+  }
+
+  .vehicle-reference-visual img {
+    max-width: 195px;
+  }
+
+  .vehicle-battery-info-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+    margin-top: 20px;
+  }
+
+  .vehicle-battery-info-item {
+    min-height: 58px;
+    padding: 10px;
+  }
+
+  .vehicle-battery-info-icon {
+    flex-basis: 30px;
+    width: 30px;
+    height: 30px;
+  }
+
+  .vehicle-battery-info-item small {
+    font-size: 9px;
+  }
+
+  .vehicle-battery-info-item strong {
+    font-size: 12px;
+  }
+}
