@@ -471,6 +471,15 @@ export default function TeslaStatusCard({
   const chargePortOpen =
     vehicle?.chargePortOpen === true;
 
+  const isCharging =
+    vehicle?.chargingState === "Charging";
+
+  const insideTemperature =
+    vehicle?.insideTemp !== null &&
+    vehicle?.insideTemp !== undefined
+    ? Math.round(vehicle.insideTemp)
+    : null;  
+
   return (
     <div
       className={
@@ -646,35 +655,73 @@ export default function TeslaStatusCard({
       </div>
 
       <div className="vehicle-reference-main">
-        <div className="vehicle-reference-battery">
-          <span>배터리</span>
+      <div className="vehicle-reference-battery">
+  <div className="vehicle-battery-heading">
+    <span>배터리</span>
 
-          <strong>
-            {vehicle?.batteryLevel ??
-              "-"}
-            <small>%</small>
-          </strong>
+    <strong>
+      {vehicle?.batteryLevel ?? "-"}
+      <small>%</small>
+    </strong>
+  </div>
 
-          <div className="vehicle-reference-bar">
-            <i
-              style={{
-                width: `${
-                  vehicle?.batteryLevel ??
-                  0
-                }%`,
-              }}
-            />
-          </div>
+  <div className="vehicle-reference-bar">
+    <i
+      style={{
+        width: `${
+          vehicle?.batteryLevel ?? 0
+        }%`,
+      }}
+    />
+  </div>
 
-          <p>
-            예상 주행 가능 거리{" "}
-            <b>
-              {vehicle?.rangeKm ??
-                "-"}
-              km
-            </b>
-          </p>
-        </div>
+  <div className="vehicle-battery-info-grid">
+    <div className="vehicle-battery-info-item">
+      <span className="vehicle-battery-info-icon">
+        <FiThermometer />
+      </span>
+
+      <div>
+        <small>실내 온도</small>
+
+        <strong>
+          {insideTemperature !== null
+            ? `${insideTemperature}℃`
+            : "확인 불가"}
+        </strong>
+      </div>
+    </div>
+
+    <div
+      className={
+        isCharging
+          ? "vehicle-battery-info-item charging"
+          : "vehicle-battery-info-item"
+      }
+    >
+      <span className="vehicle-battery-info-icon charging-bolt">
+        <MdOutlineElectricBolt />
+      </span>
+
+      <div>
+        <small>충전 상태</small>
+
+        <strong>
+          {translateChargingState(
+            vehicle?.chargingState
+          )}
+        </strong>
+      </div>
+    </div>
+  </div>
+
+  <p className="vehicle-battery-range">
+    예상 주행 가능 거리{" "}
+    <b>
+      {vehicle?.rangeKm ?? "-"}km
+    </b>
+  </p>
+</div>
 
         <div className="vehicle-reference-visual">
           <div className="vehicle-reference-glow" />
