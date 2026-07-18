@@ -1,5 +1,4 @@
 export const APP_UPDATES = [
-  export const APP_UPDATES = [
   {
     id: "version-0-3-1",
     version: "0.3.1",
