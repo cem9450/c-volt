@@ -12,22 +12,9 @@ import Login from "./pages/Login";
 import League from "./pages/League";
 import Chat from "./pages/Chat";
 import Stats from "./pages/Stats";
+import DrivingDNA from "./pages/DrivingDNA";
 
 import BottomNav from "./components/BottomNav";
-
-function PreparingPage({
-  eyebrow,
-  title,
-  description,
-}) {
-  return (
-    <main className="cv-preparing-page">
-      <span>{eyebrow}</span>
-      <h1>{title}</h1>
-      <p>{description}</p>
-    </main>
-  );
-}
 
 export default function App() {
   const [page, setPage] =
@@ -110,12 +97,8 @@ export default function App() {
       )}
 
       {page === "dna" && (
-        <PreparingPage
-          eyebrow="DRIVING DNA"
-          title="운전 DNA"
-          description="운전 성향, 레벨, 배지와 업적을 보여줄 예정입니다."
-        />
-      )}
+  <DrivingDNA />
+)}
 
       {page === "chat" && (
         <Chat />

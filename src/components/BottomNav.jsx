@@ -1,11 +1,4 @@
-import {
-  FiBarChart2,
-  FiCalendar,
-  FiHome,
-  FiMessageCircle,
-  FiSmile,
-} from "react-icons/fi";
-
+import { TbDna2 } from "react-icons/tb";
 import { HiOutlineTrophy } from "react-icons/hi2";
 
 const tabs = [
@@ -30,10 +23,10 @@ const tabs = [
     icon: FiBarChart2,
   },
   {
-    id: "dna",
-    label: "운전 DNA",
-    icon: FiSmile,
-  },
+  id: "dna",
+  label: "운전 DNA",
+  icon: TbDna2,
+},
   {
     id: "chat",
     label: "채팅",
