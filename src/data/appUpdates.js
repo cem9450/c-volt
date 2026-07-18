@@ -1,5 +1,23 @@
 export const APP_UPDATES = [
   {
+  id: "version-0-2-11",
+  version: "0.2.11",
+  type: "fix",
+  title: "운전 DNA 화면 가독성 개선",
+  message:
+    "운전 DNA 페이지의 제목과 본문 스타일을 다른 메뉴와 통일하고, 잠금 상태의 DNA 유형 카드 글씨가 흐릿하게 보이던 문제를 수정했습니다.",
+  releasedAt: "2026-07-19T24:21+09:00",
+},
+  {
+  id: "version-0-2-10",
+  version: "0.2.10",
+  type: "fix",
+  title: "하단 메뉴 실행 오류 수정",
+  message:
+    "운전 DNA 메뉴 아이콘 변경 과정에서 하단 내비게이션 아이콘 import가 누락되어 앱이 흰 화면으로 표시되던 문제를 수정했습니다.",
+  releasedAt: "2026-07-18T23:58+09:00",
+},
+  {
   id: "version-0-2-9",
   version: "0.2.9",
   type: "feature",
