@@ -1,40 +1,50 @@
 export const APP_UPDATES = [
+  export const APP_UPDATES = [
   {
-  id: "version-0-3-0",
-  version: "0.3.0",
-  type: "feature",
-  title: "Driving DNA 실제 주행 데이터 연동",
-  message:
-    "Driving DNA가 실제 주행 기록과 연동됩니다. 누적 주행거리, 총 운행 횟수, 첫 운행일을 기반으로 학습 진행률을 계산하며, 운행 종료 시 최신 기록으로 자동 갱신됩니다.",
-  releasedAt: "2026-07-19T00:29:00+09:00",
-},
+    id: "version-0-3-1",
+    version: "0.3.1",
+    type: "feature",
+    title: "C-Volt ver. 0.3.1",
+    message:
+      "Driving DNA에 Driver Level과 Driving Summary를 추가했습니다. 실제 주행 데이터를 기반으로 레벨 진행률, 총 주행거리, 운행 횟수, 누적 운행시간, 첫 운행일을 한눈에 확인할 수 있도록 개선했습니다.",
+    releasedAt: "2026-07-19T00:48:00+09:00",
+  },
   {
-  id: "version-0-2-11",
-  version: "0.2.11",
-  type: "fix",
-  title: "운전 DNA 화면 가독성 개선",
-  message:
-    "운전 DNA 페이지의 제목과 본문 스타일을 다른 메뉴와 통일하고, 잠금 상태의 DNA 유형 카드 글씨가 흐릿하게 보이던 문제를 수정했습니다.",
-  releasedAt: "2026-07-19T00:21+09:00",
-},
+    id: "version-0-3-0",
+    version: "0.3.0",
+    type: "feature",
+    title: "C-Volt ver. 0.3.0",
+    message:
+      "Driving DNA가 실제 주행 기록과 연동됩니다. 누적 주행거리, 총 운행 횟수, 첫 운행일을 기반으로 학습 진행률을 계산하며, 운행 종료 시 최신 기록으로 자동 갱신됩니다.",
+    releasedAt: "2026-07-19T00:29:00+09:00",
+  },
   {
-  id: "version-0-2-10",
-  version: "0.2.10",
-  type: "fix",
-  title: "하단 메뉴 실행 오류 수정",
-  message:
-    "운전 DNA 메뉴 아이콘 변경 과정에서 하단 내비게이션 아이콘 import가 누락되어 앱이 흰 화면으로 표시되던 문제를 수정했습니다.",
-  releasedAt: "2026-07-18T23:58+09:00",
-},
+    id: "version-0-2-11",
+    version: "0.2.11",
+    type: "fix",
+    title: "C-Volt ver. 0.2.11",
+    message:
+      "운전 DNA 페이지의 제목과 본문 스타일을 다른 메뉴와 통일하고, 잠금 상태의 DNA 유형 카드 글씨가 흐릿하게 보이던 문제를 수정했습니다.",
+    releasedAt: "2026-07-19T00:21:00+09:00",
+  },
   {
-  id: "version-0-2-9",
-  version: "0.2.9",
-  type: "feature",
-  title: "운전 DNA 활성화",
-  message:
-    "C-Volt의 새로운 Driving DNA 페이지를 활성화했습니다. 누적 주행거리를 기반으로 분석 진행률을 표시하고, Smooth Driver, Eco Driver, Explorer, Night Owl 등 발견 가능한 운전 성향을 미리 확인할 수 있습니다.",
-  releasedAt: "2026-07-18T10:47+09:00",
-},
+    id: "version-0-2-10",
+    version: "0.2.10",
+    type: "fix",
+    title: "C-Volt ver. 0.2.10",
+    message:
+      "운전 DNA 메뉴 아이콘 변경 과정에서 하단 내비게이션 아이콘 import가 누락되어 앱이 흰 화면으로 표시되던 문제를 수정했습니다.",
+    releasedAt: "2026-07-18T23:58:00+09:00",
+  },
+  {
+    id: "version-0-2-9",
+    version: "0.2.9",
+    type: "feature",
+    title: "C-Volt ver. 0.2.9",
+    message:
+      "C-Volt의 새로운 Driving DNA 페이지를 활성화했습니다. 누적 주행거리를 기반으로 분석 진행률을 표시하고, Smooth Driver, Eco Driver, Explorer, Night Owl 등 발견 가능한 운전 성향을 미리 확인할 수 있습니다.",
+    releasedAt: "2026-07-18T10:47:00+09:00",
+  },
   {
   id: "version-0-2-8",
   version: "0.2.8",
