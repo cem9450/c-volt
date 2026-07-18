@@ -1,5 +1,14 @@
 export const APP_UPDATES = [
   {
+  id: "version-0-3-2",
+  version: "0.3.2",
+  type: "update",
+  title: "C-Volt ver. 0.3.2",
+  message:
+    "홈 화면에 C-Volt Insight를 추가했습니다. 차량 상태, 배터리, 주행 기록과 현재 날씨를 분석해 비·눈·강풍·기온 변화 및 충전 필요 상황에 맞는 맞춤 안내를 제공합니다.",
+  releasedAt: "2026-07-19T01:21:00+09:00",
+},
+  {
     id: "version-0-3-1",
     version: "0.3.1",
     type: "feature",

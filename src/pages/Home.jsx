@@ -93,6 +93,10 @@ export default function Home() {
     <main className="home home-v2">
       <TopBar />
 
+      <section className="dashboard-section dashboard-insight">
+        <AIBriefingCard />
+      </section>
+
       <DriveDashboardSection />
 
       {isDriving ? (
@@ -106,12 +110,9 @@ export default function Home() {
           {vehicleCard}
         </>
       )}
-      <section className="dashboard-section dashboard-chargers">
-  <NearbyChargersCard />
-</section>
 
-      <section className="dashboard-section dashboard-ai">
-        <AIBriefingCard />
+      <section className="dashboard-section dashboard-chargers">
+        <NearbyChargersCard />
       </section>
 
       <footer className="app-footer">

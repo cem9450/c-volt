@@ -8196,3 +8196,495 @@ body {
     padding: 10px;
   }
 }
+
+/* ==================================
+   C-VOLT INSIGHT
+   App.css 가장 마지막에 추가
+================================== */
+
+.dashboard-insight {
+  position: relative;
+  z-index: 1;
+
+  padding: 0 !important;
+  overflow: visible !important;
+
+  border: 0 !important;
+  border-radius: 0 !important;
+
+  background: transparent !important;
+  box-shadow: none !important;
+}
+.cvolt-insight-card {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  padding: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 22px;
+  background:
+    radial-gradient(
+      circle at 12% 0%,
+      rgba(132, 71, 255, 0.17),
+      transparent 38%
+    ),
+    radial-gradient(
+      circle at 100% 100%,
+      rgba(48, 122, 255, 0.1),
+      transparent 42%
+    ),
+    linear-gradient(
+      145deg,
+      rgba(25, 25, 29, 0.98),
+      rgba(13, 13, 16, 0.99)
+    );
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.05),
+    0 16px 34px rgba(0, 0, 0, 0.22);
+  isolation: isolate;
+}
+
+.cvolt-insight-card::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  top: -85px;
+  right: -75px;
+  width: 190px;
+  height: 190px;
+  border-radius: 50%;
+  background:
+    radial-gradient(
+      circle,
+      rgba(166, 87, 255, 0.18),
+      transparent 68%
+    );
+  pointer-events: none;
+}
+
+.cvolt-insight-card::after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  right: 20px;
+  bottom: -55px;
+  width: 125px;
+  height: 125px;
+  border-radius: 50%;
+  background:
+    radial-gradient(
+      circle,
+      rgba(63, 112, 255, 0.1),
+      transparent 70%
+    );
+  pointer-events: none;
+}
+
+.cvolt-insight-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.cvolt-insight-brand {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 10px;
+}
+
+.cvolt-insight-logo {
+  position: relative;
+  display: inline-flex;
+  width: 34px;
+  height: 34px;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(190, 135, 255, 0.22);
+  border-radius: 11px;
+  background:
+    linear-gradient(
+      145deg,
+      rgba(164, 83, 255, 0.24),
+      rgba(84, 35, 151, 0.1)
+    );
+  color: #cf9bff;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 0 18px rgba(150, 68, 255, 0.12);
+}
+
+.cvolt-insight-logo::after {
+  content: "";
+  position: absolute;
+  width: 5px;
+  height: 5px;
+  top: 5px;
+  right: 5px;
+  border-radius: 50%;
+  background: #d9afff;
+  box-shadow:
+    0 0 8px rgba(217, 175, 255, 0.9);
+  animation:
+    cvoltInsightPulse
+    2.1s
+    ease-in-out
+    infinite;
+}
+
+.cvolt-insight-logo svg {
+  font-size: 17px;
+  stroke-width: 2.2;
+}
+
+.cvolt-insight-brand > div {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.cvolt-insight-name {
+  overflow: hidden;
+  color: rgba(255, 255, 255, 0.93);
+  font-size: 11px;
+  font-weight: 750;
+  line-height: 1;
+  letter-spacing: 0.12em;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.cvolt-insight-label {
+  color: rgba(191, 138, 255, 0.72);
+  font-size: 9px;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: 0.13em;
+}
+
+.cvolt-insight-more {
+  display: inline-flex;
+  min-height: 34px;
+  flex-shrink: 0;
+  padding: 0 5px 0 10px;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  border: 0;
+  border-radius: 10px;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.53);
+  font-family: inherit;
+  font-size: 10px;
+  font-weight: 650;
+  cursor: pointer;
+  transition:
+    color 160ms ease,
+    background 160ms ease;
+}
+
+.cvolt-insight-more:hover {
+  background: rgba(255, 255, 255, 0.04);
+  color: rgba(255, 255, 255, 0.88);
+}
+
+.cvolt-insight-more:active {
+  transform: scale(0.97);
+}
+
+.cvolt-insight-more svg {
+  font-size: 15px;
+}
+
+.cvolt-insight-body {
+  display: grid;
+  grid-template-columns: 46px minmax(0, 1fr);
+  gap: 14px;
+  margin-top: 20px;
+  align-items: flex-start;
+}
+
+.cvolt-insight-icon {
+  position: relative;
+  display: inline-flex;
+  width: 46px;
+  height: 46px;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 15px;
+  background:
+    linear-gradient(
+      145deg,
+      rgba(255, 255, 255, 0.075),
+      rgba(255, 255, 255, 0.018)
+    );
+  color: #c48bff;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+.cvolt-insight-icon::before {
+  content: "";
+  position: absolute;
+  inset: 7px;
+  border-radius: 10px;
+  background:
+    radial-gradient(
+      circle,
+      rgba(176, 101, 255, 0.17),
+      transparent 72%
+    );
+}
+
+.cvolt-insight-icon svg {
+  position: relative;
+  z-index: 1;
+  font-size: 21px;
+  stroke-width: 1.8;
+}
+
+.cvolt-insight-copy {
+  min-width: 0;
+  padding-top: 1px;
+}
+
+.cvolt-insight-copy h2 {
+  margin: 0;
+  color: #ffffff;
+  font-size: 16px;
+  font-weight: 720;
+  line-height: 1.35;
+  letter-spacing: -0.45px;
+  word-break: keep-all;
+}
+
+.cvolt-insight-copy p {
+  margin: 8px 0 0;
+  color: rgba(255, 255, 255, 0.61);
+  font-size: 11px;
+  font-weight: 450;
+  line-height: 1.7;
+  letter-spacing: -0.1px;
+  word-break: keep-all;
+}
+
+.cvolt-insight-bottom {
+  display: flex;
+  min-height: 34px;
+  margin-top: 17px;
+  padding-top: 13px;
+  align-items: center;
+  gap: 7px;
+  border-top: 1px solid rgba(255, 255, 255, 0.055);
+  color: rgba(255, 255, 255, 0.38);
+  font-size: 9px;
+  font-weight: 600;
+  line-height: 1.3;
+  letter-spacing: 0.025em;
+}
+
+.cvolt-insight-live-dot {
+  width: 5px;
+  height: 5px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: #b873ff;
+  box-shadow:
+    0 0 8px rgba(184, 115, 255, 0.8);
+  animation:
+    cvoltInsightDot
+    2s
+    ease-in-out
+    infinite;
+}
+
+/* 높은 중요도 안내 */
+
+.cvolt-insight-priority-high {
+  border-color: rgba(255, 149, 92, 0.15);
+  background:
+    radial-gradient(
+      circle at 10% 0%,
+      rgba(255, 112, 65, 0.14),
+      transparent 40%
+    ),
+    radial-gradient(
+      circle at 100% 100%,
+      rgba(160, 72, 255, 0.1),
+      transparent 42%
+    ),
+    linear-gradient(
+      145deg,
+      rgba(27, 24, 25, 0.99),
+      rgba(14, 13, 16, 0.99)
+    );
+}
+
+.cvolt-insight-priority-high
+  .cvolt-insight-logo {
+  color: #ffad7a;
+  border-color: rgba(255, 154, 98, 0.19);
+  background:
+    linear-gradient(
+      145deg,
+      rgba(255, 127, 75, 0.19),
+      rgba(142, 65, 29, 0.07)
+    );
+}
+
+.cvolt-insight-priority-high
+  .cvolt-insight-label {
+  color: rgba(255, 173, 122, 0.72);
+}
+
+.cvolt-insight-priority-high
+  .cvolt-insight-icon {
+  color: #ffae7c;
+}
+
+.cvolt-insight-priority-high
+  .cvolt-insight-live-dot {
+  background: #ff9f68;
+  box-shadow:
+    0 0 9px rgba(255, 159, 104, 0.78);
+}
+
+/* 중간 중요도 안내 */
+
+.cvolt-insight-priority-medium
+  .cvolt-insight-logo {
+  color: #91b8ff;
+}
+
+.cvolt-insight-priority-medium
+  .cvolt-insight-label {
+  color: rgba(130, 177, 255, 0.76);
+}
+
+.cvolt-insight-priority-medium
+  .cvolt-insight-icon {
+  color: #8db5ff;
+}
+
+.cvolt-insight-priority-medium
+  .cvolt-insight-live-dot {
+  background: #75a7ff;
+  box-shadow:
+    0 0 9px rgba(117, 167, 255, 0.76);
+}
+
+/* 로딩 상태 */
+
+.cvolt-insight-loading
+  .cvolt-insight-icon svg {
+  animation:
+    cvoltInsightSpin
+    2.6s
+    linear
+    infinite;
+}
+
+/* 홈 섹션 간격 */
+
+.dashboard-insight {
+  position: relative;
+  z-index: 1;
+}
+
+/* 작은 화면 */
+
+@media (max-width: 420px) {
+  .cvolt-insight-card {
+    padding: 17px 16px;
+    border-radius: 20px;
+  }
+
+  .cvolt-insight-body {
+    grid-template-columns:
+      42px
+      minmax(0, 1fr);
+    gap: 12px;
+    margin-top: 18px;
+  }
+
+  .cvolt-insight-icon {
+    width: 42px;
+    height: 42px;
+    border-radius: 14px;
+  }
+
+  .cvolt-insight-icon svg {
+    font-size: 19px;
+  }
+
+  .cvolt-insight-copy h2 {
+    font-size: 15px;
+  }
+
+  .cvolt-insight-copy p {
+    font-size: 10.5px;
+    line-height: 1.68;
+  }
+
+  .cvolt-insight-more span {
+    display: none;
+  }
+
+  .cvolt-insight-more {
+    width: 32px;
+    padding: 0;
+  }
+}
+
+@keyframes cvoltInsightPulse {
+  0%,
+  100% {
+    opacity: 0.4;
+    transform: scale(0.78);
+  }
+
+  50% {
+    opacity: 1;
+    transform: scale(1.12);
+  }
+}
+
+@keyframes cvoltInsightDot {
+  0%,
+  100% {
+    opacity: 0.42;
+    transform: scale(0.82);
+  }
+
+  50% {
+    opacity: 1;
+    transform: scale(1.08);
+  }
+}
+
+@keyframes cvoltInsightSpin {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (
+  prefers-reduced-motion:
+  reduce
+) {
+  .cvolt-insight-logo::after,
+  .cvolt-insight-live-dot,
+  .cvolt-insight-loading
+    .cvolt-insight-icon
+    svg {
+    animation: none;
+  }
+}
