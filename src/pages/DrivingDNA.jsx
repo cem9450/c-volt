@@ -1,4 +1,5 @@
 import {
+  useCallback,
   useEffect,
   useMemo,
   useState,
@@ -55,72 +56,112 @@ function normalizeDistance(value) {
   return Math.max(0, number);
 }
 
-function getStoredDistance() {
-  try {
-    return normalizeDistance(
-      localStorage.getItem(
-        "cvolt:driving-dna-distance-km"
-      )
-    );
-  } catch {
-    return 0;
-  }
-}
-
-function getEventDistance(event) {
-  const detail = event?.detail;
-
+function getSessionDistance(session) {
   return normalizeDistance(
-    detail?.distance_km ??
-      detail?.distanceKm ??
-      detail?.session?.distance_km ??
-      detail?.session?.distanceKm
+    session?.distanceKm ??
+      session?.distance_km
   );
 }
 
+function getSessionStartedAt(session) {
+  return (
+    session?.startedAt ??
+    session?.started_at ??
+    null
+  );
+}
+
+function formatFirstDriveDate(dateString) {
+  if (!dateString) {
+    return "-";
+  }
+
+  const date = new Date(dateString);
+
+  if (Number.isNaN(date.getTime())) {
+    return "-";
+  }
+
+  return new Intl.DateTimeFormat("ko-KR", {
+    timeZone: "Asia/Seoul",
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+  }).format(date);
+}
+
 export default function DrivingDNA() {
-  const [distanceKm, setDistanceKm] =
-    useState(getStoredDistance);
+  const [sessions, setSessions] =
+    useState([]);
 
-  useEffect(() => {
-    const handleDriveEnded = (event) => {
-      const addedDistance =
-        getEventDistance(event);
+  const [loading, setLoading] =
+    useState(true);
 
-      if (addedDistance <= 0) {
-        return;
-      }
+  const [error, setError] =
+    useState("");
 
-      setDistanceKm((currentDistance) => {
-        const nextDistance =
-          currentDistance + addedDistance;
+  const loadDrivingHistory =
+    useCallback(async () => {
+      setLoading(true);
+      setError("");
 
-        try {
-          localStorage.setItem(
-            "cvolt:driving-dna-distance-km",
-            String(nextDistance)
-          );
-        } catch (error) {
-          console.error(
-            "Driving DNA 거리 저장 실패:",
-            error
+      try {
+        const response = await fetch(
+          "/api/driving-history",
+          {
+            credentials: "include",
+            cache: "no-store",
+          }
+        );
+
+        const data = await response.json();
+
+        if (
+          !response.ok ||
+          !data.ok
+        ) {
+          throw new Error(
+            data.error ||
+              "주행 기록을 불러오지 못했습니다."
           );
         }
 
-        return nextDistance;
-      });
-    };
+        setSessions(
+          Array.isArray(data.sessions)
+            ? data.sessions
+            : []
+        );
+      } catch (err) {
+        console.error(
+          "Driving DNA 주행 기록 조회 실패:",
+          err
+        );
 
-    const handleStorage = (event) => {
-      if (
-        event.key !==
-        "cvolt:driving-dna-distance-km"
-      ) {
-        return;
+        setError(
+          err instanceof Error
+            ? err.message
+            : "주행 기록을 불러오지 못했습니다."
+        );
+      } finally {
+        setLoading(false);
       }
+    }, []);
 
-      setDistanceKm(
-        normalizeDistance(event.newValue)
+  useEffect(() => {
+    loadDrivingHistory();
+  }, [loadDrivingHistory]);
+
+  useEffect(() => {
+    let refreshTimer;
+
+    const handleDriveEnded = () => {
+      window.clearTimeout(refreshTimer);
+
+      refreshTimer = window.setTimeout(
+        () => {
+          loadDrivingHistory();
+        },
+        1000
       );
     };
 
@@ -129,42 +170,127 @@ export default function DrivingDNA() {
       handleDriveEnded
     );
 
-    window.addEventListener(
-      "storage",
-      handleStorage
-    );
-
     return () => {
+      window.clearTimeout(refreshTimer);
+
       window.removeEventListener(
         "cvolt:drive-ended",
         handleDriveEnded
       );
-
-      window.removeEventListener(
-        "storage",
-        handleStorage
-      );
     };
-  }, []);
+  }, [loadDrivingHistory]);
+
+  const drivingData = useMemo(() => {
+    const totalDistanceKm =
+      sessions.reduce(
+        (sum, session) =>
+          sum +
+          getSessionDistance(session),
+        0
+      );
+
+    const validStartedDates =
+      sessions
+        .map(getSessionStartedAt)
+        .filter(Boolean)
+        .map((dateString) =>
+          new Date(dateString).getTime()
+        )
+        .filter(Number.isFinite);
+
+    const firstDriveAt =
+      validStartedDates.length > 0
+        ? new Date(
+            Math.min(...validStartedDates)
+          ).toISOString()
+        : null;
+
+    return {
+      totalDistanceKm,
+      totalDrives: sessions.length,
+      firstDriveAt,
+    };
+  }, [sessions]);
 
   const progress = useMemo(() => {
     return Math.min(
       100,
       Math.round(
-        (distanceKm /
+        (drivingData.totalDistanceKm /
           DNA_UNLOCK_DISTANCE_KM) *
           100
       )
     );
-  }, [distanceKm]);
+  }, [drivingData.totalDistanceKm]);
 
   const remainingDistance = Math.max(
     0,
-    DNA_UNLOCK_DISTANCE_KM - distanceKm
+    DNA_UNLOCK_DISTANCE_KM -
+      drivingData.totalDistanceKm
   );
 
   const isUnlocked =
-    distanceKm >= DNA_UNLOCK_DISTANCE_KM;
+    drivingData.totalDistanceKm >=
+    DNA_UNLOCK_DISTANCE_KM;
+
+  const firstDriveDate =
+    formatFirstDriveDate(
+      drivingData.firstDriveAt
+    );
+
+  function getStatusText() {
+    if (loading && sessions.length === 0) {
+      return "SYNCING DATA";
+    }
+
+    if (error && sessions.length === 0) {
+      return "DATA ERROR";
+    }
+
+    if (isUnlocked) {
+      return "DNA ANALYSIS READY";
+    }
+
+    return "LEARNING";
+  }
+
+  function getTitleText() {
+    if (loading && sessions.length === 0) {
+      return "주행 데이터를 불러오고 있어요";
+    }
+
+    if (error && sessions.length === 0) {
+      return "주행 데이터를 확인할 수 없어요";
+    }
+
+    if (isUnlocked) {
+      return "분석 준비 완료";
+    }
+
+    return "운전 습관을 학습하고 있어요";
+  }
+
+  function getDescriptionText() {
+    if (loading && sessions.length === 0) {
+      return "완료된 주행 기록을 Driving DNA와 연결하고 있습니다.";
+    }
+
+    if (error && sessions.length === 0) {
+      return error;
+    }
+
+    if (isUnlocked) {
+      return `${drivingData.totalDrives}회의 실제 주행 기록을 바탕으로 운전 성향 분석을 시작할 수 있습니다.`;
+    }
+
+    if (drivingData.totalDrives === 0) {
+      return "첫 운행이 완료되면 Driving DNA 학습이 자동으로 시작됩니다.";
+    }
+
+    return `${remainingDistance.toFixed(
+      1
+    )}km를 더 주행하면 첫 번째 운전 DNA가 공개됩니다.`;
+  }
 
   return (
     <main className="driving-dna-page">
@@ -176,8 +302,8 @@ export default function DrivingDNA() {
         <h1>운전 DNA</h1>
 
         <p>
-          주행 데이터를 분석해 나만의 운전
-          성향을 발견합니다.
+          실제 주행 데이터를 분석해 나만의
+          운전 성향을 발견합니다.
         </p>
       </header>
 
@@ -189,29 +315,23 @@ export default function DrivingDNA() {
         </div>
 
         <span className="driving-dna-status">
-          {isUnlocked
-            ? "DNA ANALYSIS READY"
-            : "LEARNING"}
+          {getStatusText()}
         </span>
 
-        <h2>
-          {isUnlocked
-            ? "분석 준비 완료"
-            : "운전 습관을 학습하고 있어요"}
-        </h2>
+        <h2>{getTitleText()}</h2>
 
-        <p>
-          {isUnlocked
-            ? "수집된 데이터를 바탕으로 운전 성향 분석을 시작할 수 있습니다."
-            : `${remainingDistance.toFixed(
-                1
-              )}km를 더 주행하면 첫 번째 운전 DNA가 공개됩니다.`}
-        </p>
+        <p>{getDescriptionText()}</p>
 
         <div className="driving-dna-progress">
           <div className="driving-dna-progress-head">
             <span>분석 진행률</span>
-            <strong>{progress}%</strong>
+
+            <strong>
+              {loading &&
+              sessions.length === 0
+                ? "-"
+                : `${progress}%`}
+            </strong>
           </div>
 
           <div className="driving-dna-progress-track">
@@ -224,11 +344,16 @@ export default function DrivingDNA() {
 
           <div className="driving-dna-progress-foot">
             <span>
-              {distanceKm.toFixed(1)}km 수집
+              {drivingData.totalDistanceKm.toFixed(
+                1
+              )}
+              km · {drivingData.totalDrives}회
             </span>
 
             <span>
-              {DNA_UNLOCK_DISTANCE_KM}km
+              {drivingData.firstDriveAt
+                ? `첫 운행 ${firstDriveDate}`
+                : `${DNA_UNLOCK_DISTANCE_KM}km`}
             </span>
           </div>
         </div>
@@ -284,11 +409,14 @@ export default function DrivingDNA() {
         <TbDna2 />
 
         <div>
-          <strong>운전할수록 더 정확해져요</strong>
+          <strong>
+            운전할수록 더 정확해져요
+          </strong>
+
           <p>
-            누적된 주행거리와 운전 패턴을
-            바탕으로 Driving DNA가 계속
-            성장합니다.
+            완료된 주행 기록의 누적거리와
+            운전 패턴을 바탕으로 Driving
+            DNA가 계속 성장합니다.
           </p>
         </div>
       </section>

@@ -1,12 +1,21 @@
 export const APP_UPDATES = [
   {
+  id: "version-0-3-0",
+  version: "0.3.0",
+  type: "feature",
+  title: "Driving DNA 실제 주행 데이터 연동",
+  message:
+    "Driving DNA가 실제 주행 기록과 연동됩니다. 누적 주행거리, 총 운행 횟수, 첫 운행일을 기반으로 학습 진행률을 계산하며, 운행 종료 시 최신 기록으로 자동 갱신됩니다.",
+  releasedAt: "2026-07-19T00:29:00+09:00",
+},
+  {
   id: "version-0-2-11",
   version: "0.2.11",
   type: "fix",
   title: "운전 DNA 화면 가독성 개선",
   message:
     "운전 DNA 페이지의 제목과 본문 스타일을 다른 메뉴와 통일하고, 잠금 상태의 DNA 유형 카드 글씨가 흐릿하게 보이던 문제를 수정했습니다.",
-  releasedAt: "2026-07-19T24:21+09:00",
+  releasedAt: "2026-07-19T00:21+09:00",
 },
   {
   id: "version-0-2-10",
