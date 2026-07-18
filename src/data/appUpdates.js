@@ -1,5 +1,14 @@
 export const APP_UPDATES = [
   {
+  id: "version-0-2-9",
+  version: "0.2.9",
+  type: "feature",
+  title: "운전 DNA 활성화",
+  message:
+    "C-Volt의 새로운 Driving DNA 페이지를 활성화했습니다. 누적 주행거리를 기반으로 분석 진행률을 표시하고, Smooth Driver, Eco Driver, Explorer, Night Owl 등 발견 가능한 운전 성향을 미리 확인할 수 있습니다.",
+  releasedAt: "2026-07-18T10:47+09:00",
+},
+  {
   id: "version-0-2-8",
   version: "0.2.8",
   type: "update",
