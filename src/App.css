@@ -8680,11 +8680,114 @@ body {
   prefers-reduced-motion:
   reduce
 ) {
-  .cvolt-insight-logo::after,
   .cvolt-insight-live-dot,
   .cvolt-insight-loading
     .cvolt-insight-icon
     svg {
     animation: none;
+  }
+}
+/* ==================================
+   HOME CARD HEADER FINAL OVERRIDE
+   App.css 가장 마지막에 유지
+================================== */
+
+/* Insight 상단의 첫 번째 번개 아이콘 숨김 */
+.cvolt-insight-logo {
+  display: none !important;
+}
+
+/* 아이콘이 사라진 뒤 제목 정렬 */
+.cvolt-insight-brand {
+  display: flex !important;
+  min-width: 0 !important;
+  align-items: flex-start !important;
+  gap: 0 !important;
+}
+
+/* 세 카드의 제목 스타일 통일 */
+.cvolt-insight-name,
+.dashboard-card-title,
+.parking-reference-header h2 {
+  margin: 0 !important;
+  color: #ffffff !important;
+  font-family: inherit !important;
+  font-size: 18px !important;
+  font-weight: 700 !important;
+  line-height: 1.2 !important;
+  letter-spacing: -0.4px !important;
+}
+
+/* C-Volt Insight는 영문이라 대문자 유지 */
+.cvolt-insight-name {
+  display: block !important;
+  overflow: visible !important;
+  text-overflow: initial !important;
+  white-space: nowrap !important;
+}
+
+/* Insight 보조 문구 */
+.cvolt-insight-label {
+  display: block !important;
+  margin-top: 4px !important;
+  color: rgba(191, 138, 255, 0.72) !important;
+  font-size: 9px !important;
+  font-weight: 700 !important;
+  line-height: 1 !important;
+  letter-spacing: 0.13em !important;
+}
+
+/* 세 카드 오른쪽 버튼 스타일 통일 */
+.cvolt-insight-more,
+.dashboard-detail-button,
+.parking-reference-header button {
+  display: inline-flex !important;
+  width: auto !important;
+  min-width: 0 !important;
+  min-height: 34px !important;
+  padding: 0 10px !important;
+  flex-shrink: 0 !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 3px !important;
+
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  border-radius: 999px !important;
+
+  background: rgba(255, 255, 255, 0.035) !important;
+  color: rgba(255, 255, 255, 0.76) !important;
+
+  font-family: inherit !important;
+  font-size: 10px !important;
+  font-weight: 700 !important;
+  line-height: 1 !important;
+  white-space: nowrap !important;
+}
+
+/* 세 버튼의 화살표 크기 통일 */
+.cvolt-insight-more svg,
+.dashboard-detail-button svg,
+.parking-reference-header button svg {
+  width: 15px !important;
+  height: 15px !important;
+  font-size: 15px !important;
+  stroke-width: 2 !important;
+}
+
+/* Insight 헤더 높이와 정렬 */
+.cvolt-insight-top {
+  min-height: 36px !important;
+  align-items: center !important;
+}
+
+/* 작은 화면에서도 버튼 글자 유지 */
+@media (max-width: 420px) {
+  .cvolt-insight-more span {
+    display: inline !important;
+  }
+
+  .cvolt-insight-more {
+    width: auto !important;
+    padding: 0 10px !important;
   }
 }

@@ -1,5 +1,14 @@
 export const APP_UPDATES = [
   {
+  id: "version-0-3-3",
+  version: "0.3.3",
+  type: "update",
+  title: "C-Volt ver. 0.3.3",
+  message:
+    "홈 화면 UI를 개선했습니다. C-Volt Insight 헤더를 정리하고, 섹션 제목과 액션 버튼 스타일을 통일하여 더욱 깔끔하고 일관된 디자인을 적용했습니다.",
+  releasedAt: "2026-07-19T0１:４３:00+09:00",
+},
+  {
   id: "version-0-3-2",
   version: "0.3.2",
   type: "update",

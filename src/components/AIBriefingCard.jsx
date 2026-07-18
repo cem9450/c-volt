@@ -686,20 +686,16 @@ export default function AIBriefingCard() {
     >
       <div className="cvolt-insight-top">
         <div className="cvolt-insight-brand">
-          <span className="cvolt-insight-logo">
-            <FiZap />
-          </span>
+  <div>
+    <span className="cvolt-insight-name">
+      C-VOLT INSIGHT
+    </span>
 
-          <div>
-            <span className="cvolt-insight-name">
-              C-VOLT INSIGHT
-            </span>
-
-            <span className="cvolt-insight-label">
-              {insight.label}
-            </span>
-          </div>
-        </div>
+    <span className="cvolt-insight-label">
+      {insight.label}
+    </span>
+  </div>
+</div>
 
         <button
           type="button"
